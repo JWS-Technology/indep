@@ -33,8 +33,8 @@ Festival** at St. Joseph's College, built using **Next.js 14**,
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/indep-2025.git
-cd indep-2025
+git clone https://github.com/JWS-Technology/indep.git
+cd indep
 ```
 
 Install dependencies:
@@ -52,8 +52,6 @@ pnpm install
 Create a `.env.local` file in the root directory:
 
     MONGODB_URI=mongodb://localhost:27017/indep2025
-    # or MongoDB Atlas:
-    MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/indep2025
 
 ## ▶️ Run the Development Server
 
