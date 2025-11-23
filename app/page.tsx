@@ -7,11 +7,7 @@ export default function Home() {
     <div>
       <Hero />
       <Stats />
-
-      <SectionTitle
-        title="Welcome to INDEP 2025"
-        subtitle="Inter Departmental Cultural Events"
-      />
+      <SectionTitle/>
     </div>
   )
 }
