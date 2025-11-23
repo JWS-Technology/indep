@@ -3,7 +3,7 @@ export default function Hero() {
         <section
             className="relative min-h-[100vh] flex items-center justify-center text-white overflow-hidden"
             style={{
-                backgroundImage: 'linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(/background.png)',
+                backgroundImage: 'linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(/P1219113.jpg)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
