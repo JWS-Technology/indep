@@ -1,11 +1,13 @@
 'use client';
 import { useState } from 'react';
+import Image from 'next/image';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Mock gallery data - replace with actual images from your event
 const galleryImages = [
     {
         id: 1,
-        src: '/api/placeholder/400/300',
+        src: 'https://www.sjctni.edu/img/EventGallery/images/24_Indep2k24/P1219056.jpg',
         alt: 'Cultural Performance 2024',
         category: 'on-stage',
         title: 'Classical Dance Performance',
@@ -13,7 +15,7 @@ const galleryImages = [
     },
     {
         id: 2,
-        src: '/api/placeholder/400/300',
+        src: 'https://www.sjctni.edu/img/EventGallery/images/24_Indep2k24/P1229475.jpg',
         alt: 'Music Band Performance',
         category: 'on-stage',
         title: 'Rock Band Competition',
@@ -21,7 +23,7 @@ const galleryImages = [
     },
     {
         id: 3,
-        src: '/api/placeholder/400/300',
+        src: 'https://www.sjctni.edu/img/EventGallery/images/24_Indep2k24/IMG_8706.jpg',
         alt: 'Drama Scene',
         category: 'on-stage',
         title: 'Street Play Finals',
@@ -29,76 +31,12 @@ const galleryImages = [
     },
     {
         id: 4,
-        src: '/api/placeholder/400/300',
+        src: 'https://www.sjctni.edu/img/EventGallery/images/24_Indep2k24/IMG_8805.jpg',
         alt: 'Art Exhibition',
         category: 'off-stage',
         title: 'Fine Arts Display',
         year: '2024'
     },
-    {
-        id: 5,
-        src: '/api/placeholder/400/300',
-        alt: 'Photography Contest',
-        category: 'off-stage',
-        title: 'Photography Exhibition',
-        year: '2024'
-    },
-    {
-        id: 6,
-        src: '/api/placeholder/400/300',
-        alt: 'Literary Event',
-        category: 'off-stage',
-        title: 'Debate Competition',
-        year: '2024'
-    },
-    {
-        id: 7,
-        src: '/api/placeholder/400/300',
-        alt: 'Fashion Show',
-        category: 'on-stage',
-        title: 'Ramp Walk',
-        year: '2023'
-    },
-    {
-        id: 8,
-        src: '/api/placeholder/400/300',
-        alt: 'Quiz Competition',
-        category: 'off-stage',
-        title: 'General Quiz Finals',
-        year: '2023'
-    },
-    {
-        id: 9,
-        src: '/api/placeholder/400/300',
-        alt: 'Dance Group',
-        category: 'on-stage',
-        title: 'Western Dance',
-        year: '2023'
-    },
-    {
-        id: 10,
-        src: '/api/placeholder/400/300',
-        alt: 'Creative Writing',
-        category: 'off-stage',
-        title: 'Poetry Writing',
-        year: '2023'
-    },
-    {
-        id: 11,
-        src: '/api/placeholder/400/300',
-        alt: 'Singing Competition',
-        category: 'on-stage',
-        title: 'Solo Singing',
-        year: '2023'
-    },
-    {
-        id: 12,
-        src: '/api/placeholder/400/300',
-        alt: 'Prize Distribution',
-        category: 'special',
-        title: 'Winner Celebration',
-        year: '2024'
-    }
 ];
 
 const categories = [
@@ -113,13 +51,54 @@ const years = ['2024', '2023', '2022'];
 export default function Gallery() {
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [selectedYear, setSelectedYear] = useState('2024');
-    const [selectedImage, setSelectedImage] = useState<any>(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const filteredImages = galleryImages.filter(image => {
         const categoryMatch = selectedCategory === 'all' || image.category === selectedCategory;
         const yearMatch = selectedYear === 'all' || image.year === selectedYear;
         return categoryMatch && yearMatch;
     });
+
+    const openModal = (image) => {
+        setSelectedImage(image);
+        const index = filteredImages.findIndex(img => img.id === image.id);
+        setCurrentImageIndex(index);
+    };
+
+    const closeModal = () => {
+        setSelectedImage(null);
+        setCurrentImageIndex(0);
+    };
+
+    const goToPrevious = () => {
+        const newIndex = currentImageIndex === 0 ? filteredImages.length - 1 : currentImageIndex - 1;
+        setCurrentImageIndex(newIndex);
+        setSelectedImage(filteredImages[newIndex]);
+    };
+
+    const goToNext = () => {
+        const newIndex = currentImageIndex === filteredImages.length - 1 ? 0 : currentImageIndex + 1;
+        setCurrentImageIndex(newIndex);
+        setSelectedImage(filteredImages[newIndex]);
+    };
+
+    // Handle keyboard navigation
+    const handleKeyDown = (e) => {
+        if (!selectedImage) return;
+
+        if (e.key === 'Escape') closeModal();
+        if (e.key === 'ArrowLeft') goToPrevious();
+        if (e.key === 'ArrowRight') goToNext();
+    };
+
+    // Add event listener for keyboard navigation
+    useState(() => {
+        if (selectedImage) {
+            document.addEventListener('keydown', handleKeyDown);
+            return () => document.removeEventListener('keydown', handleKeyDown);
+        }
+    }, [selectedImage]);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12">
@@ -191,13 +170,18 @@ export default function Gallery() {
                         <div
                             key={image.id}
                             className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover-lift transition-all duration-300"
-                            onClick={() => setSelectedImage(image)}
+                            onClick={() => openModal(image)}
                         >
                             {/* Image Container */}
                             <div className="relative overflow-hidden aspect-[4/3] bg-gradient-to-br from-gray-200 to-gray-300">
-                                {/* Placeholder for image - replace with actual Image component */}
-                                <div className="w-full h-full flex items-center justify-center text-gray-500">
-                                    🖼️ Image
+                                <div className="relative w-full h-full">
+                                    <Image
+                                        src={image.src}
+                                        alt={image.alt}
+                                        fill
+                                        className="object-cover transform group-hover:scale-110 transition-transform duration-500"
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    />
                                 </div>
 
                                 {/* Overlay on Hover */}
@@ -260,50 +244,95 @@ export default function Gallery() {
 
             {/* Image Modal */}
             {selectedImage && (
-                <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
-                    <div className="relative max-w-4xl max-h-full">
-                        {/* Close Button */}
-                        <button
-                            onClick={() => setSelectedImage(null)}
-                            className="absolute -top-12 right-0 text-white text-2xl hover:text-gray-300 transition-colors"
-                        >
-                            ✕
-                        </button>
-
-                        {/* Modal Content */}
-                        <div className="bg-white rounded-2xl overflow-hidden">
-                            <div className="aspect-video bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                                <div className="text-gray-500 text-lg">🖼️ {selectedImage.title}</div>
+                <div
+                    className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4"
+                    onClick={closeModal}
+                >
+                    <div
+                        className="relative max-w-6xl w-full max-h-[90vh] bg-white rounded-2xl overflow-hidden"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Header Bar */}
+                        <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
+                            <div className="flex items-center space-x-4">
+                                <h3 className="text-xl font-bold text-gray-800">
+                                    {selectedImage.title}
+                                </h3>
+                                <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                                    INDEP {selectedImage.year}
+                                </span>
                             </div>
 
-                            <div className="p-6">
-                                <div className="flex items-start justify-between mb-4">
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-gray-800 mb-2">{selectedImage.title}</h3>
-                                        <div className="flex items-center gap-4 text-gray-600">
-                                            <span className="capitalize bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                                {selectedImage.category.replace('-', ' ')}
-                                            </span>
-                                            <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
-                                                INDEP {selectedImage.year}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p className="text-gray-600">
-                                    Beautiful moment captured during INDEP {selectedImage.year}.
-                                    This image showcases the incredible talent and spirit of our students.
-                                </p>
+                            {/* Close Button */}
+                            <button
+                                onClick={closeModal}
+                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors group"
+                            >
+                                <X className="w-6 h-6 text-gray-600 group-hover:text-gray-800" />
+                            </button>
+                        </div>
 
-                                <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
-                                    <button className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                                        ← Previous
+                        {/* Image Viewer */}
+                        <div className="relative bg-black flex items-center justify-center min-h-[400px] max-h-[70vh]">
+                            {/* Navigation Arrows */}
+                            {filteredImages.length > 1 && (
+                                <>
+                                    <button
+                                        onClick={goToPrevious}
+                                        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
+                                    >
+                                        <ChevronLeft className="w-6 h-6 text-gray-800" />
                                     </button>
-                                    <button className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                                        Next →
+
+                                    <button
+                                        onClick={goToNext}
+                                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
+                                    >
+                                        <ChevronRight className="w-6 h-6 text-gray-800" />
                                     </button>
+                                </>
+                            )}
+
+                            {/* Main Image */}
+                            <div className="relative w-full h-full max-w-4xl max-h-[70vh] flex items-center justify-center">
+                                <Image
+                                    src={selectedImage.src}
+                                    alt={selectedImage.alt}
+                                    width={1200}
+                                    height={800}
+                                    className="max-w-full max-h-full object-contain"
+                                    priority
+                                />
+                            </div>
+
+                            {/* Image Counter */}
+                            {filteredImages.length > 1 && (
+                                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm font-medium">
+                                    {currentImageIndex + 1} / {filteredImages.length}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Image Info */}
+                        <div className="p-6 bg-white">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center space-x-3">
+                                    <span className="capitalize bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
+                                        {selectedImage.category.replace('-', ' ')}
+                                    </span>
+                                </div>
+
+                                {/* Keyboard Hint */}
+                                <div className="text-sm text-gray-500 hidden md:block">
+                                    Press ← → to navigate, ESC to close
                                 </div>
                             </div>
+
+                            <p className="text-gray-600 leading-relaxed">
+                                Beautiful moment captured during INDEP {selectedImage.year}.
+                                This image showcases the incredible talent and spirit of our students
+                                participating in cultural events and competitions.
+                            </p>
                         </div>
                     </div>
                 </div>

@@ -11,7 +11,7 @@ export default function Navbar() {
         { name: 'Teams', href: '/teams' },
         { name: 'Schedule', href: '/schedule' },
         { name: 'Gallery', href: '/gallery' },
-        { name: 'Contact', href: '/contact' },
+        // { name: 'Contact', href: '/contact' },
     ];
 
     return (
