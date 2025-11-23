@@ -1,8 +1,17 @@
 export default function Hero() {
     return (
-        <section className="relative min-h-[80vh] flex items-center justify-center gradient-bg text-white overflow-hidden">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 bg-black/10"></div>
+        <section 
+            className="relative min-h-[90vh] flex items-center justify-center text-white overflow-hidden"
+            style={{
+                backgroundImage: 'linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(/background.png)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                backgroundAttachment: 'fixed'
+            }}
+        >
+            {/* Additional overlay for better text readability */}
+            <div className="absolute inset-0 bg-black/30"></div>
 
             {/* Animated Background Elements */}
             <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
@@ -19,7 +28,7 @@ export default function Hero() {
                 </h1>
 
                 <p className="text-xl md:text-2xl mb-8 font-light opacity-90 max-w-2xl mx-auto leading-relaxed">
-                    The Inter-Departmental Cultural Extravaganza at St. Joseph's College
+                    The Inter-Departmental Cultural Extravaganza at <br />  St. Joseph's College
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
@@ -40,12 +49,7 @@ export default function Hero() {
                     </a>
                 </div>
 
-                {/* Scroll Indicator */}
-                <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-                    <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
-                        <div className="w-1 h-3 bg-white rounded-full mt-2"></div>
-                    </div>
-                </div>
+               
             </div>
         </section>
     );
