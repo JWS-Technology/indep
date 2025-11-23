@@ -37,6 +37,15 @@ const galleryImages = [
         title: 'Fine Arts Display',
         year: '2024'
     },
+    {
+        id: 4,
+        src: 'https://www.sjctni.edu/img/EventGallery/images/24_Indep2k24/0A2A6844.jpg',
+        alt: 'Art Exhibition',
+        category: 'off-stage',
+        title: 'Fine Arts Display',
+        year: '2024'
+    },
+
 ];
 
 const categories = [
@@ -101,7 +110,7 @@ export default function Gallery() {
     }, [selectedImage]);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12">
+        <div className="min-h-screen bg-linear-to-br from-gray-50 to-blue-50 py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
                 {/* Header Section */}
@@ -130,8 +139,8 @@ export default function Gallery() {
                                         key={category.id}
                                         onClick={() => setSelectedCategory(category.id)}
                                         className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${selectedCategory === category.id
-                                                ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                            ? 'bg-linear-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                             }`}
                                     >
                                         {category.name}
@@ -173,7 +182,7 @@ export default function Gallery() {
                             onClick={() => openModal(image)}
                         >
                             {/* Image Container */}
-                            <div className="relative overflow-hidden aspect-[4/3] bg-gradient-to-br from-gray-200 to-gray-300">
+                            <div className="relative overflow-hidden aspect-[4/3] bg-linear-to-br from-gray-200 to-gray-300">
                                 <div className="relative w-full h-full">
                                     <Image
                                         src={image.src}
@@ -185,7 +194,7 @@ export default function Gallery() {
                                 </div>
 
                                 {/* Overlay on Hover */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                                <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
                                     <div className="p-4 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                                         <h3 className="font-bold text-lg mb-1">{image.title}</h3>
                                         <div className="flex items-center justify-between text-sm">
@@ -217,7 +226,7 @@ export default function Gallery() {
                                 setSelectedCategory('all');
                                 setSelectedYear('all');
                             }}
-                            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover-lift"
+                            className="px-6 py-3 bg-linear-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover-lift"
                         >
                             Reset Filters
                         </button>
@@ -225,7 +234,7 @@ export default function Gallery() {
                 )}
 
                 {/* Call to Action */}
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center text-white">
+                <div className="bg-linear-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center text-white">
                     <h2 className="text-3xl font-bold mb-4">Share Your INDEP Moments!</h2>
                     <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
                         Have photos from previous INDEP events? Contribute to our gallery and help us preserve these precious memories.
