@@ -59,9 +59,6 @@ export default function Navbar() {
                                 className="relative px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300 group"
                             >
                                 <div className="flex items-center space-x-2">
-                                    {/* <span className="text-sm opacity-70 group-hover:opacity-100 transition-opacity">
-                                        {item.icon}
-                                    </span> */}
                                     <span>{item.name}</span>
                                 </div>
                                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-3/4"></div>
