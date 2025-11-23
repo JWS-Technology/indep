@@ -19,7 +19,7 @@ export default function Hero() {
             <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-yellow-300/20 rounded-full blur-xl"></div>
 
             <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-                <div className="inline-block mb-4 px-4 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium">
+                <div className="inline-block mt-20 mb-4 px-4 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium">
                     🎉 12–13 January 2025
                 </div>
 
