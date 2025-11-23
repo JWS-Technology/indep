@@ -13,7 +13,7 @@ export default function Stats() {
                     {stats.map((stat, index) => (
                         <div
                             key={index}
-                            className="text-center group hover-lift p-6 rounded-2xl bg-gradient-to-br from-white to-gray-50 border border-gray-100 shadow-sm"
+                            className="text-center group hover-lift p-6 rounded-2xl bg-linear-to-br from-white to-gray-50 border border-gray-100 shadow-sm"
                         >
                             <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">
                                 {stat.emoji}

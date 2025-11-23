@@ -3,7 +3,7 @@ import { shiftOne, shiftTwo } from '@/data/teams';
 
 export default function Teams() {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12">
+        <div className="min-h-screen bg-linear-to-br from-gray-50 to-blue-50 py-12">
             <div className="max-w-6xl mx-auto px-4">
                 {/* Header */}
                 <div className="text-center mb-12">
@@ -35,7 +35,7 @@ export default function Teams() {
                 </div>
 
                 {/* Info Card */}
-                <div className="mt-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white text-center">
+                <div className="mt-12 bg-linear-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white text-center">
                     <h3 className="text-2xl font-bold mb-4">Ready to Represent Your Department?</h3>
                     <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
                         Join your department team and be part of the biggest cultural extravaganza of the year!

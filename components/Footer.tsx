@@ -6,7 +6,7 @@ export default function Footer() {
                     {/* Brand */}
                     <div className="md:col-span-2">
                         <div className="flex items-center mb-4">
-                            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
+                            <div className="w-8 h-8 bg-linear-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
                                 <span className="text-white font-bold">I</span>
                             </div>
                             <span className="text-xl font-black">INDEP 2025</span>
