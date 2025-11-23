@@ -19,5 +19,7 @@ export const shiftTwo = [
   "Commerce CA",
   "Data Sci. & Chemistry",
   "Commerce",
+  "Computer Science",
+  "Information Technology",
   "Counselling Psychology",
 ];
