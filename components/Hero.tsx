@@ -1,7 +1,7 @@
 export default function Hero() {
     return (
-        <section 
-            className="relative min-h-[90vh] flex items-center justify-center text-white overflow-hidden"
+        <section
+            className="relative min-h-[100vh] flex items-center justify-center text-white overflow-hidden"
             style={{
                 backgroundImage: 'linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(/background.png)',
                 backgroundSize: 'cover',
@@ -49,7 +49,7 @@ export default function Hero() {
                     </a>
                 </div>
 
-               
+
             </div>
         </section>
     );

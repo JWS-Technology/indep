@@ -23,11 +23,10 @@ export default function Navbar() {
     ];
 
     return (
-        <nav className={`fixed top-0 w-full z-50 transition-all duration-500 rounded-b-3xl ${
-            scrolled 
-                ? 'bg-white/98 backdrop-blur-xl border-b border-gray-200/60 shadow-xl' 
-                : 'bg-white/95 backdrop-blur-lg border-b border-gray-200/40'
-        }`}>
+        <nav className={`fixed top-0 w-full z-50 transition-all duration-500 rounded-b-3xl ${scrolled
+            ? 'bg-white/98 backdrop-blur-xl border-b border-gray-200/60 shadow-xl'
+            : 'bg-white/95 backdrop-blur-lg border-b border-gray-200/40'
+            }`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
                 <div className="flex justify-between items-center h-20">
                     {/* Logo */}
@@ -40,9 +39,8 @@ export default function Navbar() {
                                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
                             </div>
                             <div className="flex flex-col">
-                                <span className={`text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent transition-all duration-300 ${
-                                    scrolled ? 'text-xl' : 'text-2xl'
-                                }`}>
+                                <span className={`text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent transition-all duration-300 ${scrolled ? 'text-xl' : 'text-2xl'
+                                    }`}>
                                     INDEP 2025
                                 </span>
                                 <span className="text-xs text-gray-500 font-medium -mt-1">
@@ -96,31 +94,26 @@ export default function Navbar() {
                     <div className="lg:hidden">
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className={`p-3 rounded-2xl transition-all duration-300 ${
-                                scrolled 
-                                    ? 'bg-gray-100 hover:bg-gray-200' 
-                                    : 'bg-white/90 backdrop-blur-sm hover:bg-white'
-                            } shadow-lg`}
+                            className={`p-3 rounded-2xl transition-all duration-300 ${scrolled
+                                ? 'bg-gray-100 hover:bg-gray-200'
+                                : 'bg-white/90 backdrop-blur-sm hover:bg-white'
+                                } shadow-lg`}
                         >
                             <div className="w-6 h-6 flex flex-col justify-center relative">
-                                <span className={`absolute top-1.5 h-0.5 w-6 bg-gray-700 transition-all duration-300 ${
-                                    isOpen ? 'rotate-45 top-3' : ''
-                                }`}></span>
-                                <span className={`absolute top-3 h-0.5 w-6 bg-gray-700 transition-all duration-300 ${
-                                    isOpen ? 'opacity-0' : ''
-                                }`}></span>
-                                <span className={`absolute top-4.5 h-0.5 w-6 bg-gray-700 transition-all duration-300 ${
-                                    isOpen ? '-rotate-45 top-3' : ''
-                                }`}></span>
+                                <span className={`absolute top-1.5 h-0.5 w-6 bg-gray-700 transition-all duration-300 ${isOpen ? 'rotate-45 top-3' : ''
+                                    }`}></span>
+                                <span className={`absolute top-3 h-0.5 w-6 bg-gray-700 transition-all duration-300 ${isOpen ? 'opacity-0' : ''
+                                    }`}></span>
+                                <span className={`absolute top-4.5 h-0.5 w-6 bg-gray-700 transition-all duration-300 ${isOpen ? '-rotate-45 top-3' : ''
+                                    }`}></span>
                             </div>
                         </button>
                     </div>
                 </div>
 
                 {/* Mobile Navigation */}
-                <div className={`lg:hidden transition-all duration-500 overflow-hidden ${
-                    isOpen ? 'max-h-96 opacity-100 pb-6' : 'max-h-0 opacity-0'
-                }`}>
+                <div className={`lg:hidden transition-all duration-500 overflow-hidden ${isOpen ? 'max-h-96 opacity-100 pb-6' : 'max-h-0 opacity-0'
+                    }`}>
                     <div className="py-6 border-t border-gray-200/50">
                         <div className="grid grid-cols-2 gap-4">
                             {navItems.map((item) => (
