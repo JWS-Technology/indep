@@ -14,12 +14,12 @@ export default function Register() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-12">
+        <div className="min-h-screen bg-linear-to-br from-blue-50 to-purple-50 py-12">
             <div className="max-w-md mx-auto px-4">
                 {/* Card */}
                 <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden hover-lift">
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-center">
+                    <div className="bg-linear-to-r from-blue-600 to-purple-600 p-6 text-center">
                         <h1 className="text-3xl font-black text-white">Join INDEP 2025</h1>
                         <p className="text-blue-100 mt-2">Create your account</p>
                     </div>
@@ -66,7 +66,7 @@ export default function Register() {
 
                         <button
                             type="submit"
-                            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-semibold text-lg hover-lift shadow-lg transition-all"
+                            className="w-full bg-linear-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-semibold text-lg hover-lift shadow-lg transition-all"
                         >
                             Create Account
                         </button>
