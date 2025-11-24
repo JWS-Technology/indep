@@ -1,17 +1,19 @@
 'use client';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { events } from "@/data/events";
 
 export default function About() {
-
     const [ref1, inView1] = useInView({ triggerOnce: true, threshold: 0.3 });
     const [ref2, inView2] = useInView({ triggerOnce: true, threshold: 0.3 });
     const [ref3, inView3] = useInView({ triggerOnce: true, threshold: 0.3 });
 
+    const totalEvents = events.length;
+
     const stats = [
         { number: "1500+", label: "Students" },
         { number: "2", label: "Days" },
-        { number: "25+", label: "Events" },
+        { number: `${totalEvents}+`, label: "Events" },
         { number: "15+", label: "Departments" }
     ];
 

@@ -20,6 +20,7 @@ export default function Navbar() {
         { name: 'Teams', href: '/teams', icon: '👥' },
         { name: 'Schedule', href: '/schedule', icon: '📅' },
         { name: 'Gallery', href: '/gallery', icon: '🖼️' },
+        { name: 'Contact', href: '/contact', icon: '📞' },
     ];
 
     return (
@@ -109,34 +110,34 @@ export default function Navbar() {
                 </div>
 
                 {/* Mobile Navigation */}
-                <div className={`lg:hidden transition-all duration-500 overflow-hidden ${isOpen ? 'max-h-96 opacity-100 pb-6' : 'max-h-0 opacity-0'
+                <div className={`lg:hidden transition-all duration-500 overflow-hidden ${isOpen ? 'max-h-105 opacity-100 pb-6' : 'max-h-0 opacity-0'
                     }`}>
                     <div className="py-6 border-t border-gray-200/50">
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-3">
                             {navItems.map((item) => (
                                 <a
                                     key={item.name}
                                     href={item.href}
-                                    className="flex items-center space-x-3 p-4 text-gray-700 hover:text-blue-600 font-medium rounded-2xl bg-gray-50/80 hover:bg-blue-50/80 transition-all duration-300 group backdrop-blur-sm"
+                                    className="flex items-center space-x-3 p-4 text-gray-700 hover:text-blue-600 font-medium rounded-2xl bg-gray-50/80 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-300 group backdrop-blur-sm border border-transparent hover:border-blue-200/50 hover:shadow-lg active:scale-95 active:bg-gradient-to-r active:from-blue-100 active:to-purple-100"
                                     onClick={() => setIsOpen(false)}
                                 >
-                                    <span className="text-lg">{item.icon}</span>
-                                    <span>{item.name}</span>
-                                    <span className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">→</span>
+                                    <span className="text-lg group-hover:scale-110 transition-transform duration-300">{item.icon}</span>
+                                    <span className="group-hover:font-semibold transition-all duration-300">{item.name}</span>
+                                    <span className="ml-auto opacity-0 group-hover:opacity-100 transition-all duration-300 text-blue-600 transform group-hover:translate-x-1">→</span>
                                 </a>
                             ))}
                         </div>
                         <div className="flex space-x-3 mt-6 pt-6 border-t border-gray-200/50">
                             <a
                                 href="/login"
-                                className="flex-1 text-center py-3 text-gray-700 font-medium border-2 border-gray-200 rounded-xl hover:border-blue-600 hover:text-blue-600 transition-all duration-300"
+                                className="flex-1 text-center py-3 text-gray-700 font-medium border-2 border-gray-200 rounded-xl hover:border-blue-600 hover:text-blue-600 transition-all duration-300 hover:shadow-lg active:scale-95 active:bg-blue-50 active:border-blue-600"
                                 onClick={() => setIsOpen(false)}
                             >
                                 Sign In
                             </a>
                             <a
                                 href="/register"
-                                className="flex-1 text-center py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                                className="flex-1 text-center py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105 active:scale-95 active:bg-gradient-to-r active:from-blue-700 active:to-purple-700"
                                 onClick={() => setIsOpen(false)}
                             >
                                 Register

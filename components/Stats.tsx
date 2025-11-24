@@ -1,8 +1,12 @@
+import { events } from "@/data/events";
+
 export default function Stats() {
+    const totalEvents = events.length;
+
     const stats = [
         { number: '1500+', label: 'Participants', emoji: '👥' },
         { number: '2 Days', label: '12–13 Jan 2025', emoji: '📅' },
-        { number: '18+', label: 'Events', emoji: '🎭' },
+        { number: `${totalEvents}+`, label: 'Events', emoji: '🎭' },
         { number: 'St. Joseph\'s', label: 'College Campus', emoji: '🏛️' }
     ];
 
