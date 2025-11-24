@@ -5,6 +5,7 @@ import User from "@/lib/models/User";
 import { shiftOne, shiftTwo } from "@/data/teams"; // your arrays
 
 export async function POST(req: Request) {
+  console.log("req came")
   try {
     await connectDB();
 
@@ -42,6 +43,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ message: "User created", user: newUser });
   } catch (err) {
+    console.log(
+      err
+    )
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
