@@ -1,5 +1,5 @@
 // app/events/EventSection.tsx
-import EventCard from "./EventCard";
+import EventCard from "./ScheduleCard";
 import { EventItem } from "@/data/events";
 
 interface Props {
