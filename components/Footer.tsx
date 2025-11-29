@@ -8,7 +8,7 @@ import {
     Mail,
     Phone,
 } from "lucide-react";
-
+import Image from "next/image";
 export default function Footer() {
     return (
         <footer className="bg-gradient-to-b from-gray-900 to-black text-white relative overflow-hidden">
@@ -28,17 +28,22 @@ export default function Footer() {
                     <div className="lg:col-span-2">
                         <div className="flex items-center mb-6">
                             <div className="relative group">
-                                <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center mr-4 shadow-lg transform group-hover:scale-110 transition-transform duration-300">
-                                    <span className="text-white font-bold text-lg">I</span>
+                                <div className="relative w-10 h-10 overflow-hidden ">
+                                    <Image
+                                        src={"/logo.png"}
+                                        alt="INDEP Logo"
+                                        fill
+                                        className="object-cover"
+                                    />
                                 </div>
-                                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-300" />
+                                {/* <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-300" /> */}
                             </div>
 
                             <div>
-                                <h2 className="text-2xl font-black bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                                    INDEP 2025
+                                <h2 className="font-black ml-2 text-2xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent transition-all duration-300">
+                                    INDEP '25
                                 </h2>
-                                <p className="text-sm text-gray-400 mt-1">St. Joseph's College</p>
+
                             </div>
                         </div>
 
@@ -111,7 +116,7 @@ export default function Footer() {
                     {/* Contact */}
                     <div>
                         <h3 className="font-bold text-lg lg:text-xl mb-6 relative inline-block">
-                            Get In Touch
+                            Contact Us
                             <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500" />
                         </h3>
 
@@ -136,10 +141,10 @@ export default function Footer() {
                                     <Mail size={18} className="text-green-400" />
                                 </div>
                                 <a
-                                    href="mailto:cultural@indep2025.edu"
+                                    href="mailto:indep@sjctni.edu"
                                     className="text-gray-300 hover:text-white transition-colors duration-300 text-sm lg:text-base break-all"
                                 >
-                                    cultural@indep2025.edu
+                                    indep@sjctni.edu
                                 </a>
                             </li>
 
@@ -164,7 +169,7 @@ export default function Footer() {
                     <div className="text-gray-400 text-sm text-center lg:text-left">
                         <p>&copy; 2025 INDEP - St. Joseph's College. All rights reserved.</p>
                         <p className="text-xs text-gray-500 mt-1">
-                            Made with ❤️ for the Josephite community
+                            Powered by JWS Technologies
                         </p>
                     </div>
 
