@@ -90,47 +90,51 @@ export default function EventsPage() {
       </div>
       {/* --- END Desktop Tab Navigation --- */}
 
-      {/* Mobile Filter Buttons - Only show on mobile (Original Code) */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-        className="lg:hidden flex justify-center mb-6"
-      >
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-2 border border-gray-200 shadow-sm">
-          <div className="flex space-x-2">
-            {[
-              { 
-                key: "ON_STAGE" as FilterType, 
-                label: "On Stage", 
-                color: "red"
-              },
-              { 
-                key: "OFF_STAGE" as FilterType, 
-                label: "Off Stage", 
-                color: "green"
-              }
-            ].map((filter) => (
-              <button
-                key={filter.key}
-                onClick={() => {
-                  setActiveTab(filter.key);
-                  setExpandedEventId(null);
-                }}
-                className={`px-8 py-3 rounded-xl font-medium transition-all duration-300 ${
-                  activeTab === filter.key
-                    ? filter.key === "ON_STAGE"
-                      ? "bg-red-500 text-white shadow-md"
-                      : "bg-green-500 text-white shadow-md"
-                    : "text-gray-600 hover:bg-gray-100"
-                }`}
-              >
-                {filter.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </motion.div>
+      {/* Mobile Filter Buttons - Smooth Switching */}
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.3, duration: 0.5 }}
+  className="lg:hidden flex justify-center mb-6"
+>
+  <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-2 border border-gray-200 shadow-sm">
+    <div className="flex space-x-2 relative">
+      {[
+        { key: "ON_STAGE" as FilterType, label: "On Stage", color: "red" },
+        { key: "OFF_STAGE" as FilterType, label: "Off Stage", color: "green" }
+      ].map((filter) => {
+        const isActive = activeTab === filter.key;
+        const activeBg =
+          filter.key === "ON_STAGE"
+            ? "bg-red-500"
+            : "bg-green-500";
+
+        return (
+          <button
+            key={filter.key}
+            onClick={() => {
+              setActiveTab(filter.key);
+              setExpandedEventId(null);
+            }}
+            className="relative px-8 py-3 rounded-xl font-medium transition-colors duration-300"
+          >
+            {isActive && (
+              <motion.div
+                layoutId="mobileActiveTabIndicator"
+                className={`absolute inset-0 ${activeBg} rounded-xl shadow-md`}
+                transition={{ type: "spring", stiffness: 280, damping: 20 }}
+              />
+            )}
+
+            <span className={`relative z-10 ${isActive ? "text-white" : "text-gray-600"}`}>
+              {filter.label}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  </div>
+</motion.div>
 
       {/* Events List - Only show events for active tab */}
       <div className="space-y-6">
