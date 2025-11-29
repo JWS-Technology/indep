@@ -5,12 +5,13 @@ import { useEffect, useState } from "react";
 export default function Hero() {
     const [count, setCount] = useState(0);
 
-    // Fetch visitor count
     useEffect(() => {
-        fetch("/api/visitors/get")
-            .then((res) => res.json())
-            .then((data) => setCount(data.count || 0));
+        fetch("/api/track")
+            .then(res => res.json())
+            .then(data => setCount(data.total))
+            .catch(err => console.error("Error:", err));
     }, []);
+
 
     return (
         <section
@@ -35,7 +36,7 @@ export default function Hero() {
             <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
                 {/* Date pill */}
                 <div className="inline-block mt-20 mb-4 px-4 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium">
-                    🎉 12–13 January 2025
+                    🎉 12–13 December 2025
                 </div>
 
                 {/* Title */}
