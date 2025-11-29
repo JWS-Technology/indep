@@ -1,249 +1,143 @@
-'use client';
+"use client";
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { Star, Users, Trophy, CalendarClock } from "lucide-react";
 
-export default function AboutSmall() {
-    // Animation variants
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
+export default function AboutSection() {
+    const floatAnimation = {
+        animate: {
+            y: [0, -20, 0],
             transition: {
-                staggerChildren: 0.2
-            }
-        }
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+            },
+        },
     };
 
-    const itemVariants = {
-        hidden: { opacity: 0, y: 30 },
-        visible: {
-            opacity: 1,
-            y: 0,
+    const floatAnimationReverse = {
+        animate: {
+            y: [0, 20, 0],
             transition: {
-                duration: 0.6,
-                ease: "easeOut"
-            }
-        }
-    };
-
-    const imageVariants = {
-        hidden: { opacity: 0, scale: 0.8, x: -50 },
-        visible: {
-            opacity: 1,
-            scale: 1,
-            x: 0,
-            transition: {
-                duration: 0.8,
-                ease: "easeOut"
-            }
+                duration: 7,
+                repeat: Infinity,
+                ease: "easeInOut",
+            },
         },
-        hover: {
-            scale: 1.05,
-            transition: {
-                duration: 0.3,
-                ease: "easeInOut"
-            }
-        }
-    };
-
-    const statVariants = {
-        hidden: { opacity: 0, scale: 0.5 },
-        visible: {
-            opacity: 1,
-            scale: 1,
-            transition: {
-                duration: 0.5,
-                ease: "backOut"
-            }
-        },
-        hover: {
-            scale: 1.05,
-            y: -5,
-            transition: {
-                duration: 0.2,
-                ease: "easeInOut"
-            }
-        }
-    };
-
-    const buttonVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.6,
-                delay: 0.8
-            }
-        },
-        hover: {
-            scale: 1.05,
-            boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.4)",
-            transition: {
-                duration: 0.2,
-                ease: "easeInOut"
-            }
-        },
-        tap: {
-            scale: 0.95
-        }
     };
 
     return (
-        <section className="py-16 bg-white px-4 sm:px-6 lg:px-8 overflow-hidden">
-            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-                {/* LEFT — IMAGE */}
-                <motion.div
-                    variants={imageVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    whileHover="hover"
-                    viewport={{ once: true, margin: "-50px" }}
-                    className="relative w-full h-72 sm:h-96 rounded-2xl overflow-hidden shadow-lg group"
-                >
-                    <Image
-                        src="https://www.sjctni.edu/img/EventGallery/images/24_Indep2k24/P1218846.jpg"
-                        alt="INDEP Cultural Event"
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                    />
+        <section className="py-24 bg-white relative overflow-hidden">
 
-                    {/* Animated overlay */}
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid lg:grid-cols-2 gap-16 items-center">
+
+                    {/* --- LEFT: TEXT CONTENT --- */}
                     <motion.div
-                        className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"
-                        whileHover={{ opacity: 0.3 }}
-                        transition={{ duration: 0.3 }}
-                    />
-
-                    {/* Floating elements */}
-                    {/* <motion.div
-                        initial={{ opacity: 0, scale: 0 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.6, delay: 0.5 }}
-                        className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg"
+                        initial={{ opacity: 0, x: -50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
                     >
-                        <div className="flex items-center space-x-2">
-                            <motion.div
-                                className="w-2 h-2 bg-green-500 rounded-full"
-                                animate={{ scale: [1, 1.2, 1] }}
-                                transition={{ duration: 2, repeat: Infinity }}
-                            />
-                            <span className="text-sm font-semibold text-gray-800">Live 2025</span>
+                        <div className="flex items-center gap-2 mb-6">
+                            <span className="h-px w-12 bg-blue-600"></span>
+                            <span className="text-blue-600 font-bold uppercase tracking-widest text-sm">
+                                About The Fest
+                            </span>
                         </div>
-                    </motion.div> */}
-                </motion.div>
 
-                {/* RIGHT — TEXT */}
-                <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: "-50px" }}
-                    className="space-y-6"
-                >
-                    {/* Title */}
-                    <motion.h2
-                        variants={itemVariants}
-                        className="text-3xl lg:text-4xl font-bold text-gray-900"
-                    >
-                        INDEP{" "}
-                        <motion.span
-                            className="text-blue-600"
-                            initial={{ opacity: 0, scale: 0.5 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.6, delay: 0.3 }}
-                        >
-                            &apos;25
-                        </motion.span>
-                    </motion.h2>
+                        <h2 className="text-4xl lg:text-6xl font-black text-slate-900 mb-6 leading-[1.1]">
+                            Where <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Talent</span> <br />
+                            Meets Tradition.
+                        </h2>
 
-                    {/* Paragraphs */}
-                    <motion.p
-                        variants={itemVariants}
-                        className="text-gray-600 text-lg leading-relaxed"
-                    >
-                        INDEP is the Inter-Departmental Cultural Event of St. Joseph's College.
-                        It is one of the most cherished traditions for every Josephite, bringing
-                        together talent, creativity, and unity.
-                    </motion.p>
+                        <p className="text-lg text-slate-600 leading-relaxed mb-8">
+                            INDEP is not just an event; it's the pulse of St. Joseph's. For over a decade,
+                            we have brought together the brightest minds and the most creative souls.
+                            It is a platform where <span className="font-bold text-slate-800">leadership</span> is forged,
+                            <span className="font-bold text-slate-800"> teamwork</span> is tested, and
+                            <span className="font-bold text-slate-800"> unity</span> is celebrated.
+                        </p>
 
-                    <motion.p
-                        variants={itemVariants}
-                        className="text-gray-600 text-lg leading-relaxed"
-                    >
-                        More than{" "}
-                        <motion.span
-                            className="font-semibold text-blue-600 relative"
-                            whileInView={{
-                                backgroundColor: ["rgba(59, 130, 246, 0.1)", "rgba(59, 130, 246, 0.2)", "rgba(59, 130, 246, 0.1)"],
-                            }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                        >
-                            1500 students
-                        </motion.span>{" "}
-                        from various departments participate in literary, cultural, and on-stage events.
-                        INDEP helps students grow in{" "}
-                        <motion.span
-                            className="font-semibold text-purple-600"
-                            whileInView={{
-                                textShadow: ["0 0 0px currentColor", "0 0 8px currentColor", "0 0 0px currentColor"]
-                            }}
-                            transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                        >
-                            leadership
-                        </motion.span>
-                        ,{" "}
-                        <motion.span
-                            className="font-semibold text-purple-600"
-                            whileInView={{
-                                textShadow: ["0 0 0px currentColor", "0 0 8px currentColor", "0 0 0px currentColor"]
-                            }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                        >
-                            organizational skills
-                        </motion.span>
-                        , and{" "}
-                        <motion.span
-                            className="font-semibold text-purple-600"
-                            whileInView={{
-                                textShadow: ["0 0 0px currentColor", "0 0 8px currentColor", "0 0 0px currentColor"]
-                            }}
-                            transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                        >
-                            teamwork
-                        </motion.span>
-                        .
-                    </motion.p>
+                        {/* Stats Grid */}
+                        <div className="grid grid-cols-3 gap-6 border-t border-slate-100 pt-8">
+                            <div>
+                                <h4 className="text-3xl font-black text-slate-900">1.5K+</h4>
+                                <p className="text-sm text-slate-500 font-medium mt-1">Participants</p>
+                            </div>
+                            <div>
+                                <h4 className="text-3xl font-black text-slate-900">25+</h4>
+                                <p className="text-sm text-slate-500 font-medium mt-1">Departments</p>
+                            </div>
+                            <div>
+                                <h4 className="text-3xl font-black text-slate-900">2</h4>
+                                <p className="text-sm text-slate-500 font-medium mt-1">Days of Glory</p>
+                            </div>
+                        </div>
+                    </motion.div>
 
-                    <motion.p
-                        variants={itemVariants}
-                        className="text-gray-600 text-lg leading-relaxed"
-                    >
-                        It is conducted across both Shift I and Shift II, promoting{" "}
-                        <motion.span
-                            className="font-semibold text-green-600"
-                            whileInView={{
-                                textShadow: ["0 0 0px currentColor", "0 0 8px currentColor", "0 0 0px currentColor"]
-                            }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                        >
-                            healthy competition
-                        </motion.span>{" "}
-                        and{" "}
-                        <motion.span
-                            className="font-semibold text-green-600"
-                            whileInView={{
-                                textShadow: ["0 0 0px currentColor", "0 0 8px currentColor", "0 0 0px currentColor"]
-                            }}
-                            transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                        >
-                            unity
-                        </motion.span>{" "}
-                        among departments.
-                    </motion.p>
+                    {/* --- RIGHT: IMAGE COLLAGE --- */}
+                    <div className="relative h-[600px] w-full hidden lg:block">
 
-                </motion.div>
+                        {/* Main Center Image */}
+                        <div className="absolute inset-0 m-auto w-[350px] h-[450px] rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white z-10 rotate-3">
+                            <Image
+                                src="https://www.sjctni.edu/img/EventGallery/images/24_Indep2k24/P1218846.jpg"
+                                alt="Main Event"
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
+
+                        {/* Floating Top Left */}
+                        <motion.div
+                            variants={floatAnimation}
+                            animate="animate"
+                            className="absolute top-10 left-10 w-48 h-64 rounded-2xl overflow-hidden shadow-xl border-4 border-white z-20 -rotate-6"
+                        >
+                            <Image
+                                src="https://www.sjctni.edu/img/EventGallery/images/24_Indep2k24/0A2A6844.jpg" // Placeholder concert image
+                                alt="Singing"
+                                fill
+                                className="object-cover"
+                            />
+                        </motion.div>
+
+                        {/* Floating Bottom Right */}
+                        <motion.div
+                            variants={floatAnimationReverse}
+                            animate="animate"
+                            className="absolute bottom-10 right-10 w-56 h-40 rounded-2xl overflow-hidden shadow-xl border-4 border-white z-20 rotate-6"
+                        >
+                            <Image
+                                src="https://www.sjctni.edu/img/EventGallery/images/24_Indep2k24/P1218948.jpg" // Placeholder lights/crowd
+                                alt="Crowd"
+                                fill
+                                className="object-cover"
+                            />
+                        </motion.div>
+
+                        {/* Decorative Elements */}
+                        <div className="absolute top-0 right-20 text-yellow-400 animate-spin-slow">
+                            <Star size={48} fill="currentColor" />
+                        </div>
+                        <div className="absolute bottom-20 left-0 w-24 h-24 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-full blur-2xl opacity-40 animate-pulse" />
+
+                    </div>
+
+                    {/* Mobile Single Image Fallback */}
+                    <div className="lg:hidden w-full h-64 relative rounded-2xl overflow-hidden shadow-lg">
+                        <Image
+                            src="https://www.sjctni.edu/img/EventGallery/images/24_Indep2k24/P1218846.jpg"
+                            alt="Main Event"
+                            fill
+                            className="object-cover"
+                        />
+                    </div>
+
+                </div>
             </div>
         </section>
     );
