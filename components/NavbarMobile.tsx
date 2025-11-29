@@ -1,84 +1,102 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react"; // Import hamburger/close icons
 import type { NavItem } from "./Navbar";
+import Image from "next/image";
 
 type Props = {
     navItems: NavItem[];
-    scrolled: boolean;
 };
 
-export default function NavbarMobile({ navItems, scrolled }: Props) {
+const NavbarMobile: React.FC<Props> = ({ navItems }) => {
     const [open, setOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    const navRef = useRef<HTMLElement | null>(null);
     const pathname = usePathname();
-    const menuRef = useRef<HTMLDivElement>(null);
 
-    // Close menu when route changes
     useEffect(() => {
-        setOpen(false);
-    }, [pathname]);
+        const handleScroll = () => setScrolled(window.scrollY > 20);
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
-    // Close when clicking outside
+    useEffect(() => { setOpen(false); }, [pathname]);
+
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+            if (open && navRef.current && !navRef.current.contains(event.target as Node)) {
                 setOpen(false);
             }
         };
-        if (open) document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
+        if (open) {
+            document.addEventListener("mousedown", handleClickOutside);
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.body.style.overflow = "unset";
+        };
     }, [open]);
 
     return (
         <nav
-            ref={menuRef}
+            ref={navRef}
             className={`
-        relative rounded-[2rem] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
-        ${scrolled ? "shadow-xl" : "shadow-lg"}
-        ${open ? "bg-white" : "bg-white/90 backdrop-blur-md"}
+        md:hidden fixed left-1/2 -translate-x-1/2 z-50
+        transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
+        rounded-3xl border border-white/20
+        ${scrolled
+                    ? "top-4 w-[75vw] bg-white/70 backdrop-blur-xl shadow-xl py-3 px-5"
+                    : "top-6 w-[90vw] bg-white/90 backdrop-blur-lg shadow-lg py-4 px-6"
+                }
+        ${open ? "bg-white ring-1 ring-gray-100 w-[85vw]" : ""}
       `}
         >
-            {/* Bar Header */}
-            <div className="flex items-center justify-between px-6 py-4">
-
-                {/* Mobile Logo */}
-                <Link href="/" className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">I</div>
-                    <span className="font-bold text-gray-900">INDEP</span>
+            <div className="flex items-center justify-between relative z-20">
+                <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
+                    <div className="relative w-9 h-9 overflow-hidden ">
+                        <Image
+                            src={"/logo.png"}
+                            alt="INDEP Logo"
+                            fill
+                            className="object-cover"
+                        />
+                    </div>
+                    <span className={`font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent transition-all duration-300 ${scrolled ? 'text-lg' : 'text-xl'}`}>
+                        INDEP
+                    </span>
                 </Link>
 
-                {/* Hamburger Button */}
+                {/* Hamburger Toggle */}
                 <button
-                    onClick={() => setOpen(!open)}
-                    className="p-2 rounded-full hover:bg-gray-100 transition-colors focus:outline-none"
-                    aria-label="Toggle menu"
+                    onClick={() => setOpen((s) => !s)}
+                    className="text-gray-600 hover:text-blue-600 focus:outline-none transition-all duration-300"
                 >
-                    <div className="w-6 h-5 flex flex-col justify-between relative">
-                        <span className={`h-0.5 w-6 bg-gray-800 rounded-full transition-all duration-300 ${open ? "rotate-45 translate-y-2.5" : ""}`} />
-                        <span className={`h-0.5 w-6 bg-gray-800 rounded-full transition-all duration-300 ${open ? "opacity-0" : "opacity-100"}`} />
-                        <span className={`h-0.5 w-6 bg-gray-800 rounded-full transition-all duration-300 ${open ? "-rotate-45 -translate-y-2" : ""}`} />
-                    </div>
+                    {open ? <X size={28} /> : <Menu size={28} />}
                 </button>
             </div>
 
-            {/* Expandable Menu Content */}
             <div
                 className={`
-          overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
-          ${open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}
+          overflow-hidden transition-all duration-500 ease-in-out
+          ${open ? "max-h-[500px] opacity-100 mt-6 pb-2" : "max-h-0 opacity-0 mt-0"}
         `}
             >
-                <div className="px-4 pb-6 pt-2">
-
-                    {/* Navigation Links Grid */}
-                    <div className="grid grid-cols-2 gap-3 mb-6">
-                        {navItems.map((item, idx) => {
+                <div className="flex flex-col">
+                    {/* Links Grid */}
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                        {navItems.map((item, index) => {
                             const isActive = pathname === item.href;
                             return (
                                 <Link
                                     key={item.name}
                                     href={item.href}
+                                    onClick={() => setOpen(false)}
                                     className={`
                     flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-300
                     ${isActive
@@ -86,33 +104,37 @@ export default function NavbarMobile({ navItems, scrolled }: Props) {
                                             : "bg-gray-50 text-gray-600 hover:bg-gray-100 hover:scale-[1.02]"
                                         }
                   `}
-                                    style={{ transitionDelay: `${idx * 50}ms` }}
+                                    style={{ transitionDelay: open ? `${index * 50}ms` : "0ms" }}
                                 >
-                                    <span className="text-2xl mb-1">{item.icon}</span>
+                                    {/* Render Lucide Icon directly */}
+                                    <span className="mb-2 text-blue-500/80">{item.icon}</span>
                                     <span className="font-semibold text-sm">{item.name}</span>
                                 </Link>
                             );
                         })}
                     </div>
 
-                    {/* Mobile Auth Buttons */}
-                    <div className="flex gap-3 border-t border-gray-100 pt-5">
-                        <Link
-                            href="/login"
-                            className="flex-1 py-3 text-center text-gray-700 font-semibold bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
-                        >
+                    {/* Mobile Auth */}
+                    <div className="flex gap-3 border-t border-gray-100 pt-4">
+                        <Link href="/login" className="flex-1 py-3 text-center text-gray-600 font-semibold bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                             Sign In
                         </Link>
-                        <Link
-                            href="/register"
-                            className="flex-1 py-3 text-center text-white font-semibold bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-md hover:shadow-lg transition-all active:scale-95"
-                        >
+                        <Link href="/register" className="flex-1 py-3 text-center text-white font-semibold bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-md hover:shadow-lg transition-all active:scale-95">
                             Register
                         </Link>
                     </div>
-
                 </div>
             </div>
+
+            {/* Overlay */}
+            {open && (
+                <div
+                    className="fixed inset-0 z-[-1] bg-black/5 backdrop-blur-[1px] transition-opacity duration-500 rounded-3xl"
+                    onClick={() => setOpen(false)}
+                />
+            )}
         </nav>
     );
-}
+};
+
+export default NavbarMobile;
