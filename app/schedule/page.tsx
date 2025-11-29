@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+// Ensure EventSection and the 'events' data are correctly imported from their respective paths
 import EventSection from "../../components/ScheduleSection";
 import { events } from "@/data/events";
 
@@ -19,66 +20,77 @@ export default function EventsPage() {
     setExpandedEventId(expandedEventId === eventId ? null : eventId);
   };
 
+  // Define tabs for cleaner mapping and Framer Motion key
+  const tabs = [
+    { id: "ON_STAGE", label: "On Stage", color: "red" },
+    { id: "OFF_STAGE", label: "Off Stage", color: "blue" },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50 py-4 px-4 sm:px-6 pt-30 max-w-4xl mx-auto">
+    // Increased max-width on large screens for a wider layout
+    <div className="min-h-screen bg-gray-50 py-4 px-4 sm:px-6 pt-30 max-w-4xl lg:max-w-6xl mx-auto">
       {/* Header */}
       <div className="text-center mb-8">
-  <div className="flex items-center justify-center space-x-4 mb-4">
-    {/* Left Diamond with gradient and shine effect */}
-    <div className="relative">
-      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg transform rotate-45 shadow-lg shadow-blue-500/30"></div>
-      <div className="absolute inset-1 bg-gradient-to-br from-white/20 to-transparent rounded-lg transform rotate-45"></div>
-    </div>
-    
-    {/* Main Title */}
-    <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">
-       <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Schedule</span>
-    </h1>
-    
-    {/* Right Diamond with gradient and shine effect */}
-    <div className="relative">
-      <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg transform rotate-45 shadow-lg shadow-purple-500/30"></div>
-      <div className="absolute inset-1 bg-gradient-to-br from-white/20 to-transparent rounded-lg transform rotate-45"></div>
-    </div>
-  </div>
-  
-  {/* Subtitle with enhanced design */}
-  <p className="text-gray-600 text-sm sm:text-base bg-gradient-to-r from-gray-50 to-blue-50 rounded-full py-3 px-8 inline-block border border-gray-200/80 shadow-sm">
-    ✨ St. Joseph's College Cultural Events 2025
-  </p>
-</div>
-
-      {/* Desktop Tab Navigation - Hidden on mobile */}
-      <div className="hidden lg:flex border-b border-gray-200 mb-6 overflow-x-auto">
-        <button
-          onClick={() => {
-            setActiveTab("ON_STAGE");
-            setExpandedEventId(null);
-          }}
-          className={`flex-1 sm:flex-none px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-            activeTab === "ON_STAGE"
-              ? "border-red-500 text-red-600"
-              : "border-transparent text-gray-500 hover:text-gray-700"
-          }`}
-        >
-          On Stage
-        </button>
-        <button
-          onClick={() => {
-            setActiveTab("OFF_STAGE");
-            setExpandedEventId(null);
-          }}
-          className={`flex-1 sm:flex-none px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-            activeTab === "OFF_STAGE"
-              ? "border-blue-500 text-blue-600"
-              : "border-transparent text-gray-500 hover:text-gray-700"
-          }`}
-        >
-          Off Stage
-        </button>
+        <div className="flex items-center justify-center space-x-4 mb-4">
+          {/* Left Diamond with gradient and shine effect */}
+          <div className="relative">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg transform rotate-45 shadow-lg shadow-blue-500/30"></div>
+            <div className="absolute inset-1 bg-gradient-to-br from-white/20 to-transparent rounded-lg transform rotate-45"></div>
+          </div>
+          
+          {/* Main Title */}
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Schedule</span>
+          </h1>
+          
+          {/* Right Diamond with gradient and shine effect */}
+          <div className="relative">
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg transform rotate-45 shadow-lg shadow-purple-500/30"></div>
+            <div className="absolute inset-1 bg-gradient-to-br from-white/20 to-transparent rounded-lg transform rotate-45"></div>
+          </div>
+        </div>
+        
+        {/* Subtitle with enhanced design */}
+        <p className="text-gray-600 text-sm sm:text-base bg-gradient-to-r from-gray-50 to-blue-50 rounded-full py-3 px-8 inline-block border border-gray-200/80 shadow-sm">
+          ✨ St. Joseph's College Cultural Events 2025
+        </p>
       </div>
 
-      {/* Mobile Filter Buttons - Only show on mobile */}
+      {/* --- Desktop Tab Navigation - NEW BEAUTIFUL DESIGN --- */}
+      <div className="hidden lg:flex justify-center mb-10">
+        <div className="p-1 bg-white border border-gray-200 rounded-xl shadow-lg relative flex space-x-1">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => {
+                setActiveTab(tab.id as FilterType);
+                setExpandedEventId(null);
+              }}
+              className={`relative z-10 px-8 py-3 text-base font-semibold transition-colors duration-300 rounded-lg ${
+                activeTab === tab.id
+                  ? 'text-white' // Text is white when active (due to indicator)
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+              style={{ minWidth: '150px' }} // Ensure consistent button size
+            >
+              {/* This inner span is needed to ensure text stays visible above the sliding indicator */}
+              <span className="relative z-20">{tab.label}</span>
+              
+              {/* Framer Motion Active Tab Indicator */}
+              {activeTab === tab.id && (
+                <motion.div
+                  layoutId="desktop-tab-indicator"
+                  className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 shadow-md shadow-purple-500/40"
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                />
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* --- END Desktop Tab Navigation --- */}
+
+      {/* Mobile Filter Buttons - Only show on mobile (Original Code) */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -122,29 +134,32 @@ export default function EventsPage() {
 
       {/* Events List - Only show events for active tab */}
       <div className="space-y-6">
-        {activeTab === "ON_STAGE" && (
-          <EventSection 
-            title="On-Stage Events" 
-            events={onStageEvents}
-            onEventClick={handleEventClick}
-          />
-        )}
+        {/* Added motion.div wrapper for a smooth fade-in/out transition when switching tabs */}
+        <motion.div
+            key={activeTab} // Key changes when tab changes, triggering a remount/transition
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+        >
+            {activeTab === "ON_STAGE" && (
+                <EventSection 
+                    title="On-Stage Events" 
+                    events={onStageEvents}
+                    onEventClick={handleEventClick}
+                />
+            )}
 
-        {activeTab === "OFF_STAGE" && (
-          <EventSection 
-            title="Off-Stage Events" 
-            events={offStageEvents}            
-            onEventClick={handleEventClick}
-          />
-        )}
+            {activeTab === "OFF_STAGE" && (
+                <EventSection 
+                    title="Off-Stage Events" 
+                    events={offStageEvents}            
+                    onEventClick={handleEventClick}
+                />
+            )}
+        </motion.div>
       </div>
 
-      {/* Footer Note */}
-      <div className="mt-8 text-center">
-        <p className="text-sm text-gray-500">
-          💡 Click on any event to see more details
-        </p>
-      </div>
+    
 
       <style jsx>{`
         @keyframes slideDown {

@@ -55,7 +55,7 @@ export default function EventCard({ event }: EventCardProps) {
         }
         .marquee {
           display: inline-block;
-          animation: slide 16s linear infinite;
+          animation: slide 20s linear infinite;
         }
       `}</style>
     </div>
