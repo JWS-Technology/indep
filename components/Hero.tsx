@@ -6,10 +6,21 @@ export default function Hero() {
     const [count, setCount] = useState(0);
 
     useEffect(() => {
-        fetch("/api/track")
-            .then(res => res.json())
-            .then(data => setCount(data.total))
-            .catch(err => console.error("Error:", err));
+        const lastVisit = localStorage.getItem("lastVisit");
+
+        const now = Date.now();
+        const fifteenMinutes = 15 * 60 * 1000;
+
+        // First visit OR 15 mins passed
+        if (!lastVisit || now - parseInt(lastVisit) > fifteenMinutes) {
+            fetch("/api/track");
+            localStorage.setItem("lastVisit", now.toString());
+        }
+
+        // Always fetch current count (but no increment)
+        fetch("/api/track-count")
+            .then((res) => res.json())
+            .then((data) => setCount(data.total));
     }, []);
 
 
