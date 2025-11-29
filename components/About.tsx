@@ -237,64 +237,6 @@ export default function AboutSmall() {
                         among departments.
                     </motion.p>
 
-                    {/* Stats */}
-                    <motion.div
-                        variants={containerVariants}
-                        className="grid grid-cols-3 gap-4 pt-4"
-                    >
-                        {[
-                            { number: "1500+", label: "Students", delay: 0.4 },
-                            { number: "50+", label: "Events", delay: 0.6 },
-                            { number: "15+", label: "Departments", delay: 0.8 },
-                        ].map((stat, idx) => (
-                            <motion.div
-                                key={idx}
-                                variants={statVariants}
-                                whileHover="hover"
-                                custom={stat.delay}
-                                className="text-center p-4 bg-gray-50 border rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 cursor-default"
-                            >
-                                <motion.div
-                                    className="text-xl font-bold text-blue-600"
-                                    initial={{ scale: 0 }}
-                                    whileInView={{ scale: 1 }}
-                                    transition={{
-                                        type: "spring",
-                                        stiffness: 200,
-                                        damping: 10,
-                                        delay: stat.delay
-                                    }}
-                                >
-                                    {stat.number}
-                                </motion.div>
-                                <motion.div
-                                    className="text-sm text-gray-600 mt-1"
-                                    initial={{ opacity: 0 }}
-                                    whileInView={{ opacity: 1 }}
-                                    transition={{ duration: 0.5, delay: stat.delay + 0.2 }}
-                                >
-                                    {stat.label}
-                                </motion.div>
-                            </motion.div>
-                        ))}
-                    </motion.div>
-
-                    {/* Button */}
-                    <motion.button
-                        variants={buttonVariants}
-                        whileHover="hover"
-                        whileTap="tap"
-                        className="px-8 py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors duration-300 flex items-center space-x-2 group"
-                    >
-                        <span>Learn More</span>
-                        <motion.span
-                            animate={{ x: [0, 5, 0] }}
-                            transition={{ duration: 1.5, repeat: Infinity }}
-                            className="group-hover:translate-x-1 transition-transform duration-300"
-                        >
-                            →
-                        </motion.span>
-                    </motion.button>
                 </motion.div>
             </div>
         </section>
