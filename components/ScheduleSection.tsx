@@ -1,15 +1,15 @@
-// app/events/EventSection.tsx
+
 import EventCard from "./ScheduleCard";
 import { EventItem } from "@/data/events";
 
 interface Props {
   title: string;
   events: EventItem[];
-  expandedEventId: string | null;
+  
   onEventClick: (eventId: string) => void;
 }
 
-export default function EventSection({ title, events, expandedEventId, onEventClick }: Props) {
+export default function EventSection({ title, events,  onEventClick }: Props) {
   return (
     <section className="mb-8">
       {/* Section Header */}
@@ -31,8 +31,8 @@ export default function EventSection({ title, events, expandedEventId, onEventCl
             <EventCard 
               key={event.id}
               event={event}
-              isExpanded={expandedEventId === event.id}
-              onClick={() => onEventClick(event.id)}
+              
+             
             />
           ))}
         </div>
