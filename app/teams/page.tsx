@@ -4,7 +4,7 @@ import { shiftOne, shiftTwo } from '@/data/teams';
 export default function Teams() {
     return (
         // Added px-5 here to ensure the ml-5 mr-5 look on mobile/desktop
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12 px-5 mt-15">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12 px-5 mt-20">
             <div className="max-w-7xl mx-auto">
 
                 {/* Header */}
