@@ -154,7 +154,7 @@ export default function AboutSmall() {
                             whileInView={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.6, delay: 0.3 }}
                         >
-                            2025
+                            &apos;25
                         </motion.span>
                     </motion.h2>
 
@@ -186,24 +186,30 @@ export default function AboutSmall() {
                         INDEP helps students grow in{" "}
                         <motion.span
                             className="font-semibold text-purple-600"
-                            whileInView={{ scale: [1, 1.05, 1] }}
-                            transition={{ duration: 1, delay: 0.5 }}
+                            whileInView={{
+                                textShadow: ["0 0 0px currentColor", "0 0 8px currentColor", "0 0 0px currentColor"]
+                            }}
+                            transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
                         >
                             leadership
                         </motion.span>
                         ,{" "}
                         <motion.span
                             className="font-semibold text-purple-600"
-                            whileInView={{ scale: [1, 1.05, 1] }}
-                            transition={{ duration: 1, delay: 0.7 }}
+                            whileInView={{
+                                textShadow: ["0 0 0px currentColor", "0 0 8px currentColor", "0 0 0px currentColor"]
+                            }}
+                            transition={{ duration: 2, repeat: Infinity }}
                         >
                             organizational skills
                         </motion.span>
                         , and{" "}
                         <motion.span
                             className="font-semibold text-purple-600"
-                            whileInView={{ scale: [1, 1.05, 1] }}
-                            transition={{ duration: 1, delay: 0.9 }}
+                            whileInView={{
+                                textShadow: ["0 0 0px currentColor", "0 0 8px currentColor", "0 0 0px currentColor"]
+                            }}
+                            transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
                         >
                             teamwork
                         </motion.span>
