@@ -8,8 +8,19 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
         hostname: "www.sjctni.edu",
-        pathname: "/**",
+      },
+      {
+        protocol: "http", // Covers both http and https for google user content
+        hostname: "googleusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "googleusercontent.com",
       },
     ],
   },
