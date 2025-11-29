@@ -1,68 +1,155 @@
 "use client";
 
-
+import { useEffect, useState } from "react";
 
 export default function Hero() {
+    const [timeLeft, setTimeLeft] = useState({
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0
+    });
+    const [isEventStarted, setIsEventStarted] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    // Prevent hydration mismatch
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        const eventDate = new Date("2025-12-12T00:00:00");
+
+        const timer = setInterval(() => {
+            const now = Date.now();
+            const diff = eventDate.getTime() - now;
+
+            if (diff <= 0) {
+                setIsEventStarted(true);
+                clearInterval(timer);
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            setTimeLeft({ days, hours, minutes, seconds });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []);
+
+    // Don't render countdown until client-side to match server HTML
+    if (!mounted) return null;
 
     return (
         <section
-            className="relative min-h-[100vh] flex items-center justify-center text-white overflow-hidden"
-            style={{
-                backgroundImage:
-                    "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(/background.jpg)",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundAttachment: "fixed",
-            }}
+            className="relative min-h-screen flex flex-col items-center justify-center text-white bg-gray-900 overflow-hidden px-4"
         >
-            {/* Black overlay */}
-            <div className="absolute inset-0 bg-black/30"></div>
+            {/* --- Background Elements --- */}
+            <div
+                className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-60"
+                style={{ backgroundImage: "url(/background.jpg)" }}
+            />
+            <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80"></div>
 
-            {/* Floating blur shapes */}
-            <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
-            <div className="absolute bottom-20 right-20 w-32 h-32 bg-purple-300/20 rounded-full blur-2xl"></div>
-            <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-yellow-300/20 rounded-full blur-xl"></div>
-
-            {/* Compact Counter - Top Right Corner */}
+            {/* Ambient Glows */}
+            <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-600/30 rounded-full blur-[120px] animate-pulse"></div>
+            <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px]"></div>
 
 
-            <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-                {/* Date pill */}
-                <div className="inline-block mt-20 mb-4 px-4 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium">
-                    🎉 12–13 December 2025
+            {/* --- Main Content --- */}
+            <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center text-center">
+
+                {/* Date Badge */}
+                <div className="mb-2 animate-fade-in-down">
+                    <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-sm font-medium tracking-wide text-gray-200 shadow-lg hover:bg-white/10 transition-colors">
+                        <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
+                        12–13 December 2025
+                    </span>
                 </div>
 
-                {/* Title */}
-                <h1 className="text-6xl md:text-7xl font-black mb-6 leading-tight">
-                    INDEP <span className="text-yellow-300">2025</span>
+                {/* MERGED GIANT TITLE: INDEP '25 (Both Gradient) */}
+                <h1
+                    className="text-7xl md:text-9xl lg:text-[10rem] font-black tracking-wide mb-12 leading-none drop-shadow-2xl"
+                    style={{ fontFamily: "'Anton', sans-serif" }}
+                >
+                    {/* Applied the gradient class here for INDEP */}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-600">
+                        INDEP
+                    </span>
+
+                    {/* The '25 part (already had the gradient) */}
+                    <span className="ml-2 md:ml-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-600 font-serif italic pr-2">
+                        &apos;25
+                    </span>
                 </h1>
 
-                {/* Subtitle */}
-                <p className="text-xl md:text-2xl mb-8 font-light opacity-90 max-w-2xl mx-auto leading-relaxed">
-                    The Inter-Departmental Cultural Extravaganza at <br />
-                    St. Joseph&apos;s College
-                </p>
+                {/* --- The Countdown Dashboard --- */}
+                <div className="w-full max-w-4xl mx-auto mb-16">
+                    {isEventStarted ? (
+                        <div className="p-8 bg-green-500/20 backdrop-blur-lg border border-green-500/50 rounded-2xl animate-bounce">
+                            <p className="text-3xl font-bold text-green-300">
+                                🚀 The Event Has Started!
+                            </p>
+                            <p className="text-white/80 mt-2">Head to the main stage.</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                            {[
+                                { value: timeLeft.days, label: "DAYS" },
+                                { value: timeLeft.hours, label: "HOURS" },
+                                { value: timeLeft.minutes, label: "MINUTES" },
+                                { value: timeLeft.seconds, label: "SECONDS" }
+                            ].map((item, idx) => (
+                                <div
+                                    key={idx}
+                                    className="group relative flex flex-col items-center justify-center p-6 bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl hover:border-white/30 hover:bg-white/5 transition-all duration-300 hover:-translate-y-1"
+                                >
+                                    <div className="text-4xl md:text-6xl font-mono font-bold text-white tracking-tighter tabular-nums drop-shadow-lg group-hover:text-yellow-300 transition-colors">
+                                        {item.value.toString().padStart(2, "0")}
+                                    </div>
+                                    <div className="text-xs md:text-sm font-bold text-gray-400 uppercase tracking-[0.2em] mt-2 group-hover:text-white transition-colors">
+                                        {item.label}
+                                    </div>
+                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-50"></div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
 
-                {/* CTA buttons */}
-                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
-                    <a
-                        href="/register"
-                        className="group px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold text-lg hover-lift shadow-2xl flex items-center gap-2 transition-all duration-300 hover:shadow-3xl hover:scale-105"
-                    >
-                        <span>Register Your Team</span>
-                        <span className="group-hover:translate-x-1 transition-transform">→</span>
-                    </a>
-
+                {/* --- Action Buttons --- */}
+                <div className="flex flex-col sm:flex-row gap-5 items-center w-full justify-center">
                     <a
                         href="/schedule"
-                        className="group px-8 py-4 bg-transparent border-2 border-white text-white rounded-xl font-semibold text-lg hover:bg-white/10 hover-lift backdrop-blur-sm flex items-center gap-2 transition-all duration-300 hover:scale-105"
+                        className="group relative px-8 py-4 bg-white text-black rounded-xl font-bold text-lg overflow-hidden shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)] hover:scale-105 transition-transform"
                     >
-                        <span>View Schedule</span>
-                        <span className="group-hover:translate-x-1 transition-transform">→</span>
+                        <span className="relative z-10 flex items-center gap-2">
+                            View Schedule
+                            <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </span>
+                        <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/80 to-transparent z-0 opacity-50"></div>
+                    </a>
+
+                    <a
+                        href="/register"
+                        className="px-8 py-4 bg-white/5 border border-white/20 text-white rounded-xl font-semibold text-lg backdrop-blur-sm hover:bg-white/10 hover:border-white/40 transition-all"
+                    >
+                        Register Now
                     </a>
                 </div>
+
             </div>
+
+            <style jsx global>{`
+           
+                @keyframes shimmer {
+                    100% { transform: translateX(100%); }
+                }
+            `}</style>
         </section>
     );
 }
