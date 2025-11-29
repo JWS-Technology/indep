@@ -1,28 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+
 
 export default function Hero() {
-    const [count, setCount] = useState(0);
-
-    useEffect(() => {
-        const lastVisit = localStorage.getItem("lastVisit");
-
-        const now = Date.now();
-        const fifteenMinutes = 15 * 60 * 1000;
-
-        // First visit OR 15 mins passed
-        if (!lastVisit || now - parseInt(lastVisit) > fifteenMinutes) {
-            fetch("/api/track");
-            localStorage.setItem("lastVisit", now.toString());
-        }
-
-        // Always fetch current count (but no increment)
-        fetch("/api/track-count")
-            .then((res) => res.json())
-            .then((data) => setCount(data.total));
-    }, []);
-
 
     return (
         <section
@@ -43,6 +23,9 @@ export default function Hero() {
             <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
             <div className="absolute bottom-20 right-20 w-32 h-32 bg-purple-300/20 rounded-full blur-2xl"></div>
             <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-yellow-300/20 rounded-full blur-xl"></div>
+
+            {/* Compact Counter - Top Right Corner */}
+
 
             <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
                 {/* Date pill */}
@@ -65,7 +48,7 @@ export default function Hero() {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
                     <a
                         href="/register"
-                        className="group px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold text-lg hover-lift shadow-2xl flex items-center gap-2"
+                        className="group px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold text-lg hover-lift shadow-2xl flex items-center gap-2 transition-all duration-300 hover:shadow-3xl hover:scale-105"
                     >
                         <span>Register Your Team</span>
                         <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -73,17 +56,12 @@ export default function Hero() {
 
                     <a
                         href="/schedule"
-                        className="group px-8 py-4 bg-transparent border-2 border-white text-white rounded-xl font-semibold text-lg hover:bg-white/10 hover-lift backdrop-blur-sm flex items-center gap-2"
+                        className="group px-8 py-4 bg-transparent border-2 border-white text-white rounded-xl font-semibold text-lg hover:bg-white/10 hover-lift backdrop-blur-sm flex items-center gap-2 transition-all duration-300 hover:scale-105"
                     >
                         <span>View Schedule</span>
                         <span className="group-hover:translate-x-1 transition-transform">→</span>
                     </a>
                 </div>
-
-                {/* Visitor count */}
-                <p className="mt-10 text-sm opacity-80">
-                    👀 Visitors: <span className="font-bold">{count}</span>
-                </p>
             </div>
         </section>
     );
