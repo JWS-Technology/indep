@@ -165,13 +165,13 @@ export default function Contact() {
                                 {contactSections[0].contacts.map((contact) => (
                                     <div key={contact.name} className="flex flex-col items-center text-center sm:items-start sm:text-left sm:flex-row gap-6">
                                         <div className="relative group-hover:scale-105 transition-transform duration-500">
-                                            <div className="w-28 h-28 rounded-3xl overflow-hidden border-4 border-white shadow-lg bg-slate-100 relative">
+                                            <div className="w-30 h-30 rounded-3xl overflow-hidden border-4 border-white shadow-lg bg-slate-100 relative">
                                                 {!imageErrors[contact.name] && contact.image ? (
                                                     <Image
                                                         src={contact.image}
                                                         alt={contact.name}
                                                         fill
-                                                        className="object-cover"
+                                                        className=""
                                                         onError={() => handleImageError(contact.name)}
                                                     />
                                                 ) : (
@@ -235,13 +235,13 @@ export default function Contact() {
 
                                     <div className="relative z-10 flex items-start gap-5">
                                         <div className="relative flex-shrink-0">
-                                            <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white shadow-md">
+                                            <div className="w-18 h-18 rounded-3xl overflow-hidden border-2 border-white shadow-md">
                                                 {!imageErrors[contact.name] && contact.image ? (
                                                     <Image
                                                         src={contact.image}
                                                         alt={contact.name}
                                                         fill
-                                                        className="object-cover"
+                                                        className="rounded-2xl"
                                                         onError={() => handleImageError(contact.name)}
                                                     />
                                                 ) : (
