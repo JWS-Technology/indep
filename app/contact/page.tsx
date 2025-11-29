@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useState } from 'react';
+import Image from 'next/image';
 
 // ----------------------
 // TypeScript Interfaces
@@ -11,55 +12,74 @@ interface ContactPerson {
     name: string;
     phone: string;
     image?: string | null;
+    role: string;
 }
 
 interface ContactSection {
     title: string;
+    description: string;
     contacts: ContactPerson[];
 }
 
 // Fallback avatar component
 const AvatarFallback = ({ name, className = "" }: { name: string; className?: string }) => (
-    <div className={`bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold ${className}`}>
+    <div className={`bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center text-white font-medium ${className}`}>
         {name.split(' ').map(n => n[0]).join('').toUpperCase()}
     </div>
 );
 
+// Floating animation variant
+const floatingAnimation = {
+    animate: {
+        y: [0, -10, 0],
+        transition: {
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut"
+        }
+    }
+};
+
 export default function Contact() {
-    const [ref1, inView1] = useInView({ triggerOnce: true, threshold: 0.3 });
-    const [ref2, inView2] = useInView({ triggerOnce: true, threshold: 0.3 });
+    const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
 
     // --------------------------
     // DATA with strict typing
     // --------------------------
     const contactSections: ContactSection[] = [
         {
-            title: "ADMINISTRATIVE ASSISTANCE",
+            title: "Administrative Support",
+            description: "For administrative queries and coordination",
             contacts: [
                 {
                     name: "Rev. Dr. L. John Peter Arulanandam SJ",
                     phone: "9486329686",
-                    image: "/images/vp.jpg"
+                    image: "/images/vp.jpg",
+                    role: "Administrative Head"
                 }
             ]
         },
         {
-            title: "EVENT RELATED ASSISTANCE",
+            title: "Event Coordination",
+            description: "For event queries and participation details",
             contacts: [
                 {
                     name: "Dr. A. Simi",
                     phone: "9894520549",
-                    image: "/images/simi.jpg"
+                    image: "/images/simi.jpg",
+                    role: "Event Coordinator"
                 },
                 {
                     name: "Dr. A. Vimal Jerald",
                     phone: "9698111008",
-                    image: "/images/vimal.jpg"
+                    image: "/images/vimal.jpg",
+                    role: "Event Coordinator"
                 },
                 {
                     name: "S. Frank Antony Vimal",
                     phone: "6379363903",
-                    image: "/images/frank.jpg"
+                    image: "/images/frank.jpg",
+                    role: "Event Coordinator"
                 }
             ]
         }
@@ -71,222 +91,340 @@ export default function Contact() {
         setImageErrors(prev => ({ ...prev, [name]: true }));
     };
 
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-4 px-4 sm:px-6 lg:px-8">
+    // Animation variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.2
+            }
+        }
+    };
 
-            {/* HERO SECTION - Mobile Optimized */}
+    const itemVariants = {
+        hidden: { opacity: 0, y: 30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.6,
+                ease: "easeOut"
+            }
+        }
+    };
+
+    const cardHoverVariants = {
+        initial: { scale: 1, y: 0 },
+        hover: {
+            scale: 1.02,
+            y: -5,
+            transition: {
+                duration: 0.3,
+                ease: "easeOut"
+            }
+        }
+    };
+
+    return (
+        <div className="min-h-screen mt-10 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+            {/* Background decorative elements */}
+            <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+            <div className="absolute bottom-20 right-10 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+
+            {/* HERO SECTION */}
             <motion.section
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
-                className="text-center mb-8"
+                className="text-center mb-16 pt-16 relative z-10"
             >
-                <div className="inline-block mb-3 pt-20">
-                    <span className="px-4  py-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full text-xs font-semibold shadow-lg">
-                        Get In Touch
+                {/* <motion.div
+                    variants={floatingAnimation}
+                    animate="animate"
+                    className="mb-6"
+                >
+                    <span className="px-6 py-3 bg-white/80 backdrop-blur-sm text-blue-600 rounded-full text-sm font-semibold shadow-lg border border-blue-100">
+                        📞 Get In Touch
                     </span>
-                </div>
+                </motion.div> */}
 
-                <h1 className="text-3xl md:text-7xl font-black mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                    CONTACT
-                </h1>
+                <motion.h1
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                    className="text-5xl md:text-6xl font-bold text-gray-900 mb-6"
+                >
+                    Contact <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Us</span>
+                </motion.h1>
 
-                <p className="text-base md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-                    Reach out for INDEP 2025 queries
-                </p>
+                <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                    className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
+                >
+                    Reach out to our dedicated team for INDEP 2025 queries and assistance
+                </motion.p>
             </motion.section>
 
-            <div className="max-w-6xl mx-auto">
+            {/* MAIN CONTACT SECTIONS - Two Column Layout */}
+            <motion.section
+                ref={ref}
+                variants={containerVariants}
+                initial="hidden"
+                animate={inView ? "visible" : "hidden"}
+                className="max-w-7xl mx-auto mb-16 relative z-10"
+            >
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
 
-                {/* --------------------------- */}
-                {/* ADMINISTRATIVE ASSISTANCE - Mobile Optimized */}
-                {/* --------------------------- */}
-                <motion.section
-                    ref={ref1}
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={inView1 ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.8 }}
-                    className="mb-8"
-                >
-                    <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg md:shadow-2xl p-4 md:p-12 border border-gray-100">
+                    {/* LEFT COLUMN - ADMINISTRATIVE SUPPORT */}
+                    <motion.div
+                        variants={itemVariants}
+                        className="relative"
+                    >
+                        <div className="sticky top-24">
+                            <motion.div
+                                whileHover="hover"
+                                variants={cardHoverVariants}
+                                className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl border border-blue-100 p-8 h-full"
+                            >
+                                {/* Header */}
+                                <div className="text-center mb-8">
+                                    <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-2xl mb-4">
+                                        <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                    </div>
+                                    <h2 className="text-3xl font-bold text-gray-900 mb-3">
+                                        {contactSections[0].title}
+                                    </h2>
+                                    <p className="text-gray-600 text-lg">
+                                        {contactSections[0].description}
+                                    </p>
+                                </div>
 
+                                {/* Admin Contact Card */}
+                                <div className="space-y-6">
+                                    {contactSections[0].contacts.map((contact, index) => {
+                                        const hasImageError = imageErrors[contact.name];
+
+                                        return (
+                                            <motion.div
+                                                key={contact.name}
+                                                initial={{ opacity: 0, x: -20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
+                                                className="bg-white rounded-xl shadow-lg border border-blue-200 p-6 hover:shadow-xl transition-all duration-300"
+                                            >
+                                                <div className="flex items-center space-x-6">
+                                                    <div className="relative">
+                                                        <div className="w-20 h-20 rounded-2xl border-4 border-white shadow-lg overflow-hidden">
+                                                            {!hasImageError && contact.image ? (
+                                                                <Image
+                                                                    src={contact.image}
+                                                                    alt={contact.name}
+                                                                    width={80}
+                                                                    height={80}
+                                                                    className="w-full h-full object-cover"
+                                                                    onError={() => handleImageError(contact.name)}
+                                                                />
+                                                            ) : (
+                                                                <AvatarFallback name={contact.name} className="w-20 h-20 text-lg" />
+                                                            )}
+                                                        </div>
+                                                        <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white">
+                                                            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                                                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 3.5C14.8 3.4 14.6 3.3 14.4 3.3C14.2 3.3 14 3.4 13.8 3.5L8 7V9C8 9.6 8.4 10 9 10H10V20C10 20.6 10.4 21 11 21H13C13.6 21 14 20.6 14 20V10H15C15.6 10 16 9.6 16 9Z" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex-1">
+                                                        <h3 className="text-xl font-bold text-gray-900 mb-1">
+                                                            {contact.name}
+                                                        </h3>
+                                                        <p className="text-blue-600 font-medium text-sm mb-3">
+                                                            {contact.role}
+                                                        </p>
+                                                        <motion.a
+                                                            href={`tel:${contact.phone}`}
+                                                            whileHover={{ scale: 1.05 }}
+                                                            whileTap={{ scale: 0.95 }}
+                                                            className="inline-flex items-center space-x-3 bg-blue-50 text-blue-700 px-4 py-3 rounded-xl hover:bg-blue-100 transition-all duration-300 group"
+                                                        >
+                                                            <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                                            </svg>
+                                                            <span className="font-semibold text-lg">{contact.phone}</span>
+                                                        </motion.a>
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        );
+                                    })}
+                                </div>
+                            </motion.div>
+                        </div>
+                    </motion.div>
+
+                    {/* RIGHT COLUMN - EVENT COORDINATION */}
+                    <motion.div
+                        variants={itemVariants}
+                        className="relative"
+                    >
                         <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={inView1 ? { opacity: 1 } : {}}
-                            transition={{ duration: 0.8, delay: 0.2 }}
-                            className="text-center mb-6 md:mb-12"
+                            whileHover="hover"
+                            variants={cardHoverVariants}
+                            className="bg-gradient-to-br from-white to-purple-50 rounded-2xl shadow-xl border border-purple-100 p-8 h-full"
                         >
-                            <h2 className="text-xl md:text-5xl font-bold text-gray-800 mb-2 md:mb-4">
-                                Admin <span className="text-blue-600">Support</span>
-                            </h2>
-                            <p className="text-sm md:text-lg text-gray-600 max-w-2xl mx-auto">
-                                Administrative queries and coordination
-                            </p>
-                        </motion.div>
+                            {/* Header */}
+                            <div className="text-center mb-8">
+                                <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-2xl mb-4">
+                                    <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </div>
+                                <h2 className="text-3xl font-bold text-gray-900 mb-3">
+                                    {contactSections[1].title}
+                                </h2>
+                                <p className="text-gray-600 text-lg">
+                                    {contactSections[1].description}
+                                </p>
+                            </div>
 
-                        <div className="grid md:grid-cols-1 gap-4 md:gap-8 max-w-2xl mx-auto">
-                            {contactSections[0].contacts.map((contact, index) => {
-                                const hasImageError = imageErrors[contact.name];
+                            {/* Event Coordinators Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {contactSections[1].contacts.map((contact, index) => {
+                                    const hasImageError = imageErrors[contact.name];
 
-                                return (
-                                    <motion.div
-                                        key={contact.name}
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={inView1 ? { opacity: 1, scale: 1 } : {}}
-                                        transition={{ duration: 0.6, delay: 0.4 + index * 0.2 }}
-                                        className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl md:rounded-2xl p-4 md:p-8 border border-blue-100 hover:shadow-lg md:hover:shadow-xl transition-all duration-300 group"
-                                    >
-                                        <div className="text-center">
-
-                                            {/* Profile Image - Smaller on mobile */}
-                                            <div className="relative mx-auto mb-3 md:mb-6">
-                                                <div className="w-16 h-16 md:w-32 md:h-32 rounded-full border-2 md:border-4 border-white shadow-md md:shadow-lg overflow-hidden mx-auto group-hover:scale-105 md:group-hover:scale-110 transition-transform duration-300">
-                                                    {!hasImageError && contact.image ? (
-                                                        <img
-                                                            src={contact.image}
-                                                            alt={contact.name}
-                                                            className="w-full h-full object-cover"
-                                                            onError={() => handleImageError(contact.name)}
-                                                        />
-                                                    ) : (
-                                                        <AvatarFallback name={contact.name} className="w-16 h-16 md:w-32 md:h-32 text-sm md:text-2xl" />
-                                                    )}
+                                    return (
+                                        <motion.div
+                                            key={contact.name}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.6, delay: 0.7 + index * 0.15 }}
+                                            whileHover={{
+                                                scale: 1.03,
+                                                transition: { duration: 0.2 }
+                                            }}
+                                            className="bg-white rounded-xl shadow-lg border border-purple-200 p-6 hover:shadow-xl transition-all duration-300 group"
+                                        >
+                                            <div className="text-center">
+                                                {/* Avatar */}
+                                                <div className="relative mx-auto mb-4">
+                                                    <div className="w-18 h-18 rounded-2xl border-3 border-white shadow-lg overflow-hidden mx-auto group-hover:scale-110 transition-transform duration-300">
+                                                        {!hasImageError && contact.image ? (
+                                                            <Image
+                                                                src={contact.image}
+                                                                alt={contact.name}
+                                                                width={64}
+                                                                height={64}
+                                                                className="w-full h-full object-cover"
+                                                                onError={() => handleImageError(contact.name)}
+                                                            />
+                                                        ) : (
+                                                            <AvatarFallback name={contact.name} className="w-16 h-16 text-sm" />
+                                                        )}
+                                                    </div>
+                                                    <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center border-2 border-white">
+                                                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                                        </svg>
+                                                    </div>
                                                 </div>
 
-                                                <div className="absolute -bottom-1 -right-1 md:-bottom-2 md:-right-2 w-6 h-6 md:w-12 md:h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center border-2 md:border-4 border-white">
-                                                    <svg className="w-3 h-3 md:w-5 md:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                {/* Info */}
+                                                <h3 className="text-sm font-semibold text-gray-900 mb-2 leading-tight">
+                                                    {contact.name}
+                                                </h3>
+                                                <p className="text-purple-600 text-sm font-medium mb-4">
+                                                    {contact.role}
+                                                </p>
+
+                                                {/* Phone */}
+                                                <motion.a
+                                                    href={`tel:${contact.phone}`}
+                                                    whileHover={{ scale: 1.05 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                    className="inline-flex items-center space-x-2 text-gray-700 hover:text-purple-700 transition-colors duration-300 group"
+                                                >
+                                                    <svg className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                                     </svg>
-                                                </div>
+                                                    <span className="font-semibold text-sm">{contact.phone}</span>
+                                                </motion.a>
                                             </div>
+                                        </motion.div>
+                                    );
+                                })}
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                </div>
+            </motion.section>
 
-                                            <h3 className="text-base md:text-2xl font-bold text-gray-800 mb-1 md:mb-2 leading-tight">{contact.name}</h3>
-                                            <p className="text-xs md:text-lg text-gray-600 mb-2 md:mb-4">Administrative Head</p>
+            {/* QUICK ACTIONS SECTION */}
+            <motion.section
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+                className="max-w-4xl mx-auto relative z-10"
+            >
+                <div className="group bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl shadow-2xl p-8 md:p-12 text-white relative overflow-hidden">
+                    {/* Background Pattern */}
+                    {/* Decorative background circles */}
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
 
-                                            <div className="flex items-center justify-center space-x-2">
-                                                <svg className="w-4 h-4 md:w-5 md:h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                                </svg>
-
-                                                <a href={`tel:${contact.phone}`} className="text-sm md:text-xl font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-300">
-                                                    {contact.phone}
-                                                </a>
-                                            </div>
-
-                                        </div>
-                                    </motion.div>
-                                );
-                            })}
+                        <div className="absolute top-0 left-0 w-64 h-64 bg-white opacity-10 rounded-full
+                    -translate-x-1/2 -translate-y-1/2 
+                    transition-transform duration-700 group-hover:scale-150">
                         </div>
-                    </div>
-                </motion.section>
 
-                {/* --------------------------- */}
-                {/* EVENT RELATED ASSISTANCE - Mobile Optimized */}
-                {/* --------------------------- */}
-                <motion.section
-                    ref={ref2}
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={inView2 ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.8 }}
-                    className="mb-8"
-                >
-                    <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg md:shadow-2xl p-4 md:p-12 border border-gray-100">
+                        <div className="absolute bottom-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full
+                    translate-x-1/2 translate-y-1/2 
+                    transition-transform duration-700 group-hover:scale-150">
+                        </div>
+
+                    </div>
+
+
+                    <div className="relative z-10 text-center">
+                        <motion.h3
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6 }}
+                            className="text-3xl font-bold mb-4"
+                        >
+                            Need Immediate Assistance?
+                        </motion.h3>
+
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: 0.1 }}
+                            className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto"
+                        >
+                            Contact our team during college hours for prompt support and guidance
+                        </motion.p>
 
                         <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={inView2 ? { opacity: 1 } : {}}
-                            transition={{ duration: 0.8, delay: 0.2 }}
-                            className="text-center mb-6 md:mb-12"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: 0.2 }}
+                            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
                         >
-                            <h2 className="text-xl md:text-5xl font-bold text-gray-800 mb-2 md:mb-4">
-                                Event <span className="text-purple-600">Team</span>
-                            </h2>
-
-                            <p className="text-sm md:text-lg text-gray-600 max-w-2xl mx-auto">
-                                Event queries and participation details
-                            </p>
-                        </motion.div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-8">
-                            {contactSections[1].contacts.map((contact, index) => {
-                                const hasImageError = imageErrors[contact.name];
-
-                                return (
-                                    <motion.div
-                                        key={contact.name}
-                                        initial={{ opacity: 0, y: 30 }}
-                                        animate={inView2 ? { opacity: 1, y: 0 } : {}}
-                                        transition={{ duration: 0.6, delay: 0.4 + index * 0.2 }}
-                                        className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl md:rounded-2xl p-3 md:p-6 border border-purple-100 hover:shadow-lg md:hover:shadow-xl transition-all duration-300 group text-center"
-                                    >
-
-                                        {/* Profile Image - Smaller on mobile */}
-                                        <div className="relative mx-auto mb-2 md:mb-4">
-                                            <div className="w-12 h-12 md:w-24 md:h-24 rounded-full border-2 md:border-4 border-white shadow-md md:shadow-lg overflow-hidden mx-auto group-hover:scale-105 md:group-hover:scale-110 transition-transform duration-300">
-                                                {!hasImageError && contact.image ? (
-                                                    <img
-                                                        src={contact.image}
-                                                        alt={contact.name}
-                                                        className="w-full h-full object-cover"
-                                                        onError={() => handleImageError(contact.name)}
-                                                    />
-                                                ) : (
-                                                    <AvatarFallback name={contact.name} className="w-12 h-12 md:w-24 md:h-24 text-xs md:text-xl" />
-                                                )}
-                                            </div>
-
-                                            <div className="absolute -bottom-1 -right-1 md:-bottom-2 md:-right-2 w-4 h-4 md:w-8 md:h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center border-1 md:border-2 border-white">
-                                                <svg className="w-2 h-2 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                                </svg>
-                                            </div>
-                                        </div>
-
-                                        <h3 className="text-sm md:text-lg font-bold text-gray-800 mb-1 md:mb-2 leading-tight">{contact.name}</h3>
-                                        <p className="text-xs md:text-sm text-gray-600 mb-2 md:mb-4">Event Coordinator</p>
-
-                                        <div className="flex items-center justify-center space-x-1 md:space-x-2">
-                                            <svg className="w-3 h-3 md:w-4 md:h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                            </svg>
-
-                                            <a href={`tel:${contact.phone}`} className="text-xs md:text-lg font-semibold text-purple-600 hover:text-purple-700 transition-colors duration-300">
-                                                {contact.phone}
-                                            </a>
-                                        </div>
-                                    </motion.div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </motion.section>
-
-                {/* QUICK ACTIONS - Mobile Optimized */}
-                <motion.section
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
-                    viewport={{ once: true }}
-                    className="text-center"
-                >
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-700 rounded-2xl md:rounded-3xl p-4 md:p-12 text-white shadow-lg md:shadow-2xl">
-                        <h3 className="text-lg md:text-3xl font-bold mb-2 md:mb-4">
-                            Need Help?
-                        </h3>
-
-                        <p className="text-sm md:text-xl opacity-90 mb-4 md:mb-6 max-w-2xl mx-auto">
-                            Call our coordinators during college hours
-                        </p>
-
-                        <div className="flex flex-col gap-2 md:gap-4 justify-center">
                             <motion.a
                                 href="tel:9486329686"
-                                whileHover={{ scale: 1.05 }}
+                                whileHover={{
+                                    scale: 1.05,
+                                    boxShadow: "0 10px 25px -5px rgba(255, 255, 255, 0.3)"
+                                }}
                                 whileTap={{ scale: 0.95 }}
-                                className="px-4 py-3 md:px-8 md:py-4 bg-white text-blue-600 rounded-lg md:rounded-xl font-semibold text-sm md:text-lg shadow-md md:shadow-lg hover:shadow-lg md:hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2"
+                                className="px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3 min-w-[200px] justify-center group"
                             >
-                                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                 </svg>
                                 <span>Call Admin</span>
@@ -294,20 +432,22 @@ export default function Contact() {
 
                             <motion.a
                                 href="tel:9894520549"
-                                whileHover={{ scale: 1.05 }}
+                                whileHover={{
+                                    scale: 1.05,
+                                    boxShadow: "0 10px 25px -5px rgba(255, 255, 255, 0.3)"
+                                }}
                                 whileTap={{ scale: 0.95 }}
-                                className="px-4 py-3 md:px-8 md:py-4 bg-transparent border border-white md:border-2 text-white rounded-lg md:rounded-xl font-semibold text-sm md:text-lg hover:bg-white/10 transition-all duration-300 flex items-center justify-center space-x-2"
+                                className="px-8 py-4 bg-transparent border-2 border-white text-white rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 flex items-center space-x-3 min-w-[200px] justify-center group"
                             >
-                                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
                                 <span>Call Coordinator</span>
                             </motion.a>
-                        </div>
+                        </motion.div>
                     </div>
-                </motion.section>
-
-            </div>
+                </div>
+            </motion.section>
         </div>
     );
 }
