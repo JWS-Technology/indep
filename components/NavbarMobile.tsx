@@ -68,7 +68,7 @@ const NavbarMobile: React.FC<Props> = ({ navItems }) => {
                         />
                     </div>
                     <span className={`font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent transition-all duration-300 ${scrolled ? 'text-lg' : 'text-xl'}`}>
-                        INDEP
+                        INDEP '25
                     </span>
                 </Link>
 
