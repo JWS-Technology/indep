@@ -13,7 +13,7 @@ interface ContactPerson {
     phone: string;
     image?: string | null;
     role: string;
-    email?: string; // Added optional email field for future use
+    email?: string;
 }
 
 interface ContactSection {
@@ -98,7 +98,7 @@ export default function Contact() {
     };
 
     return (
-        <div className="min-h-screen bg-[#FAFAFA] relative overflow-hidden font-sans selection:bg-blue-100 selection:text-blue-900">
+        <div className="mt-10 min-h-screen bg-[#FAFAFA] relative overflow-hidden font-sans selection:bg-blue-100 selection:text-blue-900">
 
             {/* --- Ambient Background Elements --- */}
             <div className="fixed inset-0 pointer-events-none z-0">
@@ -178,8 +178,13 @@ export default function Contact() {
                                                     <AvatarFallback name={contact.name} className="w-full h-full text-2xl" />
                                                 )}
                                             </div>
-                                            <div className="absolute -bottom-3 -right-3 bg-blue-600 text-white p-2 rounded-xl border-4 border-white shadow-md">
-                                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+
+                                            {/* UPDATED: Instagram Style Verification Badge */}
+                                            <div className="absolute -bottom-2 -right-2 bg-white rounded-full border-[3px] border-white shadow-md text-blue-500">
+                                                <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
+                                                    <path d="M10.6021 2.40187C11.2163 1.83849 12.1643 1.83849 12.7785 2.40187L14.0772 3.59302C14.3414 3.83533 14.697 3.95763 15.0567 3.93006L16.8247 3.79451C17.6609 3.73041 18.3972 4.31872 18.5756 5.13283L18.9529 6.85467C19.0297 7.20502 19.2435 7.50989 19.5416 7.69468L21.0069 8.60294C21.6999 9.0325 21.9363 9.93259 21.5457 10.6521L20.7198 12.1732C20.5518 12.4827 20.5518 12.8553 20.7198 13.1648L21.5457 14.6859C21.9363 15.4054 21.6999 16.3055 21.0069 16.7351L19.5416 17.6433C19.2435 17.8281 19.0297 18.133 18.9529 18.4833L18.5756 20.2052C18.3972 21.0193 17.6609 21.6076 16.8247 21.5435L15.0567 21.4079C14.697 21.3804 14.3414 21.5027 14.0772 21.745L12.7785 22.9361C12.1643 23.4995 11.2163 23.4995 10.6021 22.9361L9.30338 21.745C9.0392 21.5027 8.68358 21.3804 8.32392 21.4079L6.55588 21.5435C5.71974 21.6076 4.98337 21.0193 4.80497 20.2052L4.42767 18.4833C4.35091 18.133 4.13706 17.8281 3.83897 17.6433L2.37372 16.7351C1.68066 16.3055 1.44427 15.4054 1.83489 14.6859L2.66078 13.1648C2.82882 12.8553 2.82882 12.4827 2.66078 12.1732L1.83489 10.6521C1.44427 9.93259 1.68066 9.0325 2.37372 8.60294L3.83897 7.69468C4.13706 7.50989 4.35091 7.20502 4.42767 6.85467L4.80497 5.13283C4.98337 4.31872 5.71974 3.73041 6.55588 3.79451L8.32392 3.93006C8.68358 3.95763 9.0392 3.83533 9.30338 3.59302L10.6021 2.40187Z" />
+                                                    <path d="M10.5 15.5L7.5 12.5L8.91 11.09L10.5 12.67L15.09 8.09L16.5 9.5L10.5 15.5Z" fill="white" />
+                                                </svg>
                                             </div>
                                         </div>
 
