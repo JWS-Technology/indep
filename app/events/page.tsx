@@ -7,14 +7,39 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Theater, 
   Palette, 
-  Calendar,
-  BarChart3,
-  Trophy,
-  Users,
-  Tag
+  Tag,
+  Music,
+  Mic2,
+  Drama,
+  Paintbrush,
+  Code,
+  Lightbulb,
+  Gamepad2
 } from "lucide-react";
 
 type FilterType = "ON_STAGE" | "OFF_STAGE";
+
+// Category color and icon mapping
+const categoryConfig = {
+  // On Stage Categories
+  "Music": { color: "from-purple-600 to-pink-500", icon: Music, bg: "bg-purple-100", text: "text-purple-800", border: "border-purple-200" },
+  "Dance": { color: "from-orange-600 to-red-500", icon: Drama, bg: "bg-orange-100", text: "text-orange-800", border: "border-orange-200" },
+  "Drama": { color: "from-blue-600 to-cyan-500", icon: Mic2, bg: "bg-blue-100", text: "text-blue-800", border: "border-blue-200" },
+  "Singing": { color: "from-green-600 to-emerald-500", icon: Music, bg: "bg-green-100", text: "text-green-800", border: "border-green-200" },
+  
+  // Off Stage Categories
+  "Art": { color: "from-rose-600 to-pink-500", icon: Paintbrush, bg: "bg-rose-100", text: "text-rose-800", border: "border-rose-200" },
+  "Technical": { color: "from-indigo-600 to-purple-500", icon: Code, bg: "bg-indigo-100", text: "text-indigo-800", border: "border-indigo-200" },
+  "Creative": { color: "from-yellow-600 to-amber-500", icon: Lightbulb, bg: "bg-yellow-100", text: "text-yellow-800", border: "border-yellow-200" },
+  "Gaming": { color: "from-lime-600 to-green-500", icon: Gamepad2, bg: "bg-lime-100", text: "text-lime-800", border: "border-lime-200" },
+  
+  // Default fallback
+  "default": { color: "from-gray-600 to-gray-500", icon: Tag, bg: "bg-gray-100", text: "text-gray-800", border: "border-gray-200" }
+};
+
+const getCategoryConfig = (category: string) => {
+  return categoryConfig[category as keyof typeof categoryConfig] || categoryConfig.default;
+};
 
 export default function EventsPage() {
   const [activeFilter, setActiveFilter] = useState<FilterType>("ON_STAGE");
@@ -63,589 +88,358 @@ export default function EventsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4 pt-28">
-      {/* Header */}
-      
-
-      {/* Mobile Filter Buttons - Only show on mobile */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-        className="lg:hidden flex justify-center mb-8"
-      >
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-2 border border-gray-200 shadow-sm">
-          <div className="flex space-x-2">
-            {[
-              { 
-                key: "ON_STAGE" as FilterType, 
-                label: "On Stage", 
-                count: onStageEvents.length, 
-                color: "red",
-                icon: Theater
-              },
-              { 
-                key: "OFF_STAGE" as FilterType, 
-                label: "Off Stage", 
-                count: offStageEvents.length, 
-                color: "green",
-                icon: Palette
-              }
-            ].map((filter) => (
-              <button
-                key={filter.key}
-                onClick={() => setActiveFilter(filter.key)}
-                className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
-                  activeFilter === filter.key
-                    ? filter.key === "ON_STAGE"
-                      ? "bg-red-500 text-white shadow-md"
-                      : "bg-green-500 text-white shadow-md"
-                    : "text-gray-600 hover:bg-gray-100"
-                }`}
-              >
-                <span className="flex items-center space-x-2">
-                  <filter.icon className="w-4 h-4" />
-                  <span>{filter.label}</span>
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    activeFilter === filter.key
-                      ? "bg-white/20 text-white"
-                      : filter.key === "ON_STAGE"
-                      ? "bg-red-100 text-red-600"
-                      : "bg-green-100 text-green-600"
-                  }`}>
-                    {filter.count}
-                  </span>
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Main Content */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12 px-5 mt-15">
       <div className="max-w-7xl mx-auto">
-        {/* Desktop Layout - Always show both columns */}
-        <div className="hidden lg:grid lg:grid-cols-2 gap-8 lg:gap-12">
-          {/* On Stage Events Column */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
-            className="space-y-6"
-          >
-            {/* Column Header */}
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-center"
-            >
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-red-500 rounded-xl mb-3 shadow-md">
-                <Theater className="w-6 h-6 text-white" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                On Stage Events
-              </h2>
-              <div className="inline-flex items-center px-4 py-2 bg-red-50 border border-red-200 rounded-full">
-                <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                <span className="text-red-700 font-medium text-sm">
-                  {onStageEvents.length} Spectacular Performances
-                </span>
-              </div>
-            </motion.div>
-
-            {/* Events List */}
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="space-y-4"
-            >
-              {onStageEvents.map((event, index) => (
-                <motion.div
-                  key={event.id}
-                  variants={cardVariants}
-                  initial="hidden"
-                  animate="visible"
-                  whileHover="hover"
-                  custom={index}
-                  className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-red-100 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer relative overflow-hidden"
-                >
-                  {/* Background Gradient Effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-red-50 to-pink-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  
-                  <div className="relative z-10">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-1">
-                          <div className="flex-shrink-0 w-3 h-3 bg-red-400 rounded-full group-hover:bg-red-500 transition-colors duration-300"></div>
-                          <h3 className="font-bold text-gray-800 text-lg group-hover:text-gray-900 transition-colors duration-300">
-                            {event.title}
-                          </h3>
-                        </div>
-                      </div>
-                      
-                      <div className="flex-shrink-0 ml-4">
-                        <span className="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
-                          {event.category}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {/* Empty State */}
-            {onStageEvents.length === 0 && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-12"
-              >
-                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Theater className="w-8 h-8 text-gray-400" />
-                </div>
-                <p className="text-gray-500 text-lg">No on-stage events scheduled yet</p>
-                <p className="text-gray-400 text-sm mt-1">Check back later for updates</p>
-              </motion.div>
-            )}
-          </motion.div>
-
-          {/* Off Stage Events Column */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="space-y-6"
-          >
-            {/* Column Header */}
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="text-center"
-            >
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-green-500 rounded-xl mb-3 shadow-md">
-                <Palette className="w-6 h-6 text-white" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                Off Stage Events
-              </h2>
-              <div className="inline-flex items-center px-4 py-2 bg-green-50 border border-green-200 rounded-full">
-                <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                <span className="text-green-700 font-medium text-sm">
-                  {offStageEvents.length} Creative Competitions
-                </span>
-              </div>
-            </motion.div>
-
-            {/* Events List */}
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              transition={{ delay: 0.4 }}
-              className="space-y-4"
-            >
-              {offStageEvents.map((event, index) => (
-                <motion.div
-                  key={event.id}
-                  variants={cardVariants}
-                  initial="hidden"
-                  animate="visible"
-                  whileHover="hover"
-                  custom={index}
-                  className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-green-100 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer relative overflow-hidden"
-                >
-                  {/* Background Gradient Effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  
-                  <div className="relative z-10">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-1">
-                          <div className="flex-shrink-0 w-3 h-3 bg-green-400 rounded-full group-hover:bg-green-500 transition-colors duration-300"></div>
-                          <h3 className="font-bold text-gray-800 text-lg group-hover:text-gray-900 transition-colors duration-300">
-                            {event.title}
-                          </h3>
-                        </div>
-                      </div>
-                      
-                      <div className="flex-shrink-0 ml-4">
-                        <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-                          {event.category}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {/* Empty State */}
-            {offStageEvents.length === 0 && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-12"
-              >
-                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Palette className="w-8 h-8 text-gray-400" />
-                </div>
-                <p className="text-gray-500 text-lg">No off-stage events scheduled yet</p>
-                <p className="text-gray-400 text-sm mt-1">Check back later for updates</p>
-              </motion.div>
-            )}
-          </motion.div>
-        </div>
-
-        {/* Mobile Layout - Filtered view */}
-        <div className="lg:hidden">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeFilter}
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-              className="space-y-6"
-            >
-              {/* Show filtered events based on active filter */}
-              {(activeFilter === "ON_STAGE" ? onStageEvents : offStageEvents).map((event, index) => (
-                <motion.div
-                  key={event.id}
-                  variants={cardVariants}
-                  whileHover="hover"
-                  custom={index}
-                  className={`group bg-white/80 backdrop-blur-sm rounded-2xl p-6 border shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer relative overflow-hidden ${
-                    event.stageType === "ON_STAGE" 
-                      ? "border-red-100" 
-                      : "border-green-100"
-                  }`}
-                >
-                  {/* Background Gradient Effect */}
-                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
-                    event.stageType === "ON_STAGE"
-                      ? "bg-gradient-to-r from-red-50 to-pink-50"
-                      : "bg-gradient-to-r from-green-50 to-emerald-50"
-                  }`}></div>
-                  
-                  <div className="relative z-10">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-1">
-                          <div className={`flex-shrink-0 w-3 h-3 rounded-full group-hover:transition-colors duration-300 ${
-                            event.stageType === "ON_STAGE"
-                              ? "bg-red-400 group-hover:bg-red-500"
-                              : "bg-green-400 group-hover:bg-green-500"
-                          }`}></div>
-                          <h3 className="font-bold text-gray-800 text-lg group-hover:text-gray-900 transition-colors duration-300">
-                            {event.title}
-                          </h3>
-                        </div>
-                      </div>
-                      
-                      <div className="flex-shrink-0 ml-4 flex items-center space-x-2">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                          event.stageType === "ON_STAGE"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-green-100 text-green-700"
-                        }`}>
-                          {event.category}
-                        </span>
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
-                          event.stageType === "ON_STAGE"
-                            ? "bg-red-50 text-red-600"
-                            : "bg-green-50 text-green-600"
-                        }`}>
-                          {event.stageType === "ON_STAGE" ? 
-                            <Theater className="w-3 h-3" /> : 
-                            <Palette className="w-3 h-3" />
-                          }
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-
-              {/* Empty State for Mobile */}
-              {(activeFilter === "ON_STAGE" ? onStageEvents : offStageEvents).length === 0 && (
-                <motion.div
-                  variants={itemVariants}
-                  className="text-center py-12"
-                >
-                  <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    {activeFilter === "ON_STAGE" ? 
-                      <Theater className="w-8 h-8 text-gray-400" /> : 
-                      <Palette className="w-8 h-8 text-gray-400" />
-                    }
-                  </div>
-                  <p className="text-gray-500 text-lg">
-                    No {activeFilter === "ON_STAGE" ? "on-stage" : "off-stage"} events scheduled yet
-                  </p>
-                  <p className="text-gray-400 text-sm mt-1">Check back later for updates</p>
-                </motion.div>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Footer Stats with Lucide Icons */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
-          className="relative mt-20 pt-12"
-        >
-          {/* Background Decorative Elements */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute -top-10 left-1/4 w-20 h-20 bg-blue-200 rounded-full blur-xl opacity-20 animate-pulse"></div>
-            <div className="absolute top-5 right-1/3 w-16 h-16 bg-purple-200 rounded-full blur-lg opacity-30 animate-pulse delay-75"></div>
-            <div className="absolute -bottom-5 left-1/3 w-24 h-24 bg-green-200 rounded-full blur-xl opacity-20 animate-pulse delay-150"></div>
-          </div>
-
-          {/* Section Header */}
+ 
+        {/* Header */}
+        <div className="text-center mb-16 pt-4">
+          {/* Green Blinking Events Indicator */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1, duration: 0.6 }}
-            className="text-center mb-12"
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="flex justify-center mb-6"
           >
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent mb-3">
-              Event Statistics
-            </h3>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
+            <span className="inline-flex items-center gap-2 py-2 px-4 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest shadow-sm hover:shadow-md transition-all duration-300">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              Events 
+            </span>
           </motion.div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            {/* Total Events Stat */}
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 1.1, duration: 0.6 }}
-              whileHover={{ 
-                y: -8,
-                scale: 1.05,
-                transition: { duration: 0.3 }
-              }}
-              className="relative group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl transform group-hover:scale-105 transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
-              <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 shadow-sm group-hover:shadow-2xl transition-all duration-300 cursor-pointer">
-                <div className="absolute top-0 right-0 w-16 h-16 bg-blue-500 rounded-full blur-xl opacity-10 group-hover:opacity-20 transition-opacity duration-300"></div>
-                
-                <motion.div
-                  whileHover={{ rotate: 15, scale: 1.1 }}
-                  className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg mb-4 mx-auto"
-                >
-                  <BarChart3 className="w-6 h-6 text-white" />
-                </motion.div>
-                
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 1.3, type: "spring", stiffness: 200 }}
-                  className="text-3xl font-bold text-gray-800 mb-2"
-                >
-                  {events.length}
-                </motion.div>
-                
-                <div className="text-gray-600 font-medium">Total Events</div>
-                
-                <div className="mt-3 w-full bg-gray-200 rounded-full h-1">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: "100%" }}
-                    transition={{ delay: 1.4, duration: 1, ease: "easeOut" }}
-                    className="bg-blue-500 h-1 rounded-full"
-                  ></motion.div>
-                </div>
-              </div>
-            </motion.div>
+       
+        </div>
 
-            {/* On Stage Events Stat */}
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 1.2, duration: 0.6 }}
-              whileHover={{ 
-                y: -8,
-                scale: 1.05,
-                transition: { duration: 0.3 }
-              }}
-              className="relative group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-red-50 to-pink-100 rounded-2xl transform group-hover:scale-105 transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
-              <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 shadow-sm group-hover:shadow-2xl transition-all duration-300 cursor-pointer">
-                <div className="absolute top-0 right-0 w-16 h-16 bg-red-500 rounded-full blur-xl opacity-10 group-hover:opacity-20 transition-opacity duration-300"></div>
-                
-                <motion.div
-                  whileHover={{ rotate: -15, scale: 1.1 }}
-                  className="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg mb-4 mx-auto"
+        {/* Mobile Filter Buttons - Only show on mobile */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="lg:hidden flex justify-center mb-12"
+        >
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-2 border border-gray-200 shadow-sm">
+            <div className="flex space-x-2 ">
+              {[
+                { 
+                  key: "ON_STAGE" as FilterType, 
+                  label: "On Stage", 
+                  color: "red"
+                },
+                { 
+                  key: "OFF_STAGE" as FilterType, 
+                  label: "Off Stage", 
+                  color: "green"
+                }
+              ].map((filter) => (
+                <button
+                  key={filter.key}
+                  onClick={() => setActiveFilter(filter.key)}
+                  className={`px-8 py-3 rounded-xl font-medium transition-all duration-300 ${
+                    activeFilter === filter.key
+                      ? filter.key === "ON_STAGE"
+                        ? "bg-red-500 text-white shadow-md"
+                        : "bg-green-500 text-white shadow-md"
+                      : "text-gray-600 hover:bg-gray-100"
+                  }`}
                 >
-                  <Theater className="w-6 h-6 text-white" />
-                </motion.div>
-                
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 1.4, type: "spring", stiffness: 200 }}
-                  className="text-3xl font-bold text-red-600 mb-2"
-                >
-                  {onStageEvents.length}
-                </motion.div>
-                
-                <div className="text-gray-600 font-medium">On Stage</div>
-                
-                <div className="mt-3 w-full bg-gray-200 rounded-full h-1">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${(onStageEvents.length / events.length) * 100}%` }}
-                    transition={{ delay: 1.5, duration: 1, ease: "easeOut" }}
-                    className="bg-red-500 h-1 rounded-full"
-                  ></motion.div>
-                </div>
-              </div>
-            </motion.div>
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </motion.div>
 
-            {/* Off Stage Events Stat */}
+        {/* Events Grid Wrapper */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full  items-start">
+          
+          {/* Desktop Layout - Always show both columns */}
+          <div className="hidden lg:block">
+            {/* On Stage Events Card - Green Theme */}
             <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 1.3, duration: 0.6 }}
-              whileHover={{ 
-                y: -8,
-                scale: 1.05,
-                transition: { duration: 0.3 }
-              }}
-              className="relative group"
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7 }}
+              className="hover-lift bg-white/80 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-xl shadow-green-900/5 border border-white"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl transform group-hover:scale-105 transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
-              <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 shadow-sm group-hover:shadow-2xl transition-all duration-300 cursor-pointer">
-                <div className="absolute top-0 right-0 w-16 h-16 bg-green-500 rounded-full blur-xl opacity-10 group-hover:opacity-20 transition-opacity duration-300"></div>
-                
-                <motion.div
-                  whileHover={{ rotate: 15, scale: 1.1 }}
-                  className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg mb-4 mx-auto"
-                >
-                  <Palette className="w-6 h-6 text-white" />
-                </motion.div>
-                
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 1.5, type: "spring", stiffness: 200 }}
-                  className="text-3xl font-bold text-green-600 mb-2"
-                >
-                  {offStageEvents.length}
-                </motion.div>
-                
-                <div className="text-gray-600 font-medium">Off Stage</div>
-                
-                <div className="mt-3 w-full bg-gray-200 rounded-full h-1">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${(offStageEvents.length / events.length) * 100}%` }}
-                    transition={{ delay: 1.6, duration: 1, ease: "easeOut" }}
-                    className="bg-green-500 h-1 rounded-full"
-                  ></motion.div>
-                </div>
+              {/* Column Header */}
+              <div className="flex items-center mb-8 gap-4">
+                <div className="h-10 w-1.5 rounded-full bg-gradient-to-b from-green-600 to-emerald-500"></div>
+                <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">On Stage Events</h2>
               </div>
-            </motion.div>
 
-            {/* Categories Stat */}
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 1.4, duration: 0.6 }}
-              whileHover={{ 
-                y: -8,
-                scale: 1.05,
-                transition: { duration: 0.3 }
-              }}
-              className="relative group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-indigo-100 rounded-2xl transform group-hover:scale-105 transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
-              <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 shadow-sm group-hover:shadow-2xl transition-all duration-300 cursor-pointer">
-                <div className="absolute top-0 right-0 w-16 h-16 bg-purple-500 rounded-full blur-xl opacity-10 group-hover:opacity-20 transition-opacity duration-300"></div>
-                
-                <motion.div
-                  whileHover={{ rotate: -15, scale: 1.1 }}
-                  className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg mb-4 mx-auto"
-                >
-                  <Tag className="w-6 h-6 text-white" />
-                </motion.div>
-                
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 1.6, type: "spring", stiffness: 200 }}
-                  className="text-3xl font-bold text-purple-600 mb-2"
-                >
-                  {new Set(events.map(e => e.category)).size}
-                </motion.div>
-                
-                <div className="text-gray-600 font-medium">Categories</div>
-                
-                <div className="mt-3 w-full bg-gray-200 rounded-full h-1">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: "85%" }}
-                    transition={{ delay: 1.7, duration: 1, ease: "easeOut" }}
-                    className="bg-purple-500 h-1 rounded-full"
-                  ></motion.div>
-                </div>
+              {/* Events Grid with Number System */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {onStageEvents.map((event, idx) => {
+                  const categoryConfig = getCategoryConfig(event.category);
+                  const IconComponent = categoryConfig.icon;
+                  
+                  return (
+                    <motion.div
+                      key={event.id}
+                      variants={cardVariants}
+                      initial="hidden"
+                      animate="visible"
+                      whileHover="hover"
+                      className="group relative flex items-center p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-green-100 transition-all duration-300 hover:-translate-y-1"
+                    >
+                      {/* Large Gradient Number */}
+                      <span className="
+                        text-3xl font-black italic mr-4
+                        bg-gradient-to-br from-green-600 to-emerald-500 bg-clip-text text-transparent
+                        opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300
+                        w-11 text-center flex-shrink-0
+                      ">
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+
+                      <div className="flex flex-col border-l border-gray-100 pl-4 h-full justify-center flex-1">
+                        <span className="text-base font-bold text-gray-700 group-hover:text-gray-900 transition-colors leading-tight">
+                          {event.title}
+                        </span>
+                        
+                        {/* Unique Category Badge */}
+                        <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${categoryConfig.bg} ${categoryConfig.border} ${categoryConfig.text} mt-2 w-fit group-hover:scale-105 transition-transform duration-300`}>
+                          <IconComponent className="w-3 h-3" />
+                          <span className="text-xs font-bold tracking-wide">
+                            {event.category}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Subtle decorative glow on hover */}
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-green-600 to-emerald-500 opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none"></div>
+                    </motion.div>
+                  );
+                })}
               </div>
+
+              {/* Empty State */}
+              {onStageEvents.length === 0 && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-center py-12"
+                >
+                  <div className="w-24 h-24 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-gray-200">
+                    <Theater className="w-12 h-12 text-gray-400" />
+                  </div>
+                  <p className="text-gray-500 text-xl font-bold">No on-stage events scheduled yet</p>
+                  <p className="text-gray-400 text-sm mt-2">Check back later for updates</p>
+                </motion.div>
+              )}
             </motion.div>
           </div>
 
-          {/* Bottom Decoration */}
-          <motion.div
-            initial={{ opacity: 0, scaleX: 0 }}
-            animate={{ opacity: 1, scaleX: 1 }}
-            transition={{ delay: 1.8, duration: 1, ease: "easeOut" }}
-            className="flex justify-center items-center mt-12 pt-8 border-t border-gray-200"
-          >
-            <div className="text-center">
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 2, duration: 0.6 }}
-                className="text-gray-500 text-sm"
-              >
-                Join us for an unforgettable experience at{" "}
-                <span className="font-semibold text-gray-700">INDEP 2025</span>
-              </motion.p>
-              
-              {/* Animated dots */}
+          {/* Desktop Layout - Off Stage Column */}
+          <div className="hidden lg:block">
+            {/* Off Stage Events Card - Red Theme */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="hover-lift bg-white/80 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-xl shadow-red-900/5 border border-white"
+            >
+              {/* Column Header */}
+              <div className="flex items-center mb-8 gap-4">
+                <div className="h-10 w-1.5 rounded-full bg-gradient-to-b from-red-600 to-rose-500"></div>
+                <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Off Stage Events</h2>
+              </div>
+
+              {/* Events Grid with Number System */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {offStageEvents.map((event, idx) => {
+                  const categoryConfig = getCategoryConfig(event.category);
+                  const IconComponent = categoryConfig.icon;
+                  
+                  return (
+                    <motion.div
+                      key={event.id}
+                      variants={cardVariants}
+                      initial="hidden"
+                      animate="visible"
+                      whileHover="hover"
+                      className="group relative flex items-center p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-red-100 transition-all duration-300 hover:-translate-y-1"
+                    >
+                      {/* Large Gradient Number */}
+                      <span className="
+                        text-3xl font-black italic mr-4
+                        bg-gradient-to-br from-red-600 to-rose-500 bg-clip-text text-transparent
+                        opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300
+                        w-11 text-center flex-shrink-0
+                      ">
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+
+                      <div className="flex flex-col border-l border-gray-100 pl-4 h-full justify-center flex-1">
+                        <span className="text-base font-bold text-gray-700 group-hover:text-gray-900 transition-colors leading-tight">
+                          {event.title}
+                        </span>
+                        
+                        {/* Unique Category Badge */}
+                        <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${categoryConfig.bg} ${categoryConfig.border} ${categoryConfig.text} mt-2 w-fit group-hover:scale-105 transition-transform duration-300`}>
+                          <IconComponent className="w-3 h-3" />
+                          <span className="text-xs font-bold tracking-wide">
+                            {event.category}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Subtle decorative glow on hover */}
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-600 to-rose-500 opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none"></div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              {/* Empty State */}
+              {offStageEvents.length === 0 && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-center py-12"
+                >
+                  <div className="w-24 h-24 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-gray-200">
+                    <Palette className="w-12 h-12 text-gray-400" />
+                  </div>
+                  <p className="text-gray-500 text-xl font-bold">No off-stage events scheduled yet</p>
+                  <p className="text-gray-400 text-sm mt-2">Check back later for updates</p>
+                </motion.div>
+              )}
+            </motion.div>
+          </div>
+
+          {/* Mobile Layout - Filtered view */}
+          <div className="lg:hidden">
+            <AnimatePresence mode="wait">
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 2.2, duration: 0.6 }}
-                className="flex justify-center space-x-1 mt-3"
+                key={activeFilter}
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
               >
-                {[0, 1, 2].map((i) => (
-                  <motion.div
-                    key={i}
-                    animate={{
-                      scale: [1, 1.2, 1],
-                      opacity: [0.5, 1, 0.5],
-                    }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      delay: i * 0.3,
-                    }}
-                    className="w-2 h-2 bg-blue-500 rounded-full"
-                  />
-                ))}
+                {/* Mobile Card Container */}
+                <div className={`hover-lift bg-white/80 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-xl border border-white ${
+                  activeFilter === "ON_STAGE" 
+                    ? "shadow-green-900/5" 
+                    : "shadow-red-900/5"
+                }`}>
+                  
+                  {/* Mobile Header */}
+                  <div className="flex items-center mb-8 gap-4">
+                    <div className={`h-10 w-1.5 rounded-full bg-gradient-to-b ${
+                      activeFilter === "ON_STAGE" 
+                        ? " from-red-600 to-rose-500" 
+                        : "from-green-600 to-emerald-500"
+                    }`}></div>
+                    <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+                      {activeFilter === "ON_STAGE" ? "On Stage Events" : "Off Stage Events"}
+                    </h2>
+                  </div>
+
+                  {/* Events Grid with Number System */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {(activeFilter === "ON_STAGE" ? onStageEvents : offStageEvents).map((event, idx) => {
+                      const categoryConfig = getCategoryConfig(event.category);
+                      const IconComponent = categoryConfig.icon;
+                      
+                      return (
+                        <motion.div
+                          key={event.id}
+                          variants={cardVariants}
+                          whileHover="hover"
+                          className={`group relative flex items-center p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ${
+                            activeFilter === "ON_STAGE" 
+                              ? "hover:border-green-100" 
+                              : "hover:border-red-100"
+                          }`}
+                        >
+                          {/* Large Gradient Number */}
+                          <span className={`
+                            text-3xl font-black italic mr-4
+                            bg-clip-text text-transparent
+                            opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300
+                            w-11 text-center flex-shrink-0
+                            ${activeFilter === "ON_STAGE" 
+                              ? "bg-gradient-to-br  from-red-600 to-rose-500" 
+                              : "bg-gradient-to-br from-green-600 to-emerald-500  "
+                            }
+                          `}>
+                            {String(idx + 1).padStart(2, '0')}
+                          </span>
+
+                          <div className="flex flex-col border-l border-gray-100 pl-4 h-full justify-center flex-1">
+                            <span className="text-base font-bold text-gray-700 group-hover:text-gray-900 transition-colors leading-tight">
+                              {event.title}
+                            </span>
+                            
+                            {/* Unique Category Badge */}
+                            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${categoryConfig.bg} ${categoryConfig.border} ${categoryConfig.text} mt-2 w-fit group-hover:scale-105 transition-transform duration-300`}>
+                              <IconComponent className="w-3 h-3" />
+                              <span className="text-xs font-bold tracking-wide">
+                                {event.category}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Subtle decorative glow on hover */}
+                          <div className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none ${
+                            activeFilter === "ON_STAGE" 
+                              ? "bg-gradient-to-r from-green-600 to-emerald-500" 
+                              : "bg-gradient-to-r from-red-600 to-rose-500"
+                          }`}></div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Empty State for Mobile */}
+                  {(activeFilter === "ON_STAGE" ? onStageEvents : offStageEvents).length === 0 && (
+                    <motion.div
+                      variants={itemVariants}
+                      className="text-center py-12"
+                    >
+                      <div className="w-24 h-24 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-gray-200">
+                        {activeFilter === "ON_STAGE" ? 
+                          <Theater className="w-12 h-12 text-gray-400" /> : 
+                          <Palette className="w-12 h-12 text-gray-400" />
+                        }
+                      </div>
+                      <p className="text-gray-500 text-xl font-bold">
+                        No {activeFilter === "ON_STAGE" ? "on-stage" : "off-stage"} events scheduled yet
+                      </p>
+                      <p className="text-gray-400 text-sm mt-2">Check back later for updates</p>
+                    </motion.div>
+                  )}
+                </div>
               </motion.div>
-            </div>
-          </motion.div>
-        </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* CTA / Info Card */}
+        <div className="mt-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-10 text-white text-center shadow-2xl shadow-blue-900/20 relative overflow-hidden group">
+          {/* Decorative circles */}
+          <div className="absolute top-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-x-1/2 -translate-y-1/2 group-hover:scale-150 transition-transform duration-700"></div>
+          <div className="absolute bottom-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full translate-x-1/2 translate-y-1/2 group-hover:scale-150 transition-transform duration-700"></div>
+
+          <div className="relative z-10">
+            <h3 className="text-3xl font-bold mb-4">Ready to Compete?</h3>
+            <p className="text-blue-50 text-lg mb-8 max-w-2xl mx-auto">
+              Join your favorite events and be part of the biggest cultural extravaganza of the year!
+            </p>
+            <a
+              href="/register"
+              className="inline-flex items-center px-8 py-4 bg-white text-blue-700 rounded-xl font-bold text-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+            >
+              Register Now
+              <svg className="w-5 h-5 ml-2 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+            </a>
+          </div>
+        </div>
+
       </div>
     </div>
   );
