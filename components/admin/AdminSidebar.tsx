@@ -10,7 +10,9 @@ import {
     Trophy,
     Settings,
     LogOut,
-    Shield
+    Shield,
+    Upload,
+    Files 
 } from "lucide-react";
 
 export default function AdminSidebar() {
@@ -22,6 +24,8 @@ export default function AdminSidebar() {
         { name: "Create User", href: "/admin/create-user", icon: UserPlus }, // Assuming you move the add-user page here
         { name: "Manage Events", href: "/admin/events", icon: Calendar },
         // { name: "Results", href: "/admin/results", icon: Trophy },
+        { name: "Files", href: "/admin/files", icon: Files   },
+        { name: "Upload", href: "/admin/upload", icon: Upload  },
         { name: "Settings", href: "/admin/settings", icon: Settings },
     ];
 
