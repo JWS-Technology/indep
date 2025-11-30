@@ -15,6 +15,10 @@ const nextConfig = {
         hostname: "www.sjctni.edu",
       },
       {
+        protocol: "https",
+        hostname: "sjctni.edu",
+      },
+      {
         protocol: "http", // Covers both http and https for google user content
         hostname: "googleusercontent.com",
       },
