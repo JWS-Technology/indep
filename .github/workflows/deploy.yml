@@ -1,0 +1,62 @@
+name: Build & Deploy to k3s
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    name: Build & Push Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: jws/indep-app:latest
+          platforms: linux/amd64
+
+  deploy:
+    name: Deploy to k3s server
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          port: ${{ secrets.SERVER_SSH_PORT }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          timeout: 30m
+          script: |
+            # Make sure docker is logged in (for private repo). If repo is public this is harmless
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin || true
+
+            # Pull the new image (ensures containerd can access it)
+            docker pull jws/indep-app:latest || true
+
+            # For k3s, tell kubernetes to update the deployment image
+            sudo kubectl -n default set image deployment/indep-app indep=jws/indep-app:latest --record
+
+            # Wait for rollout to finish
+            sudo kubectl -n default rollout status deployment/indep-app --timeout=120s
+
+            # Show pods (debug)
+            sudo kubectl -n default get pods -o wide
