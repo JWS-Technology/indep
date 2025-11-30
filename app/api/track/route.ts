@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import Visitor from "@/lib/models/Visitor";
+import Visitor from "@/models/Visitor";
 import connectDB from "@/app/api/db/connection";
 
 export async function GET() {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import User from "@/lib/models/User";
+import User from "@/models/User";
 import connectDB from "../db/connection";
 
 export async function GET(req) {
