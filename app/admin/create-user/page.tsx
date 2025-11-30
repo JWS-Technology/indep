@@ -139,7 +139,7 @@ export default function AddUserPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br mt-20 from-slate-50 via-white to-slate-100 py-8 px-4">
+        <div className="min-h -screen bg-gradient-to-br  from-slate-50 via-white to-slate-100 py-8 px-4">
             <div className="max-w-5xl mx-auto">
                 {/* Professional Header */}
                 <div className="text-center mb-12">
@@ -524,8 +524,8 @@ export default function AddUserPage() {
                             {/* Success/Error Message */}
                             {message && (
                                 <div className={`mt-6 p-4 rounded-lg border ${message === "success"
-                                        ? "bg-green-50 border-green-200 text-green-800"
-                                        : "bg-red-50 border-red-200 text-red-800"
+                                    ? "bg-green-50 border-green-200 text-green-800"
+                                    : "bg-red-50 border-red-200 text-red-800"
                                     }`}>
                                     <div className="flex items-center space-x-3">
                                         {message === "success" ? (
