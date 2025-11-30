@@ -1,18 +1,58 @@
-// app/events/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-// Ensure EventSection and the 'events' data are correctly imported from their respective paths
-import EventSection from "../../../components/ScheduleSection";
-import { events } from "@/data/events";
+import { Loader2, AlertCircle } from "lucide-react";
+import EventSection from "../../../components/ScheduleSection"; // Keep your existing path
 
+// Define the shape of data coming from your DB
 type FilterType = "ON_STAGE" | "OFF_STAGE";
 
+interface EventItem {
+  _id: string; // MongoDB uses _id, not id
+  title: string;
+  category: string;
+  stageType: FilterType;
+  venue: string;
+  startTime: string; // or 'time' depending on your DB schema
+  date: string;
+  description?: string;
+  status?: string;
+}
+
 export default function EventsPage() {
+  // 1. State for Data & UI
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [activeTab, setActiveTab] = useState<FilterType>("ON_STAGE");
   const [expandedEventId, setExpandedEventId] = useState<string | null>(null);
 
+  // 2. Fetch Data on Component Mount
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch('/api/events');
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch schedule');
+        }
+
+        const data = await res.json();
+        setEvents(data.events || []);
+      } catch (err) {
+        setError("Could not load the schedule. Please try again later.");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  // 3. Filter Logic (Now uses the 'events' state, not the imported file)
   const onStageEvents = events.filter((e) => e.stageType === "ON_STAGE");
   const offStageEvents = events.filter((e) => e.stageType === "OFF_STAGE");
 
@@ -20,19 +60,41 @@ export default function EventsPage() {
     setExpandedEventId(expandedEventId === eventId ? null : eventId);
   };
 
-  // Define tabs for cleaner mapping and Framer Motion key
   const tabs = [
     { id: "ON_STAGE", label: "On Stage", color: "red" },
     { id: "OFF_STAGE", label: "Off Stage", color: "blue" },
   ];
 
+  // 4. Loading State UI
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
+        <Loader2 className="w-12 h-12 text-blue-600 animate-spin mb-4" />
+        <p className="text-gray-500 font-medium">Loading Schedule...</p>
+      </div>
+    );
+  }
+
+  // 5. Error State UI
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+        <div className="bg-red-50 text-red-600 p-6 rounded-2xl flex flex-col items-center max-w-md text-center">
+          <AlertCircle className="w-12 h-12 mb-2" />
+          <h3 className="font-bold text-lg">Unable to connect</h3>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 6. Main Render (Mostly unchanged, just uses state data now)
   return (
-    // Increased max-width on large screens for a wider layout
     <div className="min-h-screen bg-gray-50 py-4 px-4 sm:px-6 pt-30 max-w-4xl lg:max-w-6xl mx-auto">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center space-x-4 mb-4">
-          {/* Left Diamond with gradient and shine effect */}
+          {/* Left Diamond */}
           <div className="relative">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg transform rotate-45 shadow-lg shadow-blue-500/30"></div>
             <div className="absolute inset-1 bg-gradient-to-br from-white/20 to-transparent rounded-lg transform rotate-45"></div>
@@ -43,20 +105,19 @@ export default function EventsPage() {
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Schedule</span>
           </h1>
 
-          {/* Right Diamond with gradient and shine effect */}
+          {/* Right Diamond */}
           <div className="relative">
             <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg transform rotate-45 shadow-lg shadow-purple-500/30"></div>
             <div className="absolute inset-1 bg-gradient-to-br from-white/20 to-transparent rounded-lg transform rotate-45"></div>
           </div>
         </div>
 
-        {/* Subtitle with enhanced design */}
         <p className="text-gray-600 text-sm sm:text-base bg-gradient-to-r from-gray-50 to-blue-50 rounded-full py-3 px-8 inline-block border border-gray-200/80 shadow-sm">
           ✨ St. Joseph's College Cultural Events 2025
         </p>
       </div>
 
-      {/* --- Desktop Tab Navigation - NEW BEAUTIFUL DESIGN --- */}
+      {/* Desktop Tab Navigation */}
       <div className="hidden lg:flex justify-center mb-10">
         <div className="p-1 bg-white border border-gray-200 rounded-xl shadow-lg relative flex space-x-1">
           {tabs.map((tab) => (
@@ -67,15 +128,12 @@ export default function EventsPage() {
                 setExpandedEventId(null);
               }}
               className={`relative z-10 px-8 py-3 text-base font-semibold transition-colors duration-300 rounded-lg ${activeTab === tab.id
-                  ? 'text-white' // Text is white when active (due to indicator)
-                  : 'text-gray-600 hover:text-gray-800'
+                ? 'text-white'
+                : 'text-gray-600 hover:text-gray-800'
                 }`}
-              style={{ minWidth: '150px' }} // Ensure consistent button size
+              style={{ minWidth: '150px' }}
             >
-              {/* This inner span is needed to ensure text stays visible above the sliding indicator */}
               <span className="relative z-20">{tab.label}</span>
-
-              {/* Framer Motion Active Tab Indicator */}
               {activeTab === tab.id && (
                 <motion.div
                   layoutId="desktop-tab-indicator"
@@ -87,9 +145,8 @@ export default function EventsPage() {
           ))}
         </div>
       </div>
-      {/* --- END Desktop Tab Navigation --- */}
 
-      {/* Mobile Filter Buttons - Smooth Switching */}
+      {/* Mobile Filter Buttons */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -103,10 +160,7 @@ export default function EventsPage() {
               { key: "OFF_STAGE" as FilterType, label: "Off Stage", color: "green" }
             ].map((filter) => {
               const isActive = activeTab === filter.key;
-              const activeBg =
-                filter.key === "ON_STAGE"
-                  ? "bg-red-500"
-                  : "bg-green-500";
+              const activeBg = filter.key === "ON_STAGE" ? "bg-red-500" : "bg-green-500";
 
               return (
                 <button
@@ -124,7 +178,6 @@ export default function EventsPage() {
                       transition={{ type: "spring", stiffness: 280, damping: 20 }}
                     />
                   )}
-
                   <span className={`relative z-10 ${isActive ? "text-white" : "text-gray-600"}`}>
                     {filter.label}
                   </span>
@@ -135,11 +188,10 @@ export default function EventsPage() {
         </div>
       </motion.div>
 
-      {/* Events List - Only show events for active tab */}
+      {/* Events List */}
       <div className="space-y-6">
-        {/* Added motion.div wrapper for a smooth fade-in/out transition when switching tabs */}
         <motion.div
-          key={activeTab} // Key changes when tab changes, triggering a remount/transition
+          key={activeTab}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -159,26 +211,16 @@ export default function EventsPage() {
               onEventClick={handleEventClick}
             />
           )}
+
+          {/* Empty State Check */}
+          {activeTab === "ON_STAGE" && onStageEvents.length === 0 && (
+            <div className="text-center py-10 text-gray-400">No On-Stage events scheduled yet.</div>
+          )}
+          {activeTab === "OFF_STAGE" && offStageEvents.length === 0 && (
+            <div className="text-center py-10 text-gray-400">No Off-Stage events scheduled yet.</div>
+          )}
         </motion.div>
       </div>
-
-
-
-      <style jsx>{`
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-slideDown {
-          animation: slideDown 0.3s ease-out;
-        }
-      `}</style>
     </div>
   );
 }
