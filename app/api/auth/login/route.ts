@@ -9,7 +9,7 @@ export async function POST(req: Request) {
 
   try {
     const { email, password } = await req.json();
-
+    console.log(email, password);
     const user = await User.findOne({ email });
     if (!user)
       return NextResponse.json(
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
       path: "/",
       maxAge: 7 * 24 * 60 * 60, // 7 days
     });
-
+    console.log(response);
     return response;
   } catch (error) {
     console.error(error);

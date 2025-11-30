@@ -8,7 +8,7 @@ import { User, Lock, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react"; // 
 export default function Login() {
     const router = useRouter();
 
-    const [form, setForm] = useState({ username: "", password: "" });
+    const [form, setForm] = useState({ email: "", password: "" });
     const [isLoading, setIsLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -97,9 +97,9 @@ export default function Login() {
                                         <User size={20} />
                                     </div>
                                     <input
-                                        type="text"
-                                        value={form.username} // Make sure your state matches this key (e.g., const [form, setForm] = useState({ username: "", password: "" }))
-                                        onChange={(e) => setForm({ ...form, username: e.target.value })}
+                                        type="email"
+                                        value={form.email} // Make sure your state matches this key (e.g., const [form, setForm] = useState({ username: "", password: "" }))
+                                        onChange={(e) => setForm({ ...form, email: e.target.value })}
                                         className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
                                         placeholder="Enter your username"
                                         required
