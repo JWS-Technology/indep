@@ -1,28 +1,28 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { Star, Users, Trophy, CalendarClock } from "lucide-react";
 
 export default function AboutSection() {
-    const floatAnimation = {
+    const floatAnimation: Variants = {
         animate: {
             y: [0, -20, 0],
             transition: {
-                duration: 6,
+                duration: 4,
                 repeat: Infinity,
-                ease: "easeInOut",
+                ease: "easeInOut" as const,
             },
         },
     };
 
-    const floatAnimationReverse = {
+    const floatAnimationReverse: Variants = {
         animate: {
             y: [0, 20, 0],
             transition: {
                 duration: 7,
                 repeat: Infinity,
-                ease: "easeInOut",
+                ease: "easeInOut" as const,
             },
         },
     };

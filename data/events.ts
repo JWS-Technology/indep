@@ -2,19 +2,7 @@
 
 export type StageType = "ON_STAGE" | "OFF_STAGE";
 
-export interface EventItem {
-  id: string;
-  category: "SPECIAL" | "INDEP" | "DANCE" | "THEATRE" | "MUSIC" | "LITERARY";
-  stageType: StageType;        // NEW → makes filtering easy
-  title: string;
-  date: string;
-  time: string;
-  venue: string;
-  incharge: {
-    name: string;
-    department: string;
-  }[];
-}
+import type { EventItem } from "@/types/EventItem";
 
 export const events: EventItem[] = [
   // -----------------------
@@ -22,7 +10,7 @@ export const events: EventItem[] = [
   // -----------------------
 
   {
-    id: "1",
+    _id: "1",
     category: "SPECIAL",
     stageType: "OFF_STAGE",
     title: "INDEP Logo Design",
@@ -33,7 +21,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "2",
+    _id: "2",
     category: "SPECIAL",
     stageType: "OFF_STAGE",
     title: "Essay Writing (Tamil / English) - Pongal",
@@ -44,7 +32,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "3",
+    _id: "3",
     category: "INDEP",
     stageType: "OFF_STAGE",
     title: "Poetry Writing - Tamil",
@@ -55,7 +43,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "4",
+    _id: "4",
     category: "INDEP",
     stageType: "OFF_STAGE",
     title: "Poetry Writing - English",
@@ -66,7 +54,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "5",
+    _id: "5",
     category: "INDEP",
     stageType: "OFF_STAGE",
     title: "Quiz - Prelims",
@@ -77,7 +65,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "6",
+    _id: "6",
     category: "INDEP",
     stageType: "OFF_STAGE",
     title: "Collage",
@@ -88,7 +76,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "7",
+    _id: "7",
     category: "INDEP",
     stageType: "OFF_STAGE",
     title: "Cartooning",
@@ -99,7 +87,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "8",
+    _id: "8",
     category: "INDEP",
     stageType: "OFF_STAGE",
     title: "Dancing Brush",
@@ -110,7 +98,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "9",
+    _id: "9",
     category: "INDEP",
     stageType: "OFF_STAGE",
     title: "Poster Making",
@@ -121,7 +109,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "10",
+    _id: "10",
     category: "INDEP",
     stageType: "OFF_STAGE",
     title: "INDEP Director (Screened Only for Judges)",
@@ -135,7 +123,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "11",
+    _id: "11",
     category: "INDEP",
     stageType: "OFF_STAGE",
     title: "Rangoli",
@@ -149,7 +137,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "12",
+    _id: "12",
     category: "INDEP",
     stageType: "OFF_STAGE",
     title: "Spot Photography",
@@ -165,20 +153,18 @@ export const events: EventItem[] = [
 
   // 🎭 DANCE EVENTS
   {
-    id: "13",
+    _id: "13",
     category: "DANCE",
     stageType: "ON_STAGE",
     title: "Classical Dance",
     date: "2023-01-12",
     time: "10:30 AM",
     venue: "SAIL Hall",
-    incharge: [
-      { name: "Dr. F. X. Virgin Fraga", department: "B.Com CA" },
-    ],
+    incharge: [{ name: "Dr. F. X. Virgin Fraga", department: "B.Com CA" }],
   },
 
   {
-    id: "14",
+    _id: "14",
     category: "DANCE",
     stageType: "ON_STAGE",
     title: "Folk Dance",
@@ -192,7 +178,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "15",
+    _id: "15",
     category: "DANCE",
     stageType: "ON_STAGE",
     title: "Western Dance",
@@ -207,7 +193,7 @@ export const events: EventItem[] = [
 
   // 🎭 THEATRE EVENTS
   {
-    id: "16",
+    _id: "16",
     category: "THEATRE",
     stageType: "ON_STAGE",
     title: "Skit",
@@ -221,7 +207,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "17",
+    _id: "17",
     category: "THEATRE",
     stageType: "ON_STAGE",
     title: "Addzup",
@@ -232,7 +218,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "18",
+    _id: "18",
     category: "THEATRE",
     stageType: "ON_STAGE",
     title: "Mimicry",
@@ -244,7 +230,7 @@ export const events: EventItem[] = [
 
   // 🎵 MUSIC EVENTS
   {
-    id: "19",
+    _id: "19",
     category: "MUSIC",
     stageType: "ON_STAGE",
     title: "Western Group",
@@ -255,7 +241,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "20",
+    _id: "20",
     category: "MUSIC",
     stageType: "ON_STAGE",
     title: "Indian Group",
@@ -266,7 +252,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "21",
+    _id: "21",
     category: "MUSIC",
     stageType: "ON_STAGE",
     title: "Instrumental",
@@ -278,7 +264,7 @@ export const events: EventItem[] = [
 
   // 📝 LITERARY EVENTS
   {
-    id: "22",
+    _id: "22",
     category: "LITERARY",
     stageType: "ON_STAGE",
     title: "Elocution in Tamil",
@@ -289,7 +275,7 @@ export const events: EventItem[] = [
   },
 
   {
-    id: "23",
+    _id: "23",
     category: "LITERARY",
     stageType: "ON_STAGE",
     title: "Elocution in English",

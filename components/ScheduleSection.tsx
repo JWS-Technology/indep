@@ -2,17 +2,7 @@ import EventCard from "./ScheduleCard";
 
 // Define the shape locally to match your MongoDB Schema
 // Or you can move this to a shared 'types.ts' file
-export interface EventItem {
-  _id: string;
-  title: string;
-  category: string;
-  stageType: "ON_STAGE" | "OFF_STAGE";
-  venue: string;
-  date: string;
-  time: string;
-  incharge?: { name: string; department: string }[];
-  status?: string;
-}
+import { EventItem } from "@/types/EventItem";
 
 interface Props {
   title: string;

@@ -34,9 +34,10 @@ export async function POST(req: Request) {
     }
 
     // get file type (mime)
-    const fileType = file instanceof File && typeof file.type === "string"
-      ? file.type || "application/octet-stream"
-      : "application/octet-stream";
+    const fileType =
+      file instanceof File && typeof file.type === "string"
+        ? file.type || "application/octet-stream"
+        : "application/octet-stream";
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -67,7 +68,6 @@ export async function POST(req: Request) {
       },
       { status: 200 }
     );
-
   } catch (err) {
     console.error("upload error:", err);
     return NextResponse.json(
