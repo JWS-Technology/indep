@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/app/api/db/connection";
+import dbConnect from "@/utils/dbConnect";
 import Event from "@/models/Event";
 
 // Fix: Define params as a Promise
@@ -10,7 +10,7 @@ type Props = {
 // Update Event (Schedule Time/Venue)
 // Update Event (Schedule Time/Venue)
 export async function PUT(req: Request, { params }: Props) {
-  await connectDB();
+  await dbConnect();
   try {
     const { id } = await params;
     const body = await req.json();
@@ -33,7 +33,7 @@ export async function PUT(req: Request, { params }: Props) {
 
 // Delete Event
 export async function DELETE(req: Request, { params }: Props) {
-  await connectDB();
+  await dbConnect();
   try {
     // Fix: Await the params here as well
     const { id } = await params;

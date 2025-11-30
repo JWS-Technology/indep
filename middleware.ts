@@ -17,7 +17,12 @@ export function middleware(req: NextRequest) {
   }
 
   try {
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET!
+    ) as jwt.JwtPayload & {
+      role: string;
+    };
 
     if (path.startsWith("/admin") && decoded.role !== "admin") {
       return NextResponse.redirect(new URL("/unauthorized", req.url));
