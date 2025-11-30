@@ -60,7 +60,7 @@ export default function HomeEvents() {
                         href="/events"
                         className="group flex items-center gap-2 text-slate-600 font-semibold text-sm md:text-base hover:text-blue-600 transition-colors"
                     >
-                        View All Categories
+                        View All Events
                         <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </div>
