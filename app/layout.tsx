@@ -1,6 +1,4 @@
 import './globals.css';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 
 export const metadata = {
   title: 'INDEP 2025 - Cultural Extravaganza',
@@ -11,9 +9,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="bg-linear-to-br from-gray-50 to-blue-50 min-h-screen">
-        <Navbar />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+        {/* Navbar and Footer REMOVED from here to prevent them showing on Admin pages */}
+        {children}
       </body>
     </html>
   );

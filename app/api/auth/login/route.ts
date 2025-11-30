@@ -8,21 +8,29 @@ export async function POST(req: Request) {
   await connectDB();
 
   try {
-    const { email, password } = await req.json();
-    console.log(email, password);
-    const user = await User.findOne({ email });
-    if (!user)
+    // 1. Get collegeId instead of email
+    const { collegeId, password } = await req.json();
+    console.log("Login Attempt:", collegeId);
+
+    // 2. Find user by collegeId
+    // Note: We use a case-insensitive regex or just ensure input is cleaned.
+    // Ideally, store IDs in uppercase and convert input to uppercase.
+    const user = await User.findOne({ collegeId });
+
+    if (!user) {
       return NextResponse.json(
         { error: "Invalid credentials" },
         { status: 400 }
       );
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
+    if (!isMatch) {
       return NextResponse.json(
         { error: "Invalid credentials" },
         { status: 400 }
       );
+    }
 
     // 🔥 Generate JWT Token
     const token = jwt.sign(
@@ -30,7 +38,7 @@ export async function POST(req: Request) {
         id: user._id,
         role: user.role,
         department: user.department,
-        assignedEvent: user.assignedEvent,
+        collegeId: user.collegeId, // Added collegeId to payload
       },
       process.env.JWT_SECRET!,
       { expiresIn: "7d" }
@@ -49,7 +57,7 @@ export async function POST(req: Request) {
       path: "/",
       maxAge: 7 * 24 * 60 * 60, // 7 days
     });
-    console.log(response);
+
     return response;
   } catch (error) {
     console.error(error);

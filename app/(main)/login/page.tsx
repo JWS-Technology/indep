@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion"; // For smooth animations
-import { User, Lock, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react"; // Icons
+import { motion } from "framer-motion";
+import { IdCard, Lock, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react"; // Switched User icon to IdCard
 
 export default function Login() {
     const router = useRouter();
 
-    const [form, setForm] = useState({ email: "", password: "" });
+    // 1. Changed state from email to collegeId
+    const [form, setForm] = useState({ collegeId: "", password: "" });
     const [isLoading, setIsLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -22,7 +23,11 @@ export default function Login() {
             const response = await fetch("/api/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form),
+                body: JSON.stringify({
+                    // Ensure we send the ID, maybe force uppercase if that's your format
+                    collegeId: form.collegeId.trim(),
+                    password: form.password
+                }),
             });
 
             const data = await response.json();
@@ -33,11 +38,21 @@ export default function Login() {
                 return;
             }
 
-            // Redirect logic
-            if (data.role === "admin") router.push("/admin/dashboard");
-            else if (data.role === "faculty") router.push("/faculty/dashboard");
-            else if (data.role === "judge") router.push("/judge/dashboard");
-            else router.push("/student/dashboard");
+            // Redirect logic based on the new rule:
+            // Faculty = President -> /faculty/dashboard
+            // Student = Secretary -> /student/dashboard
+            const role = data.role?.toLowerCase();
+
+            if (role === "admin") {
+                router.push("/admin/dashboard");
+            } else if (role === "faculty" || role === "president") {
+                router.push("/faculty/dashboard");
+            } else if (role === "judge") {
+                router.push("/judge/dashboard");
+            } else {
+                // Default fallback for 'student' or 'secretary'
+                router.push("/student/dashboard");
+            }
 
         } catch (error) {
             setErrorMsg("Something went wrong. Please try again.");
@@ -52,7 +67,6 @@ export default function Login() {
 
                 {/* LEFT SIDE - BRANDING / VISUALS */}
                 <div className="hidden md:flex w-1/2 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 p-12 flex-col justify-between relative overflow-hidden text-white">
-                    {/* Abstract Shapes for background interest */}
                     <div className="absolute top-0 left-0 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
                     <div className="absolute bottom-0 right-0 w-96 h-96 bg-yellow-400 opacity-10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
 
@@ -66,7 +80,7 @@ export default function Login() {
                             Cultural <br /> Extravaganza
                         </h1>
                         <p className="text-indigo-100 text-lg font-light">
-                            Welcome to the official portal. Manage events, scores, and participation all in one place.
+                            Welcome Presidents & Secretaries. Manage events, scores, and participation all in one place.
                         </p>
                     </div>
 
@@ -85,23 +99,23 @@ export default function Login() {
                     >
                         <div className="mb-10">
                             <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back! 👋</h2>
-                            <p className="text-gray-500">Please enter your details to sign in.</p>
+                            <p className="text-gray-500">Please enter your College ID to sign in.</p>
                         </div>
 
                         <form className="space-y-5" onSubmit={handleSubmit}>
-                            {/* Username Input */}
+                            {/* College ID Input */}
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Username</label>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">College ID</label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                                        <User size={20} />
+                                        <IdCard size={20} />
                                     </div>
                                     <input
-                                        type="email"
-                                        value={form.email} // Make sure your state matches this key (e.g., const [form, setForm] = useState({ username: "", password: "" }))
-                                        onChange={(e) => setForm({ ...form, email: e.target.value })}
+                                        type="text"
+                                        value={form.collegeId}
+                                        onChange={(e) => setForm({ ...form, collegeId: e.target.value })}
                                         className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
-                                        placeholder="Enter your username"
+                                        placeholder="e.g. 23UBC506"
                                         required
                                     />
                                 </div>
@@ -168,15 +182,6 @@ export default function Login() {
                             </button>
                         </form>
 
-                        {/* Footer Link */}
-                        {/* <div className="mt-8 text-center">
-                            <p className="text-gray-500 text-sm">
-                                Don't have an account?{' '}
-                                <a href="/register" className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
-                                    Create account
-                                </a>
-                            </p>
-                        </div> */}
                     </motion.div>
                 </div>
             </div>
