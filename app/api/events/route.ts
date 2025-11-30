@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import dbConnect from "@/utils/dbConnect";
 import Event from "@/models/Event";
+import dbConnect from "@/utils/dbConnect";
 
 export async function GET() {
+  await dbConnect();
   await dbConnect();
   try {
     const events = await Event.find({}).sort({ date: 1, time: 1 });
@@ -16,6 +17,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  await dbConnect();
   await dbConnect();
   try {
     const body = await req.json();
