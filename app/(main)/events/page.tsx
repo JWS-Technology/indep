@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { events } from "@/data/events";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Music,
@@ -15,10 +14,25 @@ import {
   User,
   Clock,
   Sparkles,
-  Ticket
+  Ticket,
+  Loader2,
+  AlertCircle
 } from "lucide-react";
 
+// --- Types matching your Database ---
 type FilterType = "ON_STAGE" | "OFF_STAGE";
+
+interface EventItem {
+  _id: string;
+  title: string;
+  category: string;
+  stageType: FilterType;
+  venue: string;
+  date: string;
+  time: string;
+  incharge?: { name: string; department: string }[];
+  status?: string;
+}
 
 const getEventIcon = (category: string) => {
   switch (category) {
@@ -33,9 +47,36 @@ const getEventIcon = (category: string) => {
 };
 
 export default function EventsPage() {
+  // 1. State for Data & UI
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [activeFilter, setActiveFilter] = useState<FilterType>("ON_STAGE");
+
+  // 2. Fetch Data from API
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch('/api/events');
+        if (!res.ok) throw new Error('Failed to fetch events');
+        const data = await res.json();
+        setEvents(data.events || []);
+      } catch (err) {
+        setError("Could not load the official lineup.");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  // 3. Filter the fetched data
   const filteredEvents = events.filter((e) => e.stageType === activeFilter);
 
+  // Animation Variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.05 } }
@@ -45,6 +86,29 @@ export default function EventsPage() {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
   };
+
+  // 4. Loading State
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
+        <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mb-4" />
+        <p className="text-slate-500 font-medium">Loading lineup...</p>
+      </div>
+    );
+  }
+
+  // 5. Error State
+  if (error) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+        <div className="bg-red-50 text-red-600 p-6 rounded-2xl flex flex-col items-center max-w-md text-center border border-red-100">
+          <AlertCircle className="w-10 h-10 mb-2" />
+          <h3 className="font-bold text-lg">Unable to connect</h3>
+          <p className="text-sm opacity-80">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 mt-20">
@@ -101,12 +165,11 @@ export default function EventsPage() {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            // Using a denser grid (up to 3 cols on large, 2 on medium)
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             {filteredEvents.map((event, idx) => {
               const Icon = getEventIcon(event.category);
-              const isTeam = Math.random() > 0.5; // Dummy data
+              const isTeam = false; // You can fetch this from DB if you add a field for it
               const isActiveOn = activeFilter === "ON_STAGE";
               const themeColor = isActiveOn ? "text-indigo-600" : "text-pink-600";
               const bgColor = isActiveOn ? "bg-indigo-50" : "bg-pink-50";
@@ -114,7 +177,7 @@ export default function EventsPage() {
 
               return (
                 <motion.div
-                  key={event.id}
+                  key={event._id} // Using MongoDB _id
                   variants={cardVariants}
                   className={`
                     group relative bg-white rounded-xl border border-slate-200 overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300
@@ -154,13 +217,15 @@ export default function EventsPage() {
                     {/* Footer Details */}
                     <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
                       <div className="flex items-center gap-1">
+                        {/* You can make this dynamic if your DB has 'isTeam' */}
                         {isTeam ? <Users size={12} /> : <User size={12} />}
                         <span>{isTeam ? "Team" : "Solo"}</span>
                       </div>
                       <div className="w-1 h-1 rounded-full bg-slate-300" />
                       <div className="flex items-center gap-1">
                         <Clock size={12} />
-                        <span>2h</span>
+                        {/* Displaying dynamic time from DB */}
+                        <span>{event.time || "TBA"}</span>
                       </div>
                     </div>
 
@@ -174,9 +239,9 @@ export default function EventsPage() {
         </AnimatePresence>
 
         {/* --- Empty State --- */}
-        {filteredEvents.length === 0 && (
+        {!isLoading && filteredEvents.length === 0 && (
           <div className="text-center py-20 opacity-50">
-            <p className="text-xl font-bold text-slate-400">Updating schedule...</p>
+            <p className="text-xl font-bold text-slate-400">No events found in this category.</p>
           </div>
         )}
 
