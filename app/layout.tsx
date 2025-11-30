@@ -9,7 +9,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="bg-linear-to-br from-gray-50 to-blue-50 min-h-screen">
-        {/* Navbar and Footer REMOVED from here to prevent them showing on Admin pages */}
         {children}
       </body>
     </html>
