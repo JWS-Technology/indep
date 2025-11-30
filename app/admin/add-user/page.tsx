@@ -2,6 +2,24 @@
 
 import { useState } from "react";
 import { shiftOne, shiftTwo } from "@/data/teams";
+import { 
+  User, 
+  IdCard, 
+  Lock, 
+  Building2, 
+  ChevronDown, 
+  ChevronLeft, 
+  ChevronRight, 
+  Check,
+  AlertCircle,
+  ArrowRight,
+  Users,
+  Target,
+  Sparkles,
+  Shield,
+  GraduationCap,
+  Settings
+} from "lucide-react";
 
 export default function AddUserPage() {
     const [form, setForm] = useState({
@@ -101,15 +119,25 @@ export default function AddUserPage() {
 
     const isFieldInvalid = (field: keyof typeof touched) => touched[field] && !form[field];
 
+    const stepIcons = [
+        { icon: User, label: "Personal Info", description: "Basic details" },
+        { icon: Target, label: "Account Type", description: "Role & Department" },
+        { icon: Sparkles, label: "Review & Create", description: "Final details" }
+    ];
+
+    const roleIcons = {
+        student: GraduationCap,
+        faculty: Users,
+        admin: Settings
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 py-8 px-4">
             <div className="max-w-5xl mx-auto">
                 {/* Professional Header */}
                 <div className="text-center mb-12">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-900 rounded-2xl mb-4 shadow-lg">
-                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                        </svg>
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl mb-4 shadow-lg">
+                        <Users className="w-8 h-8 text-white" />
                     </div>
                     <h1 className="text-4xl font-bold text-slate-900 mb-4">
                         Create New User
@@ -122,42 +150,37 @@ export default function AddUserPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* Professional Progress Steps */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
+                        <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl p-8 border border-slate-200 shadow-sm">
                             <div className="space-y-8">
-                                {[
-                                    { number: 1, title: "Personal Info", desc: "Basic details", icon: "👤" },
-                                    { number: 2, title: "Account Type", desc: "Role & Department", icon: "🎯" },
-                                    { number: 3, title: "Review & Create", desc: "Final details", icon: "✨" }
-                                ].map((step) => (
-                                    <div key={step.number} className="flex items-center space-x-4">
-                                        <div className={`relative flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center border-2 transition-all duration-300 ${
-                                            activeStep >= step.number 
-                                                ? "bg-slate-900 border-slate-900 text-white shadow-md" 
-                                                : "bg-slate-100 border-slate-200 text-slate-400"
-                                        }`}>
-                                            <span className="font-semibold text-sm">
-                                                {activeStep >= step.number ? step.icon : step.number}
-                                            </span>
-                                            {activeStep > step.number && (
-                                                <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
-                                                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                                    </svg>
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <h3 className={`font-semibold text-sm ${
-                                                activeStep >= step.number ? "text-slate-900" : "text-slate-400"
+                                {stepIcons.map((step, index) => {
+                                    const IconComponent = step.icon;
+                                    return (
+                                        <div key={index} className="flex items-center space-x-4">
+                                            <div className={`relative flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center border-2 transition-all duration-300 ${
+                                                activeStep >= index + 1 
+                                                    ? "bg-gradient-to-br from-slate-800 to-slate-900 border-slate-900 text-white shadow-md" 
+                                                    : "bg-slate-100 border-slate-200 text-slate-400"
                                             }`}>
-                                                {step.title}
-                                            </h3>
-                                            <p className="text-slate-500 text-xs mt-1">
-                                                {step.desc}
-                                            </p>
+                                                <IconComponent className="w-5 h-5" />
+                                                {activeStep > index + 1 && (
+                                                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                                                        <Check className="w-3 h-3 text-white" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className={`font-semibold text-sm ${
+                                                    activeStep >= index + 1 ? "text-slate-900" : "text-slate-400"
+                                                }`}>
+                                                    {step.label}
+                                                </h3>
+                                                <p className="text-slate-500 text-xs mt-1">
+                                                    {step.description}
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
 
                             {/* Progress Bar */}
@@ -168,7 +191,7 @@ export default function AddUserPage() {
                                 </div>
                                 <div className="w-full bg-slate-100 rounded-full h-2">
                                     <div 
-                                        className="bg-slate-900 h-2 rounded-full transition-all duration-500 ease-out"
+                                        className="bg-gradient-to-r from-slate-800 to-slate-900 h-2 rounded-full transition-all duration-500 ease-out"
                                         style={{ width: `${(activeStep / 3) * 100}%` }}
                                     ></div>
                                 </div>
@@ -178,7 +201,7 @@ export default function AddUserPage() {
 
                     {/* Professional Form Content */}
                     <div className="lg:col-span-3">
-                        <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
+                        <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl p-8 border border-slate-200 shadow-sm">
                             <form onSubmit={handleSubmit} className="space-y-8">
                                 {/* Step 1: Personal Info */}
                                 {activeStep === 1 && (
@@ -187,6 +210,7 @@ export default function AddUserPage() {
                                             {/* Name Input */}
                                             <div className="space-y-2">
                                                 <label className="flex items-center space-x-2 text-sm font-semibold text-slate-700">
+                                                    <User className="w-4 h-4" />
                                                     <span>Full Name</span>
                                                     <span className="text-red-500">*</span>
                                                 </label>
@@ -206,9 +230,7 @@ export default function AddUserPage() {
                                                 </div>
                                                 {isFieldInvalid('name') && (
                                                     <p className="text-red-500 text-sm flex items-center space-x-1">
-                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                        </svg>
+                                                        <AlertCircle className="w-4 h-4" />
                                                         <span>Full name is required</span>
                                                     </p>
                                                 )}
@@ -217,6 +239,7 @@ export default function AddUserPage() {
                                             {/* College ID Input */}
                                             <div className="space-y-2">
                                                 <label className="flex items-center space-x-2 text-sm font-semibold text-slate-700">
+                                                    <IdCard className="w-4 h-4" />
                                                     <span>College ID</span>
                                                     <span className="text-red-500">*</span>
                                                 </label>
@@ -236,9 +259,7 @@ export default function AddUserPage() {
                                                 </div>
                                                 {isFieldInvalid('collegeId') && (
                                                     <p className="text-red-500 text-sm flex items-center space-x-1">
-                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                        </svg>
+                                                        <AlertCircle className="w-4 h-4" />
                                                         <span>College ID is required</span>
                                                     </p>
                                                 )}
@@ -248,6 +269,7 @@ export default function AddUserPage() {
                                         {/* Password Input */}
                                         <div className="space-y-2">
                                             <label className="flex items-center space-x-2 text-sm font-semibold text-slate-700">
+                                                <Lock className="w-4 h-4" />
                                                 <span>Password</span>
                                                 <span className="text-red-500">*</span>
                                             </label>
@@ -267,9 +289,7 @@ export default function AddUserPage() {
                                             </div>
                                             {isFieldInvalid('password') && (
                                                 <p className="text-red-500 text-sm flex items-center space-x-1">
-                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
+                                                    <AlertCircle className="w-4 h-4" />
                                                     <span>Password is required</span>
                                                 </p>
                                             )}
@@ -283,43 +303,57 @@ export default function AddUserPage() {
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                             {/* Role Selection */}
                                             <div className="space-y-4">
-                                                <label className="block text-sm font-semibold text-slate-700">
-                                                    User Role
+                                                <label className="flex items-center space-x-2 text-sm font-semibold text-slate-700">
+                                                    <Shield className="w-4 h-4" />
+                                                    <span>User Role</span>
                                                 </label>
                                                 <div className="space-y-3">
                                                     {[
-                                                        { value: "student", label: "Student", desc: "Learning access" },
-                                                        { value: "faculty", label: "Faculty", desc: "Teaching access" },
-                                                        { value: "admin", label: "Administrator", desc: "Full system access" }
-                                                    ].map((role) => (
-                                                        <label key={role.value} className="flex items-center space-x-3 p-4 rounded-lg border-2 border-slate-200 hover:border-slate-300 cursor-pointer transition-all duration-200">
-                                                            <input
-                                                                type="radio"
-                                                                name="role"
-                                                                value={role.value}
-                                                                checked={form.role === role.value}
-                                                                onChange={(e) => setForm({ ...form, role: e.target.value })}
-                                                                className="hidden"
-                                                            />
-                                                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                                                                form.role === role.value 
-                                                                    ? "border-slate-900 bg-slate-900" 
-                                                                    : "border-slate-300"
-                                                            }`}>
-                                                                {form.role === role.value && <div className="w-2 h-2 bg-white rounded-full"></div>}
-                                                            </div>
-                                                            <div className="flex-1">
-                                                                <div className="text-slate-900 font-medium capitalize">{role.label}</div>
-                                                                <div className="text-slate-500 text-sm">{role.desc}</div>
-                                                            </div>
-                                                        </label>
-                                                    ))}
+                                                        { value: "student", label: "Student", desc: "Learning access", icon: GraduationCap },
+                                                        { value: "faculty", label: "Faculty", desc: "Teaching access", icon: Users },
+                                                        { value: "admin", label: "Administrator", desc: "Full system access", icon: Settings }
+                                                    ].map((role) => {
+                                                        const RoleIcon = role.icon;
+                                                        return (
+                                                            <label key={role.value} className="flex items-center space-x-3 p-4 rounded-lg border-2 border-slate-200 hover:border-slate-300 cursor-pointer transition-all duration-200">
+                                                                <input
+                                                                    type="radio"
+                                                                    name="role"
+                                                                    value={role.value}
+                                                                    checked={form.role === role.value}
+                                                                    onChange={(e) => setForm({ ...form, role: e.target.value })}
+                                                                    className="hidden"
+                                                                />
+                                                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                                                                    form.role === role.value 
+                                                                        ? "border-slate-900 bg-slate-900" 
+                                                                        : "border-slate-300"
+                                                                }`}>
+                                                                    {form.role === role.value && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                                                                </div>
+                                                                <div className="flex items-center space-x-3 flex-1">
+                                                                    <div className={`p-2 rounded-lg ${
+                                                                        form.role === role.value ? 'bg-slate-100' : 'bg-slate-50'
+                                                                    }`}>
+                                                                        <RoleIcon className={`w-4 h-4 ${
+                                                                            form.role === role.value ? 'text-slate-900' : 'text-slate-500'
+                                                                        }`} />
+                                                                    </div>
+                                                                    <div className="flex-1">
+                                                                        <div className="text-slate-900 font-medium capitalize">{role.label}</div>
+                                                                        <div className="text-slate-500 text-sm">{role.desc}</div>
+                                                                    </div>
+                                                                </div>
+                                                            </label>
+                                                        );
+                                                    })}
                                                 </div>
                                             </div>
 
                                             {/* Department Selection */}
                                             <div className="space-y-4">
                                                 <label className="flex items-center space-x-2 text-sm font-semibold text-slate-700">
+                                                    <Building2 className="w-4 h-4" />
                                                     <span>Department</span>
                                                     <span className="text-red-500">*</span>
                                                 </label>
@@ -338,39 +372,45 @@ export default function AddUserPage() {
                                                         <span className={form.department ? "text-slate-900" : "text-slate-400"}>
                                                             {form.department || "Select Department"}
                                                         </span>
-                                                        <svg className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${isDeptOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                                        </svg>
+                                                        <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${isDeptOpen ? "rotate-180" : ""}`} />
                                                     </button>
 
                                                     {isDeptOpen && (
                                                         <div className="absolute z-10 w-full mt-2 bg-white border border-slate-200 rounded-lg shadow-lg max-h-64 overflow-y-auto">
                                                             <div className="p-3 border-b border-slate-100">
-                                                                <h4 className="text-slate-700 text-sm font-semibold mb-2">Shift I</h4>
+                                                                <h4 className="text-slate-700 text-sm font-semibold mb-2 flex items-center space-x-2">
+                                                                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                                                    <span>Shift I</span>
+                                                                </h4>
                                                                 <div className="space-y-1">
                                                                     {shiftOne.map((dept) => (
                                                                         <button
                                                                             key={dept}
                                                                             type="button"
                                                                             onClick={() => selectDepartment(dept)}
-                                                                            className="w-full text-left px-3 py-2 text-slate-700 text-sm rounded hover:bg-slate-50 transition-colors duration-200"
+                                                                            className="w-full text-left px-3 py-2 text-slate-700 text-sm rounded hover:bg-slate-50 transition-colors duration-200 flex items-center space-x-2"
                                                                         >
-                                                                            {dept}
+                                                                            <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                                                                            <span>{dept}</span>
                                                                         </button>
                                                                     ))}
                                                                 </div>
                                                             </div>
                                                             <div className="p-3">
-                                                                <h4 className="text-slate-700 text-sm font-semibold mb-2">Shift II</h4>
+                                                                <h4 className="text-slate-700 text-sm font-semibold mb-2 flex items-center space-x-2">
+                                                                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                                                    <span>Shift II</span>
+                                                                </h4>
                                                                 <div className="space-y-1">
                                                                     {shiftTwo.map((dept) => (
                                                                         <button
                                                                             key={dept}
                                                                             type="button"
                                                                             onClick={() => selectDepartment(dept)}
-                                                                            className="w-full text-left px-3 py-2 text-slate-700 text-sm rounded hover:bg-slate-50 transition-colors duration-200"
+                                                                            className="w-full text-left px-3 py-2 text-slate-700 text-sm rounded hover:bg-slate-50 transition-colors duration-200 flex items-center space-x-2"
                                                                         >
-                                                                            {dept}
+                                                                            <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+                                                                            <span>{dept}</span>
                                                                         </button>
                                                                     ))}
                                                                 </div>
@@ -380,9 +420,7 @@ export default function AddUserPage() {
                                                 </div>
                                                 {isFieldInvalid('department') && (
                                                     <p className="text-red-500 text-sm flex items-center space-x-1">
-                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                        </svg>
+                                                        <AlertCircle className="w-4 h-4" />
                                                         <span>Department is required</span>
                                                     </p>
                                                 )}
@@ -394,38 +432,50 @@ export default function AddUserPage() {
                                 {/* Step 3: Review */}
                                 {activeStep === 3 && (
                                     <div className="space-y-6 animate-fadeIn">
-                                        <div className="bg-slate-50 rounded-xl p-6 border border-slate-200">
-                                            <h3 className="text-slate-900 font-semibold text-lg mb-4">Review Details</h3>
+                                        <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-6 border border-slate-200">
+                                            <div className="flex items-center space-x-3 mb-4">
+                                                <div className="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg flex items-center justify-center">
+                                                    <Sparkles className="w-5 h-5 text-white" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-slate-900 font-semibold text-lg">Review Details</h3>
+                                                    <p className="text-slate-600 text-sm">Confirm all information before creating the user</p>
+                                                </div>
+                                            </div>
                                             <div className="space-y-4">
                                                 {[
-                                                    { label: "Full Name", value: form.name, required: true },
-                                                    { label: "College ID", value: form.collegeId, required: true },
-                                                    { label: "User Role", value: form.role, required: false },
-                                                    { label: "Department", value: form.department, required: true }
-                                                ].map((item, index) => (
-                                                    <div key={item.label} className="flex justify-between items-center py-3 border-b border-slate-200 last:border-b-0">
-                                                        <div className="flex items-center space-x-2">
-                                                            <span className="text-slate-600">{item.label}</span>
-                                                            {item.required && <span className="text-red-500 text-sm">*</span>}
+                                                    { label: "Full Name", value: form.name, required: true, icon: User },
+                                                    { label: "College ID", value: form.collegeId, required: true, icon: IdCard },
+                                                    { label: "User Role", value: form.role, required: false, icon: Shield },
+                                                    { label: "Department", value: form.department, required: true, icon: Building2 }
+                                                ].map((item, index) => {
+                                                    const ItemIcon = item.icon;
+                                                    return (
+                                                        <div key={item.label} className="flex justify-between items-center py-3 border-b border-slate-200 last:border-b-0">
+                                                            <div className="flex items-center space-x-3">
+                                                                <div className="p-2 bg-slate-100 rounded-lg">
+                                                                    <ItemIcon className="w-4 h-4 text-slate-600" />
+                                                                </div>
+                                                                <div className="flex items-center space-x-2">
+                                                                    <span className="text-slate-600">{item.label}</span>
+                                                                    {item.required && <span className="text-red-500 text-sm">*</span>}
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex items-center space-x-2">
+                                                                <span className={`font-medium ${
+                                                                    item.value ? "text-slate-900" : "text-red-500 italic"
+                                                                }`}>
+                                                                    {item.value || "Not provided"}
+                                                                </span>
+                                                                {item.value ? (
+                                                                    <Check className="w-4 h-4 text-green-500" />
+                                                                ) : (
+                                                                    <AlertCircle className="w-4 h-4 text-red-500" />
+                                                                )}
+                                                            </div>
                                                         </div>
-                                                        <div className="flex items-center space-x-2">
-                                                            <span className={`font-medium ${
-                                                                item.value ? "text-slate-900" : "text-red-500 italic"
-                                                            }`}>
-                                                                {item.value || "Not provided"}
-                                                            </span>
-                                                            {item.value ? (
-                                                                <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                                </svg>
-                                                            ) : (
-                                                                <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                                </svg>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                ))}
+                                                    );
+                                                })}
                                             </div>
                                         </div>
                                     </div>
@@ -439,9 +489,7 @@ export default function AddUserPage() {
                                         disabled={activeStep === 1}
                                         className="px-8 py-3 border border-slate-300 rounded-lg text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-all duration-200 flex items-center space-x-2"
                                     >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                                        </svg>
+                                        <ChevronLeft className="w-5 h-5" />
                                         <span>Back</span>
                                     </button>
 
@@ -449,18 +497,16 @@ export default function AddUserPage() {
                                         <button
                                             type="button"
                                             onClick={nextStep}
-                                            className="px-8 py-3 bg-slate-900 text-white rounded-lg font-semibold hover:bg-slate-800 transition-all duration-200 flex items-center space-x-2 shadow-sm"
+                                            className="px-8 py-3 bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-lg font-semibold hover:from-slate-700 hover:to-slate-800 transition-all duration-200 flex items-center space-x-2 shadow-sm"
                                         >
                                             <span>Continue</span>
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                            </svg>
+                                            <ChevronRight className="w-5 h-5" />
                                         </button>
                                     ) : (
                                         <button
                                             type="submit"
                                             disabled={loading || !form.name || !form.collegeId || !form.password || !form.department}
-                                            className="px-8 py-3 bg-slate-900 text-white rounded-lg font-semibold hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center space-x-2 shadow-sm"
+                                            className="px-8 py-3 bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-lg font-semibold hover:from-slate-700 hover:to-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center space-x-2 shadow-sm"
                                         >
                                             {loading ? (
                                                 <>
@@ -470,9 +516,7 @@ export default function AddUserPage() {
                                             ) : (
                                                 <>
                                                     <span>Create User</span>
-                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                                    </svg>
+                                                    <ArrowRight className="w-5 h-5" />
                                                 </>
                                             )}
                                         </button>
@@ -489,13 +533,9 @@ export default function AddUserPage() {
                                 }`}>
                                     <div className="flex items-center space-x-3">
                                         {message === "success" ? (
-                                            <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
+                                            <Check className="w-5 h-5 text-green-500" />
                                         ) : (
-                                            <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
+                                            <AlertCircle className="w-5 h-5 text-red-500" />
                                         )}
                                         <div>
                                             <h4 className={`font-semibold ${
