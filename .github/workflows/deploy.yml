@@ -29,7 +29,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: jws/indep-app:latest
+          tags: joerakesh/indep-app:latest
           platforms: linux/amd64
 
   deploy:
@@ -50,10 +50,10 @@ jobs:
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin || true
 
             # Pull the new image (ensures containerd can access it)
-            docker pull jws/indep-app:latest || true
+            docker pull joerakesh/indep-app:latest || true
 
             # For k3s, tell kubernetes to update the deployment image
-            sudo kubectl -n default set image deployment/indep-app indep=jws/indep-app:latest --record
+            sudo kubectl -n default set image deployment/indep-app indep=joerakesh/indep-app:latest --record
 
             # Wait for rollout to finish
             sudo kubectl -n default rollout status deployment/indep-app --timeout=120s
