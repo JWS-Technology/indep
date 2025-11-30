@@ -2,23 +2,23 @@
 
 import { useState } from "react";
 import { shiftOne, shiftTwo } from "@/data/teams";
-import { 
-  User, 
-  IdCard, 
-  Lock, 
-  Building2, 
-  ChevronDown, 
-  ChevronLeft, 
-  ChevronRight, 
-  Check,
-  AlertCircle,
-  ArrowRight,
-  Users,
-  Target,
-  Sparkles,
-  Shield,
-  GraduationCap,
-  Settings
+import {
+    User,
+    IdCard,
+    Lock,
+    Building2,
+    ChevronDown,
+    ChevronLeft,
+    ChevronRight,
+    Check,
+    AlertCircle,
+    ArrowRight,
+    Users,
+    Target,
+    Sparkles,
+    Shield,
+    GraduationCap,
+    Settings
 } from "lucide-react";
 
 export default function AddUserPage() {
@@ -43,44 +43,51 @@ export default function AddUserPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         // Validate all fields
         if (!form.name || !form.collegeId || !form.password || !form.department) {
-            setMessage("error");
+            setMessage("Please fill in all fields"); // Better message
             return;
         }
 
         setLoading(true);
         setMessage("");
 
-        const res = await fetch("/api/admin/create-user", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(form),
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-            setMessage("success");
-            setForm({
-                name: "",
-                collegeId: "",
-                password: "",
-                role: "student",
-                department: "",
+        try {
+            const res = await fetch("/api/admin/create-user", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(form),
             });
-            setActiveStep(1);
-            setTouched({
-                name: false,
-                collegeId: false,
-                password: false,
-                department: false
-            });
-        } else {
-            setMessage("error");
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setMessage("success");
+                // Reset form logic...
+                setForm({
+                    name: "",
+                    collegeId: "",
+                    password: "",
+                    role: "student",
+                    department: "",
+                });
+                setActiveStep(1);
+                setTouched({
+                    name: false,
+                    collegeId: false,
+                    password: false,
+                    department: false
+                });
+            } else {
+                // 🔥 KEY FIX: Set the actual error message from the server
+                setMessage(data.error || "Failed to create user");
+            }
+        } catch (error) {
+            setMessage("Network error occurred");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const selectDepartment = (dept: string) => {
@@ -132,7 +139,7 @@ export default function AddUserPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 py-8 px-4">
+        <div className="min-h-screen bg-gradient-to-br mt-20 from-slate-50 via-white to-slate-100 py-8 px-4">
             <div className="max-w-5xl mx-auto">
                 {/* Professional Header */}
                 <div className="text-center mb-12">
@@ -142,9 +149,9 @@ export default function AddUserPage() {
                     <h1 className="text-4xl font-bold text-slate-900 mb-4">
                         Create New User
                     </h1>
-                    <p className="text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed">
+                    {/* <p className="text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed">
                         Add students, faculty, or administrators to the system with our streamlined process
-                    </p>
+                    </p> */}
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -156,11 +163,10 @@ export default function AddUserPage() {
                                     const IconComponent = step.icon;
                                     return (
                                         <div key={index} className="flex items-center space-x-4">
-                                            <div className={`relative flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center border-2 transition-all duration-300 ${
-                                                activeStep >= index + 1 
-                                                    ? "bg-gradient-to-br from-slate-800 to-slate-900 border-slate-900 text-white shadow-md" 
-                                                    : "bg-slate-100 border-slate-200 text-slate-400"
-                                            }`}>
+                                            <div className={`relative flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center border-2 transition-all duration-300 ${activeStep >= index + 1
+                                                ? "bg-gradient-to-br from-slate-800 to-slate-900 border-slate-900 text-white shadow-md"
+                                                : "bg-slate-100 border-slate-200 text-slate-400"
+                                                }`}>
                                                 <IconComponent className="w-5 h-5" />
                                                 {activeStep > index + 1 && (
                                                     <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
@@ -169,9 +175,8 @@ export default function AddUserPage() {
                                                 )}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <h3 className={`font-semibold text-sm ${
-                                                    activeStep >= index + 1 ? "text-slate-900" : "text-slate-400"
-                                                }`}>
+                                                <h3 className={`font-semibold text-sm ${activeStep >= index + 1 ? "text-slate-900" : "text-slate-400"
+                                                    }`}>
                                                     {step.label}
                                                 </h3>
                                                 <p className="text-slate-500 text-xs mt-1">
@@ -190,7 +195,7 @@ export default function AddUserPage() {
                                     <span className="font-semibold">{Math.round((activeStep / 3) * 100)}%</span>
                                 </div>
                                 <div className="w-full bg-slate-100 rounded-full h-2">
-                                    <div 
+                                    <div
                                         className="bg-gradient-to-r from-slate-800 to-slate-900 h-2 rounded-full transition-all duration-500 ease-out"
                                         style={{ width: `${(activeStep / 3) * 100}%` }}
                                     ></div>
@@ -214,11 +219,10 @@ export default function AddUserPage() {
                                                     <span>Full Name</span>
                                                     <span className="text-red-500">*</span>
                                                 </label>
-                                                <div className={`relative rounded-lg border-2 transition-all duration-200 ${
-                                                    isFieldInvalid('name') 
-                                                        ? 'border-red-300 bg-red-50' 
-                                                        : 'border-slate-200 hover:border-slate-300 focus-within:border-slate-400'
-                                                }`}>
+                                                <div className={`relative rounded-lg border-2 transition-all duration-200 ${isFieldInvalid('name')
+                                                    ? 'border-red-300 bg-red-50'
+                                                    : 'border-slate-200 hover:border-slate-300 focus-within:border-slate-400'
+                                                    }`}>
                                                     <input
                                                         type="text"
                                                         placeholder="Enter full name"
@@ -243,11 +247,10 @@ export default function AddUserPage() {
                                                     <span>College ID</span>
                                                     <span className="text-red-500">*</span>
                                                 </label>
-                                                <div className={`relative rounded-lg border-2 transition-all duration-200 ${
-                                                    isFieldInvalid('collegeId') 
-                                                        ? 'border-red-300 bg-red-50' 
-                                                        : 'border-slate-200 hover:border-slate-300 focus-within:border-slate-400'
-                                                }`}>
+                                                <div className={`relative rounded-lg border-2 transition-all duration-200 ${isFieldInvalid('collegeId')
+                                                    ? 'border-red-300 bg-red-50'
+                                                    : 'border-slate-200 hover:border-slate-300 focus-within:border-slate-400'
+                                                    }`}>
                                                     <input
                                                         type="text"
                                                         placeholder="Example: 23UBC506"
@@ -273,11 +276,10 @@ export default function AddUserPage() {
                                                 <span>Password</span>
                                                 <span className="text-red-500">*</span>
                                             </label>
-                                            <div className={`relative rounded-lg border-2 transition-all duration-200 ${
-                                                isFieldInvalid('password') 
-                                                    ? 'border-red-300 bg-red-50' 
-                                                    : 'border-slate-200 hover:border-slate-300 focus-within:border-slate-400'
-                                            }`}>
+                                            <div className={`relative rounded-lg border-2 transition-all duration-200 ${isFieldInvalid('password')
+                                                ? 'border-red-300 bg-red-50'
+                                                : 'border-slate-200 hover:border-slate-300 focus-within:border-slate-400'
+                                                }`}>
                                                 <input
                                                     type="password"
                                                     placeholder="Enter secure password"
@@ -324,20 +326,17 @@ export default function AddUserPage() {
                                                                     onChange={(e) => setForm({ ...form, role: e.target.value })}
                                                                     className="hidden"
                                                                 />
-                                                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                                                                    form.role === role.value 
-                                                                        ? "border-slate-900 bg-slate-900" 
-                                                                        : "border-slate-300"
-                                                                }`}>
+                                                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${form.role === role.value
+                                                                    ? "border-slate-900 bg-slate-900"
+                                                                    : "border-slate-300"
+                                                                    }`}>
                                                                     {form.role === role.value && <div className="w-2 h-2 bg-white rounded-full"></div>}
                                                                 </div>
                                                                 <div className="flex items-center space-x-3 flex-1">
-                                                                    <div className={`p-2 rounded-lg ${
-                                                                        form.role === role.value ? 'bg-slate-100' : 'bg-slate-50'
-                                                                    }`}>
-                                                                        <RoleIcon className={`w-4 h-4 ${
-                                                                            form.role === role.value ? 'text-slate-900' : 'text-slate-500'
-                                                                        }`} />
+                                                                    <div className={`p-2 rounded-lg ${form.role === role.value ? 'bg-slate-100' : 'bg-slate-50'
+                                                                        }`}>
+                                                                        <RoleIcon className={`w-4 h-4 ${form.role === role.value ? 'text-slate-900' : 'text-slate-500'
+                                                                            }`} />
                                                                     </div>
                                                                     <div className="flex-1">
                                                                         <div className="text-slate-900 font-medium capitalize">{role.label}</div>
@@ -361,13 +360,12 @@ export default function AddUserPage() {
                                                     <button
                                                         type="button"
                                                         onClick={() => setIsDeptOpen(!isDeptOpen)}
-                                                        className={`w-full text-left rounded-lg border-2 px-4 py-3 transition-all duration-200 flex items-center justify-between ${
-                                                            isFieldInvalid('department')
-                                                                ? 'border-red-300 bg-red-50 text-red-900'
-                                                                : form.department
-                                                                    ? 'border-slate-400 bg-white text-slate-900'
-                                                                    : 'border-slate-200 hover:border-slate-300 text-slate-400'
-                                                        }`}
+                                                        className={`w-full text-left rounded-lg border-2 px-4 py-3 transition-all duration-200 flex items-center justify-between ${isFieldInvalid('department')
+                                                            ? 'border-red-300 bg-red-50 text-red-900'
+                                                            : form.department
+                                                                ? 'border-slate-400 bg-white text-slate-900'
+                                                                : 'border-slate-200 hover:border-slate-300 text-slate-400'
+                                                            }`}
                                                     >
                                                         <span className={form.department ? "text-slate-900" : "text-slate-400"}>
                                                             {form.department || "Select Department"}
@@ -462,9 +460,8 @@ export default function AddUserPage() {
                                                                 </div>
                                                             </div>
                                                             <div className="flex items-center space-x-2">
-                                                                <span className={`font-medium ${
-                                                                    item.value ? "text-slate-900" : "text-red-500 italic"
-                                                                }`}>
+                                                                <span className={`font-medium ${item.value ? "text-slate-900" : "text-red-500 italic"
+                                                                    }`}>
                                                                     {item.value || "Not provided"}
                                                                 </span>
                                                                 {item.value ? (
@@ -526,11 +523,10 @@ export default function AddUserPage() {
 
                             {/* Success/Error Message */}
                             {message && (
-                                <div className={`mt-6 p-4 rounded-lg border ${
-                                    message === "success" 
-                                        ? "bg-green-50 border-green-200 text-green-800" 
+                                <div className={`mt-6 p-4 rounded-lg border ${message === "success"
+                                        ? "bg-green-50 border-green-200 text-green-800"
                                         : "bg-red-50 border-red-200 text-red-800"
-                                }`}>
+                                    }`}>
                                     <div className="flex items-center space-x-3">
                                         {message === "success" ? (
                                             <Check className="w-5 h-5 text-green-500" />
@@ -538,15 +534,15 @@ export default function AddUserPage() {
                                             <AlertCircle className="w-5 h-5 text-red-500" />
                                         )}
                                         <div>
-                                            <h4 className={`font-semibold ${
-                                                message === "success" ? "text-green-800" : "text-red-800"
-                                            }`}>
-                                                {message === "success" ? "User Created Successfully!" : "Please fill all required fields"}
+                                            <h4 className={`font-semibold ${message === "success" ? "text-green-800" : "text-red-800"
+                                                }`}>
+                                                {message === "success" ? "User Created Successfully!" : "Error"}
                                             </h4>
                                             <p className="text-sm opacity-90">
-                                                {message === "success" 
-                                                    ? "The new user has been added to the system." 
-                                                    : "All fields marked with * are required to continue."}
+                                                {/* Display the actual message here */}
+                                                {message === "success"
+                                                    ? "The new user has been added to the system."
+                                                    : message}
                                             </p>
                                         </div>
                                     </div>
