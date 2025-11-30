@@ -21,7 +21,7 @@ export default function AdminSidebar() {
         { name: "All Users", href: "/admin/users", icon: Users },
         { name: "Create User", href: "/admin/create-user", icon: UserPlus }, // Assuming you move the add-user page here
         { name: "Manage Events", href: "/admin/events", icon: Calendar },
-        { name: "Results", href: "/admin/results", icon: Trophy },
+        // { name: "Results", href: "/admin/results", icon: Trophy },
         { name: "Settings", href: "/admin/settings", icon: Settings },
     ];
 
@@ -55,8 +55,8 @@ export default function AdminSidebar() {
                             key={item.name}
                             href={item.href}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                                    ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
-                                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                                ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
+                                : "text-slate-400 hover:bg-slate-800 hover:text-white"
                                 }`}
                         >
                             <Icon size={20} className={isActive ? "text-white" : "text-slate-500 group-hover:text-white"} />
