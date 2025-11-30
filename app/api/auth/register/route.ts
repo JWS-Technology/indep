@@ -1,9 +1,9 @@
-import connectDB from "@/app/api/db/connection";
 import User from "@/models/User";
+import dbConnect from "@/utils/dbConnect";
 import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
-  await connectDB();
+  await dbConnect();
 
   const { name, email, password, role, department } = await req.json();
 

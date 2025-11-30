@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import connectDB from "@/app/api/db/connection";
 import User from "@/models/User";
 import { shiftOne, shiftTwo } from "@/data/teams"; // your arrays
+import dbConnect from "@/utils/dbConnect";
 
 export async function POST(req: Request) {
   console.log("req came");
   try {
-    await connectDB();
+    await dbConnect();
 
     const body = await req.json();
     const { name, collegeId, password, role, department } = body;

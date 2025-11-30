@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "@/models/User";
-import connectDB from "@/app/api/db/connection";
+import dbConnect from "@/utils/dbConnect";
 
 export async function POST(req: Request) {
-  await connectDB();
+  await dbConnect();
 
   try {
     // 1. Get collegeId instead of email

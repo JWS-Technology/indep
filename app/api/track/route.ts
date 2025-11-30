@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import Visitor from "@/models/Visitor";
-import connectDB from "@/app/api/db/connection";
+import dbConnect from "@/utils/dbConnect";
 
 export async function GET() {
   try {
-    await connectDB();
+    await dbConnect();
 
     // Fetch existing counter
     let counter = await Visitor.findOne();

@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import User from "@/models/User";
-import connectDB from "../db/connection";
+import dbConnect from "@/utils/dbConnect";
 
 export async function GET(req) {
-  await connectDB();
+  await dbConnect();
 
   const token = req.cookies.get("token")?.value;
   if (!token)

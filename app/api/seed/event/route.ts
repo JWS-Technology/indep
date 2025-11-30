@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/app/api/db/connection";
 import Event from "@/models/Event";
+import dbConnect from "@/utils/dbConnect";
 
 const seedData = [
   // OFF-STAGE
@@ -231,7 +231,7 @@ const seedData = [
 ];
 
 export async function GET() {
-  await connectDB();
+  await dbConnect();
   try {
     // Clear existing events to avoid duplicates during development
     await Event.deleteMany({});
