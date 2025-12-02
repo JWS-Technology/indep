@@ -188,7 +188,7 @@ export default function Footer() {
                 <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0 pt-6 border-t border-gray-800">
                     <div className="text-gray-400 text-sm text-center lg:text-left">
                         <p>&copy; 2025 INDEP - St. Joseph's College. All rights reserved.</p>
-                        <a href="https://www.jwstechnologies.com" target='_blank' className="text-xs text-gray-500 mt-1 hover:text-gray-300 transition-colors">
+                        <a href="https://www.jwstechnologies.com" target='_blank' className="text-xl text-white mt-1 hover:text-gray-300 transition-colors">
                             Powered by JWS Technologies
                         </a>
                     </div>
