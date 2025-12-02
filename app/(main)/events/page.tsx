@@ -221,6 +221,7 @@ export default function EventsPage() {
                         {isTeam ? <Users size={12} /> : <User size={12} />}
                         <span>{isTeam ? "Team" : "Solo"}</span>
                       </div>
+
                       <div className="w-1 h-1 rounded-full bg-slate-300" />
                       <div className="flex items-center gap-1">
                         <Clock size={12} />
@@ -228,7 +229,14 @@ export default function EventsPage() {
                         <span>{event.time || "TBA"}</span>
                       </div>
                     </div>
+                    <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
 
+                      <div className="flex items-center gap-1">
+                        <Lightbulb size={12} />
+                        {/* Displaying dynamic time from DB */}
+                        <span>{event.venue || "TBA"}</span>
+                      </div>
+                    </div>
                     {/* Hover Reveal Gradient */}
                     <div className={`absolute inset-0 opacity-0 group-hover:opacity-5 pointer-events-none transition-opacity duration-300 ${isActiveOn ? 'bg-indigo-600' : 'bg-pink-600'}`} />
                   </div>
