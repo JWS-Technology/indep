@@ -45,7 +45,10 @@ import {
   Compass,
   HelpCircle,
   PenTool,
-  Layers
+  Layers,
+  File,
+  Upload,
+  Phone
 } from "lucide-react";
 
 export default function RulesPage() {
@@ -93,18 +96,9 @@ export default function RulesPage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
-          {/* <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-600 to-red-800 rounded-2xl mb-6 shadow-lg">
-            <BookOpen className="w-10 h-10 text-white" />
-          </div> */}
-          {/* <h1 className="text-4xl font-bold text-slate-900 mb-3">
-            St. Joseph's College (Autonomous)
-          </h1> */}
           <h2 className="text-3xl font-bold bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent mb-2">
             Rules & Regulations
           </h2>
-          {/* <p className="text-slate-600 text-lg">
-            Comprehensive Event Guidelines Handbook
-          </p> */}
           <div className="mt-6 flex justify-center space-x-4">
             <button
               onClick={downloadPDF}
@@ -139,10 +133,10 @@ export default function RulesPage() {
           >
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                <Users className="w-6 h-6 text-white" />
+                <FileText className="w-6 h-6 text-white" />
               </div>
               <div className="text-left">
-                <h3 className="text-xl font-bold text-slate-900">📘 General Guidelines</h3>
+                <h3 className="text-xl font-bold text-slate-900">General Guidelines</h3>
                 <p className="text-slate-600 text-sm">Complete registration & participation rules</p>
               </div>
             </div>
@@ -203,7 +197,7 @@ export default function RulesPage() {
                 {/* ID Card & Attendance */}
                 <div className="bg-slate-50 rounded-xl p-6 border border-slate-200">
                   <h4 className="font-bold text-slate-900 text-lg mb-4 flex items-center space-x-2">
-                    <FileText className="w-5 h-5" />
+                    <File className="w-5 h-5" />
                     <span>ID Card & Attendance Rules</span>
                   </h4>
                   <div className="space-y-3 text-slate-700">
@@ -214,6 +208,10 @@ export default function RulesPage() {
                     <p className="flex items-start space-x-2">
                       <Clock className="w-4 h-4 text-slate-600 mt-1 flex-shrink-0" />
                       <span>They must be present at the backstage immediately after the first announcement of the events.</span>
+                    </p>
+                    <p className="flex items-start space-x-2">
+                      <Check className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
+                      <span>The submitted ID cards should be collected once after the performance by the respective team.</span>
                     </p>
                     <p className="flex items-start space-x-2">
                       <AlertTriangle className="w-4 h-4 text-red-600 mt-1 flex-shrink-0" />
@@ -255,7 +253,7 @@ export default function RulesPage() {
                     <span>Financial Support</span>
                   </h4>
                   <p className="text-slate-700">
-                    Each Department will be given <span className="font-bold text-green-700 text-xl">Rs.1500/-</span> to meet the expenses related to arrangements, including refreshments.
+                    Each Department will be given <span className="font-bold text-green-700 text-xl">Rs.2000/-</span> to meet the expenses related to arrangements, including refreshments.
                   </p>
                 </div>
               </div>
@@ -315,7 +313,7 @@ export default function RulesPage() {
               <div className="bg-slate-50 rounded-xl p-6 border border-slate-200">
                 <p className="text-center text-slate-700 text-lg italic">
                   <AlertTriangle className="w-6 h-6 text-amber-600 inline mr-2 align-middle" />
-                  <span className="font-semibold">Judges' decision will be final and binding</span>
+                  <span className="font-semibold">Judges' decision will be final</span>
                 </p>
               </div>
             </div>
@@ -327,7 +325,7 @@ export default function RulesPage() {
           <div className="flex items-start space-x-4">
             <AlertTriangle className="w-8 h-8 text-red-600 flex-shrink-0" />
             <div>
-              <h3 className="text-xl font-bold text-red-900 mb-4">⚠️ Important Note</h3>
+              <h3 className="text-xl font-bold text-red-900 mb-4">Important Note</h3>
               <div className="space-y-4 text-red-800">
                 <p className="leading-relaxed">
                   Dialogues containing double meaning, criticism of the college management, staff,
@@ -663,11 +661,11 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <Ban className="w-5 h-5 text-red-600 mt-0.5" />
-                      <p><span className="font-bold">Paper cuttings are not allowed.</span></p>
+                      <p>Paper cuttings are not allowed.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Award className="w-5 h-5 text-indigo-600 mt-0.5" />
-                      <p>Judgment will be based on: <span className="font-bold">Caption, Presentation, Creativity & Overall effect.</span></p>
+                      <p>The judgment will be based on Caption, Presentation, and Creativity & Overall effect.</p>
                     </div>
                   </div>
                 </div>
@@ -793,7 +791,7 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileEdit className="w-5 h-5 text-blue-600 mt-0.5" />
-                      <p>The topic will be sent in the <span className="font-bold">Official WhatsApp Group at 9:30 am on the same day</span>.</p>
+                      <p>The topic will be sent in the Official WhatsApp Group at 9:30 am on the same day.</p>
                     </div>
                   </div>
                 </div>
@@ -850,7 +848,7 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileEdit className="w-5 h-5 text-indigo-600 mt-0.5" />
-                      <p>The topic will be sent in the <span className="font-bold">Official WhatsApp Group at 12:30 pm on the same day</span>.</p>
+                      <p>The topic will be sent in the Official WhatsApp Group at 12:30 pm on the same day.</p>
                     </div>
                   </div>
                 </div>
@@ -907,11 +905,11 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <Award className="w-5 h-5 text-amber-600 mt-0.5" />
-                      <p>The judgement is based on <span className="font-bold">Creativity, Imitation and Overall effect</span>.</p>
+                      <p>The judgement is based on Creativity, Imitation and Overall effect.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5" />
-                      <p><span className="font-bold text-red-600">Criticizing others particularly the leaders in any form leads to disqualification.</span></p>
+                      <p>Criticizing others particularly the leaders in any form leads to disqualification.</p>
                     </div>
                   </div>
                 </div>
@@ -972,23 +970,23 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <Music className="w-5 h-5 text-purple-600 mt-0.5" />
-                      <p><span className="font-bold">Recorded background music</span> is allowed, and <span className="font-bold text-red-600">Recorded dialogues and songs are not allowed.</span> Voice from the backstage is not allowed.</p>
+                      <p>Recorded background music is allowed, and Recorded dialogues and songs are not allowed. Voice from the backstage is not allowed.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Type className="w-5 h-5 text-purple-600 mt-0.5" />
-                      <p>Medium of communication can be either in <span className="font-bold">Tamil or English</span>.</p>
+                      <p>Medium of communication can be either in Tamil or English.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Award className="w-5 h-5 text-purple-600 mt-0.5" />
-                      <p>The judgement is based on qualities like <span className="font-bold">Imagination, Presentation, Novelty, and Overall effect and Social Relevance</span>.</p>
+                      <p>The judgement is based on Qualities like Imagination, Presentation, Novelty, and Overall effect and Social Relevance.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileEdit className="w-5 h-5 text-purple-600 mt-0.5" />
-                      <p>Lot for the theme selection will be drawn on <span className="font-bold">3.12.2025</span>.</p>
+                      <p>Lot for the theme selection will be drawn on 3.12.2025.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileText className="w-5 h-5 text-purple-600 mt-0.5" />
-                      <p>The script should be uploaded into the portal on or before <span className="font-bold">07.12.2025 upto 11.59 p.m.</span> Corrections if any will be intimated latest by <span className="font-bold">08-12-2025</span>.</p>
+                      <p>The script should be uploaded into the portal on or before 07.12.2025 upto 11.59 p.m. Corrections if any will be intimated latest by 08-12-2025.</p>
                     </div>
                   </div>
                 </div>
@@ -1045,15 +1043,15 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <Award className="w-5 h-5 text-green-600 mt-0.5" />
-                      <p>The judgment is based on qualities like <span className="font-bold">Creativity, Presentation and Overall effect</span>.</p>
+                      <p>The judgment is based on qualities like Creativity, Presentation and Overall effect.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileEdit className="w-5 h-5 text-green-600 mt-0.5" />
-                      <p>Drawing of lots of the product will be done on <span className="font-bold">3.12.2025 at 2:30 pm</span>.</p>
+                      <p>Drawing of lots of the product will be done on 3.12.2025 at 2:30 pm.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileText className="w-5 h-5 text-green-600 mt-0.5" />
-                      <p>The Script for the Adzup should be submitted in the INDEP Portal on or before <span className="font-bold">07-12-2025 at 11.59 p.m.</span> Corrections if any will be intimated latest by <span className="font-bold">08-12-2025</span>.</p>
+                      <p>The Script for the Adzup should be submitted in the INDEP Portal on or before 07-12-2025 at 11.59 p.m. Corrections if any will be intimated latest by 08-12-2025.</p>
                     </div>
                   </div>
                 </div>
@@ -1084,7 +1082,7 @@ export default function RulesPage() {
                   <div className="flex items-center space-x-4 text-sm text-slate-600">
                     <span className="flex items-center space-x-1">
                       <Calendar className="w-4 h-4" />
-                      <span>11.12.2025</span>
+                      <span>12.12.2025</span>
                     </span>
                     <span className="flex items-center space-x-1">
                       <Clock className="w-4 h-4" />
@@ -1118,15 +1116,15 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <Award className="w-5 h-5 text-pink-600 mt-0.5" />
-                      <p>Judgment will be based on the qualities like <span className="font-bold">Properties and costumes used, abinaya, expression and general impression</span>.</p>
+                      <p>Judgment will be based on the qualities like Properties and costumes used, abinaya, expression and general impression.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Ban className="w-5 h-5 text-red-600 mt-0.5" />
-                      <p><span className="font-bold">No film song should be used.</span></p>
+                      <p>No film song should be used.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileMusic className="w-5 h-5 text-pink-600 mt-0.5" />
-                      <p>The music should be uploaded in the portal on or before <span className="font-bold">7-12-2025 upto 11.59 p.m.</span> Corrections if any will be intimated latest by <span className="font-bold">8-12-2025</span>.</p>
+                      <p>The music should be uploaded in the portal on or before 7-12-2025 upto 11.59 p.m. Corrections if any will be intimated latest by 8-12-2025.</p>
                     </div>
                   </div>
                 </div>
@@ -1187,19 +1185,19 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <AlertCircle className="w-5 h-5 text-orange-600 mt-0.5" />
-                      <p>Only <span className="font-bold">4 teams</span> are permitted to dance for a particular variety of folk on <span className="font-bold">FCFS basis</span>.</p>
+                      <p>Only <span className="font-bold">4 teams</span> are permitted to dance for a particular variety of folk on FCFS basis.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileEdit className="w-5 h-5 text-orange-600 mt-0.5" />
-                      <p>Each team should register the variety of dance, song on before <span className="font-bold">05.12.2025 at 4.00pm</span>.</p>
+                      <p>Each team should register the variety of dance, song on before 05.12.2025 at 4.00pm.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileMusic className="w-5 h-5 text-orange-600 mt-0.5" />
-                      <p>The Song in MP3 format should be uploaded in the portal on or before <span className="font-bold">07-12-2025 upto 11.59 p.m.</span> Corrections if any will be intimated latest by <span className="font-bold">08-12-2025</span>.</p>
+                      <p>The Song in MP3 format should be uploaded in the portal on or before 07-12-2025 upto 11.59 p.m. Corrections if any will be intimated latest by 08-12-2025.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Award className="w-5 h-5 text-orange-600 mt-0.5" />
-                      <p>The judgment will be based on the <span className="font-bold">Rhythm, Formation, Costumes and Overall effect</span>.</p>
+                      <p>The judgment will be based on the Rhythm, Formation, Costumes and Overall effect.</p>
                     </div>
                   </div>
                 </div>
@@ -1256,15 +1254,15 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileMusic className="w-5 h-5 text-blue-600 mt-0.5" />
-                      <p>The team should register the song (non-film) online on or before <span className="font-bold">5.12.2025 upto 11.59 p.m.</span> in the portal. If the track is a fusion of different songs, register the entire part of all the songs chosen. For a single song repetition is not allowed.</p>
+                      <p>The team should register the song (non-film) online on or before 5.12.2025 upto 11.59 p.m. in the portal. If the track is a fusion of different songs, register the entire part of all the songs chosen. For a single song repetition is not allowed.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileMusic className="w-5 h-5 text-blue-600 mt-0.5" />
-                      <p>The music for the western dance should be uploaded on or before <span className="font-bold">07-12-2025 upto 11.59 p.m.</span> Corrections if any will be intimated latest by <span className="font-bold">08.12.2025</span>.</p>
+                      <p>The music for the western dance should be uploaded on or before 07-12-2025 upto 11.59 p.m. Corrections if any will be intimated latest by 08.12.2025.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Award className="w-5 h-5 text-blue-600 mt-0.5" />
-                      <p>The judgment will be based on <span className="font-bold">Formation & coordination, Dance movements, Expression and Overall effect</span>.</p>
+                      <p>The judgment will be based on Formation & coordination, Dance movements, Expression and Overall effect.</p>
                     </div>
                   </div>
                 </div>
@@ -1277,7 +1275,7 @@ export default function RulesPage() {
         <div className="mb-10">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center space-x-3">
             <Music className="w-8 h-8 text-green-600" />
-            <span>🎵 Music Events</span>
+            <span>Music Events</span>
           </h2>
 
           {/* Group Song Indian */}
@@ -1333,7 +1331,7 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileEdit className="w-5 h-5 text-green-600 mt-0.5" />
-                      <p>Themes such as <span className="font-bold">National Integration, Human Rights and any socially relevant themes</span> can be presented.</p>
+                      <p>Themes such as National Integration, Human Rights and any socially relevant themes can be presented.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Music className="w-5 h-5 text-green-600 mt-0.5" />
@@ -1341,11 +1339,11 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileMusic className="w-5 h-5 text-green-600 mt-0.5" />
-                      <p>The song and the tune should be registered in the portal on or before <span className="font-bold">5.12.2025 at 11.59 p.m.</span></p>
+                      <p>The song and the tune should be registered in the portal on or before 5.12.2025 at 11.59 p.m.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileText className="w-5 h-5 text-green-600 mt-0.5" />
-                      <p>The lyrics of the song should be uploaded on or before <span className="font-bold">07-12-2025 at 11.59 p.m.</span> Corrections if any will be intimated latest by <span className="font-bold">08-12-2025</span>.</p>
+                      <p>The lyrics of the song should be uploaded on or before 07-12-2025 at 11.59 p.m. Corrections if any will be intimated latest by 08-12-2025.</p>
                     </div>
                   </div>
                 </div>
@@ -1402,15 +1400,15 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <Type className="w-5 h-5 text-teal-600 mt-0.5" />
-                      <p>The song should be in <span className="font-bold">ENGLISH</span>.</p>
+                      <p>The song should be in ENGLISH.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileMusic className="w-5 h-5 text-teal-600 mt-0.5" />
-                      <p>The song and the tune should be registered in the portal on or before <span className="font-bold">05.12.2025 at 11.59 p.m.</span></p>
+                      <p>The song and the tune should be registered in the portal on or before 05.12.2025 at 11.59 p.m.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileText className="w-5 h-5 text-teal-600 mt-0.5" />
-                      <p>The lyrics of the song should be uploaded on or before <span className="font-bold">07-12-2025 at 11.59 p.m.</span> Corrections if any will be intimated latest by <span className="font-bold">08-12-2025</span>.</p>
+                      <p>The lyrics of the song should be uploaded on or before 07-12-2025 at 11.59 p.m. Corrections if any will be intimated latest by 08-12-2025.</p>
                     </div>
                   </div>
                 </div>
@@ -1467,15 +1465,15 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <Music className="w-5 h-5 text-emerald-600 mt-0.5" />
-                      <p>It can be presented in any style <span className="font-bold">(Carnatic, Hindustani, Western, etc.)</span></p>
+                      <p>It can be presented in any style (Carnatic, Hindustani, Western, etc.)</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Ban className="w-5 h-5 text-red-600 mt-0.5" />
-                      <p><span className="font-bold">Pre-recorded music pieces in keyboards are not allowed.</span></p>
+                      <p>Pre-recorded music pieces in keyboards are not allowed.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Award className="w-5 h-5 text-emerald-600 mt-0.5" />
-                      <p>Judgment will be based on the qualities like <span className="font-bold">selection of Raga, Taal and General impression</span>.</p>
+                      <p>Judgment will be based on the qualities like selection of Raga, Taal and General impression.</p>
                     </div>
                   </div>
                 </div>
@@ -1540,7 +1538,7 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <AlertCircle className="w-5 h-5 text-indigo-600 mt-0.5" />
-                      <p>Participants have to bring the necessary articles like <span className="font-bold">Blade, Gum, Pair of Scissors, etc</span>.</p>
+                      <p>Participants have to bring the necessary articles like Blade, Gum, Pair of Scissors, etc.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Square className="w-5 h-5 text-indigo-600 mt-0.5" />
@@ -1551,8 +1549,8 @@ export default function RulesPage() {
                       <p>Topic will be given <span className="font-bold">on the spot</span>.</p>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <Ban className="w-5 h-5 text-indigo-600 mt-0.5" />
-                      <p><span className="font-bold">Only paper materials should be used.</span></p>
+                      <AlertCircle className="w-5 h-5 text-indigo-600 mt-0.5" />
+                      <p>Only paper materials should be used.</p>
                     </div>
                   </div>
                 </div>
@@ -1605,23 +1603,23 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileText className="w-5 h-5 text-purple-600 mt-0.5" />
-                      <p><span className="font-bold">Computer Based Test (CBT)</span> will be conducted for <span className="font-bold">100 marks</span>.</p>
+                      <p>Computer Based Test (CBT) will be conducted for <span className="font-bold">100 marks</span>.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <BookOpen className="w-5 h-5 text-purple-600 mt-0.5" />
-                      <p>Questions from <span className="font-bold">General Knowledge of degree standard</span> will be asked.</p>
+                      <p>Questions from General Knowledge of degree standard will be asked.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <AlertCircle className="w-5 h-5 text-purple-600 mt-0.5" />
-                      <p>Based on the scores in CBT <span className="font-bold">three teams from Shift I and three teams from Shift II</span> will be short listed.</p>
+                      <p>Based on the scores in CBT three teams from Shift I and three teams from Shift II will be short listed.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Clock className="w-5 h-5 text-purple-600 mt-0.5" />
-                      <p>The results will be intimated to you <span className="font-bold">immediately after the test</span>.</p>
+                      <p>The results will be intimated to you immediately after the test.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Award className="w-5 h-5 text-purple-600 mt-0.5" />
-                      <p>Finals will be held on the <span className="font-bold">same day at 3.30 pm in Commerce AV Hall</span>.</p>
+                      <p>Finals will be held on the same day at 3.30 pm in Commerce AV Hall.</p>
                     </div>
                   </div>
                 </div>
@@ -1678,11 +1676,11 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
-                      <p>Before the event begins, the participants need to show the camera storage to ensure <span className="font-bold">no preloaded photos or photos taken already</span> are stored in the camera.</p>
+                      <p>Before the event begins, the participants need to show the camera storage to ensure no preloaded photos or photos taken already are stored in the camera.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <FileEdit className="w-5 h-5 text-blue-600 mt-0.5" />
-                      <p>Topic will be given <span className="font-bold">on the spot</span>. Based the topic the participants have click the photograph within the area given and in the presence of the event in-charge.</p>
+                      <p>Topic will be given on the spot. Based the topic the participants have click the photograph within the area given and in the presence of the event in-charge.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Clock className="w-5 h-5 text-blue-600 mt-0.5" />
@@ -1694,7 +1692,7 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <Award className="w-5 h-5 text-blue-600 mt-0.5" />
-                      <p>Judgement will be based on the <span className="font-bold">Theme, clarity of the photo, elegance, aesthetic sense and overall impression</span>.</p>
+                      <p>Judgement will be based on the Theme, clarity of the photo, elegance, aesthetic sense and overall impression.</p>
                     </div>
                   </div>
                 </div>
@@ -1739,7 +1737,7 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <Film className="w-5 h-5 text-red-600 mt-0.5" />
-                      <p>The short film must be <span className="font-bold">original</span>. The film should have not been sent for any competition outside.</p>
+                      <p>The short film must be original. The film should have not been sent for any competition outside.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Clock className="w-5 h-5 text-red-600 mt-0.5" />
@@ -1747,23 +1745,23 @@ export default function RulesPage() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <Type className="w-5 h-5 text-red-600 mt-0.5" />
-                      <p>The language can be <span className="font-bold">Tamil or English</span>.</p>
+                      <p>The language can be Tamil or English.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Video className="w-5 h-5 text-red-600 mt-0.5" />
-                      <p>The short film has to be uploaded in YouTube in Private mode shared with <span className="font-bold">indep@mail.sjctni.edu</span> and the youtube link should be uploaded in the portal on or before <span className="font-bold">08-12-2025 on or before 5:00 p.m.</span> Corrections (if any) will be informed on <span className="font-bold">09-12-2025</span>.</p>
+                      <p>The short film has to be uploaded in YouTube in Private mode shared with indep@mail.sjctni.edu and the youtube link should be uploaded in the portal on or before 08-12-2025 on or before 5:00 p.m. Corrections (if any) will be informed on 09-12-2025.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Ban className="w-5 h-5 text-red-600 mt-0.5" />
-                      <p><span className="font-bold text-red-700">Presence of any form of vulgarity or obscenity will not be tolerated and will lead to direct disqualification.</span></p>
+                      <p>Presence of any form of vulgarity or obscenity will not be tolerated and will lead to direct disqualification.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Award className="w-5 h-5 text-red-600 mt-0.5" />
-                      <p>The judgement will be based on <span className="font-bold">theme, clarity, creativity and overall effect</span>.</p>
+                      <p>The judgement will be based on theme, clarity, creativity and overall effect.</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Calendar className="w-5 h-5 text-red-600 mt-0.5" />
-                      <p>Last date for submission with correction (if any intimated) is <span className="font-bold">10.12.2025 at 5.00pm</span>.</p>
+                      <p>Last date for submission with correction (if any intimated) is 10.12.2025 at 5.00pm.</p>
                     </div>
                   </div>
                 </div>
@@ -1774,7 +1772,7 @@ export default function RulesPage() {
 
         {/* PLEASE NOTE Section */}
         <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl border border-slate-200 shadow-sm p-8 mb-8">
-          <h3 className="text-xl font-bold text-slate-900 mb-6">ℹ️ PLEASE NOTE...</h3>
+          <h3 className="text-xl font-bold text-slate-900 mb-6">PLEASE NOTE...</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
@@ -1807,11 +1805,11 @@ export default function RulesPage() {
               </div>
               <div className="flex items-start space-x-3">
                 <Calendar className="w-5 h-5 text-blue-600 mt-0.5" />
-                <p className="text-slate-700">Drawing of Events lot will be held on <span className="font-bold">8-12-2025 (off-stage events)</span> and <span className="font-bold">10.12.2025 (on stage events)</span> at <span className="font-bold">3.00 p.m. in TV Hall</span>.</p>
+                <p className="text-slate-700">Drawing of Events lot will be held on 8-12-2025 (off-stage events) and 10.12.2025 (on stage events) at 3.00 p.m. in TV Hall.</p>
               </div>
               <div className="flex items-start space-x-3">
                 <Clock className="w-5 h-5 text-blue-600 mt-0.5" />
-                <p className="text-slate-700">The final registration of participants should be done in the portal on or before <span className="font-bold">11:59 p.m, 08-12-2025 (Offline events)</span> and <span className="font-bold">10-12-2025 (On-stage events)</span>.</p>
+                <p className="text-slate-700">The final registration of participants should be done in the portal on or before 11:59 p.m, 08-12-2025 (Offline events) and 10-12-2025 (On-stage events).</p>
               </div>
               <div className="flex items-start space-x-3">
                 <FileText className="w-5 h-5 text-blue-600 mt-0.5" />
@@ -1826,16 +1824,12 @@ export default function RulesPage() {
           <p className="mb-2">
             For any queries, contact Fine Arts Association Coordinator:
           </p>
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center space-x-2">
+            <Phone className="w-4 h-4" />
             <p className="font-semibold text-slate-900 text-lg">
-              Dr. A. Vimal Jerald -
+              Dr. A. Vimal Jerald - 9698111008
             </p>
-            <a href="tel:+919698111008" className="font-semibold text-slate-900 text-lg" >9698111008</a>
-
           </div>
-          {/* <p className="mt-4 text-slate-500">
-            © 2025 St. Joseph's College (Autonomous) | INDEP 2025 | All Rights Reserved
-          </p> */}
         </div>
       </div>
 
