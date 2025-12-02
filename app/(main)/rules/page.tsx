@@ -85,7 +85,7 @@ export default function RulesPage() {
   };
 
   const downloadPDF = () => {
-    window.open('/indep-2025-rules.pdf', '_blank');
+    window.open('/Rules & Regulations INDEP 2025.pdf', '_blank');
   };
 
   return (
