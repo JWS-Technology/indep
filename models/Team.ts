@@ -1,25 +1,50 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, model, models, Document } from "mongoose";
 
+// 1️⃣ Define TypeScript interface for Team document
 export interface ITeam extends Document {
+  teamId: string;
   teamName: string;
-  shift: string;
+  password: string;
+  isPasswordChanged: boolean;
+  membersCreated: {
+    faculty: boolean;
+    student: boolean;
+  };
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
+// 2️⃣ Create Schema with typings
 const TeamSchema = new Schema<ITeam>(
   {
+    teamId: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
     teamName: {
       type: String,
       required: true,
-      trim: true,
     },
-    shift: {
+    password: {
       type: String,
       required: true,
-      trim: true,
+    },
+    isPasswordChanged: {
+      type: Boolean,
+      default: false,
+    },
+    membersCreated: {
+      faculty: { type: Boolean, default: false },
+      student: { type: Boolean, default: false },
     },
   },
   { timestamps: true }
 );
 
-// Fix model overwrite error in Next.js
-export default mongoose.models.Team || mongoose.model<ITeam>("Team", TeamSchema);
+// 3️⃣ Export typed model
+const Team =
+  (models.Team as mongoose.Model<ITeam>) || model<ITeam>("Team", TeamSchema);
+
+export default Team;
