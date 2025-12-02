@@ -95,6 +95,7 @@ export default function Footer() {
                                 { name: "Gallery", href: "/gallery" },
                                 { name: "Results", href: "/results" },
                                 { name: "Contact", href: "/contact" },
+                                { name: "Rules & Regulations", href: "/rules" },
                             ].map((item) => (
                                 <li key={item.name}>
                                     <a
