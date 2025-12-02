@@ -88,8 +88,8 @@ export default function HeroDesktop({ timeLeft, isEventStarted }: { timeLeft: an
 
                     <a
                         // href="/register"
-                        href="/Rules%20&%20Regulations%20INDEP%202025.pdf"
-                        download="Rules & Regulations INDEP 2025.pdf"
+                        href="/rules"
+                        // download="Rules & Regulations INDEP 2025.pdf"
                         className="px-8 py-4 bg-white/5 border border-white/20 text-white rounded-xl font-semibold text-lg backdrop-blur-sm hover:bg-white/10 hover:border-white/40 transition-all"
                     >
                         Rules & Regulations
