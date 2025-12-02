@@ -2,12 +2,21 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import jwt from "jsonwebtoken";
 import dbConnect from "@/utils/dbConnect";
-import Team from "@/models/Departments";
+import Team from "@/models/Team";
+import bcrypt from "bcryptjs"; // Import bcryptjs
 
 export async function PUT(request: Request) {
   try {
     await dbConnect();
     const { newPassword } = await request.json();
+
+    // Input validation
+    if (!newPassword) {
+      return NextResponse.json(
+        { success: false, error: "Missing new password" },
+        { status: 400 }
+      );
+    }
 
     // Auth Check
     const headersList = await headers();
@@ -24,9 +33,12 @@ export async function PUT(request: Request) {
       process.env.JWT_SECRET || "your-secret-key-change-this"
     );
 
+    // 🔑 Hash the new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
     // Update DB
     await Team.findByIdAndUpdate(decoded.id, {
-      password: newPassword, // In production, hash this!
+      password: hashedNewPassword, // Use the hashed password here
       isPasswordChanged: true,
     });
 
@@ -36,6 +48,48 @@ export async function PUT(request: Request) {
     response.cookies.delete("token"); // Force re-login
     return response;
   } catch (error) {
+    console.error("Password update error:", error);
     return NextResponse.json({ error: "Server Error" }, { status: 500 });
   }
 }
+// import { NextResponse } from "next/server";
+// import { headers } from "next/headers";
+// import jwt from "jsonwebtoken";
+// import dbConnect from "@/utils/dbConnect";
+// import Team from "@/models/Team";
+
+// export async function PUT(request: Request) {
+//   try {
+//     await dbConnect();
+//     const { newPassword } = await request.json();
+
+//     // Auth Check
+//     const headersList = await headers();
+//     const cookieHeader = headersList.get("cookie");
+//     const token = cookieHeader
+//       ?.split("; ")
+//       .find((row) => row.startsWith("token="))
+//       ?.split("=")[1];
+//     if (!token)
+//       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+//     const decoded: any = jwt.verify(
+//       token,
+//       process.env.JWT_SECRET || "your-secret-key-change-this"
+//     );
+
+//     // Update DB
+//     await Team.findByIdAndUpdate(decoded.id, {
+//       password: newPassword, // In production, hash this!
+//       isPasswordChanged: true,
+//     });
+
+//     // We recommend logging them out so they re-login with new password, or update token.
+//     // Dashboard handles redirect to login.
+//     const response = NextResponse.json({ success: true });
+//     response.cookies.delete("token"); // Force re-login
+//     return response;
+//   } catch (error) {
+//     return NextResponse.json({ error: "Server Error" }, { status: 500 });
+//   }
+// }
