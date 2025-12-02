@@ -7,11 +7,12 @@ import {
     MapPin,
     Mail,
     Phone,
+    MessageCircle // fallback for chat icon
 } from "lucide-react";
 import Image from "next/image";
 
-// Custom WhatsApp SVG
-const WhatsAppIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
+// Custom WhatsApp SVG for brand accuracy
+const WhatsAppIcon = ({ size = 18, className = "" }: { size?: number, className?: string }) => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
         width={size}
@@ -28,118 +29,187 @@ export default function Footer() {
     const whatsAppGroupLink = "https://chat.whatsapp.com/Cl7CGlUGIFiHwElOdG2ajg?mode=hqrt3";
 
     return (
-        <>
-            <footer className="bg-gradient-to-b from-gray-900 to-black text-white relative overflow-hidden">
+        <footer className="bg-gradient-to-b from-gray-900 to-black text-white relative overflow-hidden">
 
-                {/* Background Pattern */}
-                <div className="absolute inset-0 opacity-5">
-                    <div className="absolute top-0 left-0 w-72 h-72 bg-blue-500 rounded-full blur-3xl"></div>
-                    <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
-                </div>
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-5">
+                <div className="absolute top-0 left-0 w-72 h-72 bg-blue-500 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
+            </div>
 
-                {/* Main Footer */}
-                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
+            {/* Main Footer */}
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
 
-                        {/* Brand Section */}
-                        <div className="lg:col-span-2">
-                            <div className="flex items-center mb-6">
-                                <div className="relative group">
-                                    <div className="relative w-10 h-10 overflow-hidden ">
-                                        <Image
-                                            src={"/logo.png"}
-                                            alt="INDEP Logo"
-                                            fill
-                                            className="object-cover"
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <h2 className="font-black ml-2 text-2xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                        INDEP '25
-                                    </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
+
+                    {/* Brand Section */}
+                    <div className="lg:col-span-2">
+                        <div className="flex items-center mb-6">
+                            <div className="relative group">
+                                <div className="relative w-10 h-10 overflow-hidden ">
+                                    <Image
+                                        src={"/logo.png"}
+                                        alt="INDEP Logo"
+                                        fill
+                                        className="object-cover"
+                                    />
                                 </div>
                             </div>
 
-                            <p className="text-gray-300 text-base lg:text-lg leading-relaxed mb-6 max-w-2xl">
-                                The Inter-Departmental Cultural Extravaganza at St. Joseph's College.
-                                Celebrating talent, creativity, and sportsmanship.
-                            </p>
+                            <div>
+                                <h2 className="font-black ml-2 text-2xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent transition-all duration-300">
+                                    INDEP '25
+                                </h2>
+                            </div>
+                        </div>
 
-                            {/* Social Buttons */}
-                            <div className="flex flex-wrap gap-3">
-                                {[
-                                    { icon: <Facebook size={18} />, label: "Facebook", color: "hover:from-blue-500 hover:to-blue-600", href: "#" },
-                                    { icon: <Instagram size={18} />, label: "Instagram", color: "hover:from-pink-500 hover:to-purple-600", href: "#" },
-                                    { icon: <Twitter size={18} />, label: "Twitter", color: "hover:from-sky-500 hover:to-sky-600", href: "#" },
-                                    { icon: <Youtube size={18} />, label: "YouTube", color: "hover:from-red-500 hover:to-red-600", href: "#" },
-                                ].map((social, idx) => (
+                        <p className="text-gray-300 text-base lg:text-lg leading-relaxed mb-6 max-w-2xl">
+                            The Inter-Departmental Cultural Extravaganza at St. Joseph's College.
+                            Celebrating talent, creativity, and sportsmanship across departments
+                            through a spectacular showcase of cultural excellence.
+                        </p>
+
+                        {/* Social Buttons */}
+                        <div className="flex flex-wrap gap-3">
+                            {[
+                                { icon: <Facebook size={18} />, label: "Facebook", color: "hover:from-blue-500 hover:to-blue-600", href: "#" },
+                                { icon: <Instagram size={18} />, label: "Instagram", color: "hover:from-pink-500 hover:to-purple-600", href: "#" },
+                                { icon: <Twitter size={18} />, label: "Twitter", color: "hover:from-sky-500 hover:to-sky-600", href: "#" },
+                                { icon: <Youtube size={18} />, label: "YouTube", color: "hover:from-red-500 hover:to-red-600", href: "#" },
+                                // Added WhatsApp to the main list as well
+                                { icon: <WhatsAppIcon size={18} />, label: "WhatsApp", color: "hover:from-green-500 hover:to-green-600", href: whatsAppGroupLink },
+                            ].map((social, idx) => (
+                                <a
+                                    key={idx}
+                                    href={social.href}
+                                    target={social.href.startsWith("http") ? "_blank" : "_self"}
+                                    rel="noopener noreferrer"
+                                    className={`group relative p-3 bg-gray-800 rounded-xl ${social.color} transition-all duration-300 hover:scale-110 hover:shadow-xl cursor-pointer`}
+                                >
+                                    <span className="text-lg transform group-hover:scale-110 transition-transform duration-300 block">
+                                        {social.icon}
+                                    </span>
+
+                                    <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-20">
+                                        <div className="bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap border border-gray-700 shadow-lg">
+                                            {social.label}
+                                            <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45 border-l border-t border-gray-700" />
+                                        </div>
+                                    </div>
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Quick Links */}
+                    <div>
+                        <h3 className="font-bold text-lg lg:text-xl mb-6 relative inline-block">
+                            Quick Links
+                            <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500" />
+                        </h3>
+
+                        <ul className="space-y-3">
+                            {[
+                                { name: "Events", href: "/events" },
+                                { name: "Schedule", href: "/schedule" },
+                                { name: "Teams", href: "/teams" },
+                                { name: "Gallery", href: "/gallery" },
+                                // { name: "Results", href: "/results" },
+                                { name: "Contact", href: "/contact" },
+                                { name: "Rules & Regulations", href: "/rules" },
+                            ].map((item) => (
+                                <li key={item.name}>
                                     <a
-                                        key={idx}
-                                        href={social.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={`group relative p-3 bg-gray-800 rounded-xl ${social.color} transition-all duration-300 hover:scale-110 hover:shadow-xl cursor-pointer`}
+                                        href={item.href}
+                                        className="group flex items-center text-gray-300 hover:text-white transition-all duration-300 hover:translate-x-2 py-2"
                                     >
-                                        <span className="text-lg transform group-hover:scale-110 transition-transform duration-300 block">
-                                            {social.icon}
+                                        <span className="mr-3 opacity-0 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
+                                            ➜
+                                        </span>
+                                        <span className="border-b border-transparent group-hover:border-white transition-all duration-300 text-sm lg:text-base">
+                                            {item.name}
                                         </span>
                                     </a>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Quick Links */}
-                        <div>
-                            <h3 className="font-bold text-lg lg:text-xl mb-6 relative inline-block">
-                                Quick Links
-                                <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500" />
-                            </h3>
-                            <ul className="space-y-3">
-                                {["Events", "Schedule", "Teams", "Gallery", "Results", "Contact"].map((item) => (
-                                    <li key={item}>
-                                        <a href={`/${item.toLowerCase()}`} className="group flex items-center text-gray-300 hover:text-white transition-all hover:translate-x-2 py-1">
-                                            <span className="mr-3 opacity-0 group-hover:opacity-100 transform group-hover:scale-110 transition-all">➜</span>
-                                            <span className="border-b border-transparent group-hover:border-white transition-all text-sm">{item}</span>
-                                        </a>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* Contact */}
-                        <div>
-                            <h3 className="font-bold text-lg lg:text-xl mb-6 relative inline-block">
-                                Contact Us
-                                <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500" />
-                            </h3>
-                            <ul className="space-y-4">
-                                <li className="flex items-start"><div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center mr-3 mt-1"><MapPin size={18} className="text-blue-400" /></div><div><p className="text-gray-300 text-sm">St. Joseph's College</p></div></li>
-                                <li className="flex items-center"><div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center mr-3"><Mail size={18} className="text-green-400" /></div><a href="mailto:indep@sjctni.edu" className="text-gray-300 hover:text-white text-sm">indep@sjctni.edu</a></li>
-                                <li className="flex items-center"><div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center mr-3"><Phone size={18} className="text-red-400" /></div><a href="tel:+919876543210" className="text-gray-300 hover:text-white text-sm">+91 98765 43210</a></li>
-                            </ul>
-                        </div>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
 
-                    {/* Bottom Bar */}
-                    <div className="flex flex-col lg:flex-row justify-between items-center pt-6 border-t border-gray-800">
-                        <div className="text-gray-400 text-sm text-center lg:text-left">
-                            <p>&copy; 2025 INDEP. All rights reserved.</p>
-                            <a href="https://www.jwstechnologies.com" target='_blank' className="text-xs text-gray-500 mt-1 hover:text-gray-300">Powered by JWS Technologies</a>
-                        </div>
+                    {/* Contact */}
+                    <div>
+                        <h3 className="font-bold text-lg lg:text-xl mb-6 relative inline-block">
+                            Contact Us
+                            <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500" />
+                        </h3>
+
+                        <ul className="space-y-4">
+                            <li className="flex items-start group">
+                                <div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center mr-3 mt-1 group-hover:scale-110 transition-transform duration-300">
+                                    <MapPin size={18} className="text-blue-400" />
+                                </div>
+                                <div>
+                                    <p className="text-gray-300 font-medium text-sm lg:text-base">
+                                        St. Joseph's College
+                                    </p>
+                                    <p className="text-gray-400 text-xs lg:text-sm">
+                                        Tiruchirappalli, Tamil Nadu
+                                    </p>
+                                </div>
+                            </li>
+
+                            <li className="flex items-center group">
+                                <div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
+                                    <Mail size={18} className="text-green-400" />
+                                </div>
+                                <a
+                                    href="mailto:indep@sjctni.edu"
+                                    className="text-gray-300 hover:text-white transition-colors duration-300 text-sm lg:text-base break-all"
+                                >
+                                    indep@sjctni.edu
+                                </a>
+                            </li>
+
+                            <li className="flex items-center group">
+                                <div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
+                                    <Phone size={18} className="text-red-400" />
+                                </div>
+                                <a
+                                    href="tel:+919876543210"
+                                    className="text-gray-300 hover:text-white transition-colors duration-300 text-sm lg:text-base"
+                                >
+                                    +91 98765 43210
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
-                <VisitorCounter />
+                {/* Bottom Bar */}
+                <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0 pt-6 border-t border-gray-800">
+                    <div className="text-gray-400 text-sm text-center lg:text-left">
+                        <p>&copy; 2025 INDEP - St. Joseph's College. All rights reserved.</p>
+                        <a href="https://www.jwstechnologies.com" target='_blank' className="text-xs text-gray-500 mt-1 hover:text-gray-300 transition-colors">
+                            Powered by JWS Technologies
+                        </a>
+                    </div>
 
-                <div className="h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
+                    <div className="flex flex-wrap justify-center gap-4 lg:gap-6 text-sm">
+                        {["Privacy Policy", "Terms of Service", "Code of Conduct"].map((item) => (
+                            <a
+                                key={item}
+                                href={`/${item.toLowerCase().replace(/ /g, "-")}`}
+                                className="text-gray-400 hover:text-white transition-colors duration-300 text-xs lg:text-sm hover:underline"
+                            >
+                                {item}
+                            </a>
+                        ))}
+                    </div>
                 </div>
-            </footer>
 
-            {/* ------------------------------------------------ */}
-            {/* FLOATING WHATSAPP WIDGET (Fixed Position)        */}
-            {/* ------------------------------------------------ */}
+            </div>
+
+            {/* --- NEW WHATSAPP GROUP CTA --- */}
+            {/* Placed immediately above the Visitor Counter as requested */}
             <div className="fixed bottom-6 left-6 z-50 group">
                 <a
                     href={whatsAppGroupLink}
@@ -168,6 +238,15 @@ export default function Footer() {
                     </span>
                 </a>
             </div>
-        </>
+
+            {/* Visitor Counter */}
+            <VisitorCounter />
+
+            {/* Decorative Gradient Line */}
+            <div className="h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
+            </div>
+
+        </footer>
     );
 }
