@@ -49,6 +49,8 @@ export default function Login() {
                 router.push("/faculty/dashboard");
             } else if (role === "judge") {
                 router.push("/judge/dashboard");
+            } else if (role === "team") {
+                router.push("/team/dashboard");
             } else {
                 // Default fallback for 'student' or 'secretary'
                 router.push("/student/dashboard");
