@@ -76,21 +76,23 @@ export default function HeroDesktop({ timeLeft, isEventStarted }: { timeLeft: an
                 {/* --- Action Buttons --- */}
                 <div className="flex gap-5 items-center w-full justify-center">
                     <a
-                        href="/schedule"
+                        href="/events"
                         className="group relative px-8 py-4 bg-white text-black rounded-xl font-bold text-lg overflow-hidden shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)] hover:scale-105 transition-transform"
                     >
                         <span className="relative z-10 flex items-center gap-2">
-                            View Schedule
+                            View Events
                             <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </span>
                         <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/80 to-transparent z-0 opacity-50"></div>
                     </a>
 
                     <a
-                        href="/register"
+                        // href="/register"
+                        href="/Rules%20&%20Regulations%20INDEP%202025.pdf"
+                        download="Rules & Regulations INDEP 2025.pdf"
                         className="px-8 py-4 bg-white/5 border border-white/20 text-white rounded-xl font-semibold text-lg backdrop-blur-sm hover:bg-white/10 hover:border-white/40 transition-all"
                     >
-                        Register Now
+                        Rules & Regulations
                     </a>
                 </div>
             </div>

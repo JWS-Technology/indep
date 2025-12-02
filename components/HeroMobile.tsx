@@ -98,16 +98,16 @@ export default function HeroMobile({ timeLeft, isEventStarted }: { timeLeft: any
                     className="flex flex-col gap-4 w-full px-4"
                 >
                     <Link
-                        href="/schedule"
+                        href="/events"
                         className="px-8 py-3.5 bg-white text-black rounded-xl font-bold text-base shadow-lg w-full text-center hover:scale-105 transition-transform"
                     >
-                        View Schedule
+                        View Events
                     </Link>
                     <Link
                         href="/register"
                         className="px-8 py-3.5 bg-white/5 border border-white/20 text-white rounded-xl font-semibold text-base w-full text-center backdrop-blur-sm hover:bg-white/10 transition-colors"
                     >
-                        Register Now
+                        Rules & Regulations
                     </Link>
                 </motion.div>
 
