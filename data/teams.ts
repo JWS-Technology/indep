@@ -27,7 +27,7 @@ export const shiftTwo = [
   "Mathematics",
   "Physics",
   "B.Voc SD & SA",
-  "B.Voc Visom & Vis.com Tech",
+  "B.Voc Viscom Tech & B.Sc Viscom",
   "B.Com Honours",
   "B.Com SF & BA, Physical Education",
 ];
