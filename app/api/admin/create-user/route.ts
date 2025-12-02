@@ -10,17 +10,18 @@ export async function POST(req: Request) {
     await dbConnect();
 
     const body = await req.json();
-    const { name, collegeId, password, role, department } = body;
+    const { name, collegeId, password, role, department, email, phone } = body;
 
     // Validate department exists in your arrays
-    const validDepartments = [...shiftOne, ...shiftTwo];
+    // const validDepartments = [...shiftOne, ...shiftTwo];
 
-    if (!validDepartments.includes(department)) {
-      return NextResponse.json(
-        { error: "Invalid department" },
-        { status: 400 }
-      );
-    }
+    // if (!validDepartments.includes(department)) {
+    //   console.log(department)
+    //   return NextResponse.json(
+    //     { error: "Invalid department" },
+    //     { status: 400 }
+    //   );
+    // }
 
     // Check duplicate college ID
     const exist = await User.findOne({ collegeId });
@@ -39,7 +40,10 @@ export async function POST(req: Request) {
       password: hashed,
       role,
       department,
+      email,
+      phone,
     });
+    newUser.save();
 
     return NextResponse.json({ message: "User created", user: newUser });
   } catch (err) {

@@ -10,6 +10,7 @@ export default function DepartmentDashboard() {
 
     // State to track Department Data
     const [teamData, setTeamData] = useState<any>(null);
+    // console.log(teamData?.teamName)
 
     // Forms State
     const [newPassword, setNewPassword] = useState("");
@@ -18,8 +19,10 @@ export default function DepartmentDashboard() {
         collegeId: "",
         email: "",
         phone: "",
-        password: "" // Optional, or auto-generated
+        password: "", // Optional, or auto-generated
+        department: "",
     });
+    // console.log(userForm)
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Fetch Team Status on Load
@@ -70,26 +73,34 @@ export default function DepartmentDashboard() {
 
     // --- HANDLER: Create User (Faculty/Student) ---
     const handleCreateUser = async (role: "faculty" | "student") => {
+
+        const userDataToSend = {
+            ...userForm, // Start with current form fields (name, collegeId, email, phone, etc.)
+            department: teamData.teamName, // Add the department field directly
+            role: role, // Add the role field directly
+        };
+
         if (!userForm.name || !userForm.collegeId) return alert("Please fill all fields");
 
+        console.log(userDataToSend)
         setIsSubmitting(true);
         try {
-            const res = await fetch("/api/department/create-user", {
+            const res = await fetch("/api/admin/create-user", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...userForm, role }),
+                body: JSON.stringify(userDataToSend),
             });
             const data = await res.json();
 
             if (data.success) {
                 alert(`${role.toUpperCase()} created successfully!`);
-                setUserForm({ name: "", collegeId: "", email: "", phone: "", password: "" }); // Reset
+                setUserForm({ name: "", collegeId: "", email: "", phone: "", password: "", department: "" }); // Reset
                 fetchTeamStatus(); // Refresh to update UI checks
-            } else {
-                alert(data.error);
             }
         } catch (err) {
-            alert("Failed to create user");
+            console.log(err)
+            console.log("Failed to create user");
+            // alert("Failed to create user");
         } finally {
             setIsSubmitting(false);
         }
