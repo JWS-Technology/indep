@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Loader2, Calendar, Tag } from 'lucide-react';
 
 // ---------------- TYPES -----------------
 
 type GalleryImage = {
-    id: number;
+    _id: string;
     src: string;
     alt: string;
     category: string;
@@ -15,60 +15,42 @@ type GalleryImage = {
     year: string;
 };
 
-// ---------------- DATA -----------------
-
-const galleryImages: GalleryImage[] = [
-    {
-        id: 1,
-        src: 'https://www.sjctni.edu/img/EventGallery/images/24_Indep2k24/P1219056.jpg',
-        alt: 'Cultural Performance 2024',
-        category: 'on-stage',
-        title: 'Classical Dance Performance',
-        year: '2024'
-    },
-    {
-        id: 2,
-        src: 'https://www.sjctni.edu/img/EventGallery/images/24_Indep2k24/P1229475.jpg',
-        alt: 'Music Band Performance',
-        category: 'on-stage',
-        title: 'Rock Band Competition',
-        year: '2024'
-    },
-    {
-        id: 3,
-        src: 'https://www.sjctni.edu/img/EventGallery/images/24_Indep2k24/IMG_8706.jpg',
-        alt: 'Drama Scene',
-        category: 'on-stage',
-        title: 'Street Play Finals',
-        year: '2024'
-    },
-    {
-        id: 4,
-        src: 'https://www.sjctni.edu/img/EventGallery/images/24_Indep2k24/IMG_8805.jpg',
-        alt: 'Art Exhibition',
-        category: 'off-stage',
-        title: 'Fine Arts Display',
-        year: '2024'
-    },
-    {
-        id: 5,
-        src: 'https://www.sjctni.edu/img/EventGallery/images/24_Indep2k24/0A2A6844.jpg',
-        alt: 'Art Exhibition',
-        category: 'off-stage',
-        title: 'Fine Arts Display',
-        year: '2024'
-    },
-];
-
-const years = ['2024', '2023', '2022'];
-
-// -----------------------------------------
+const years = ['2025', '2024', '2023', '2022'];
 
 export default function Gallery() {
+    // Data State
+    const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    // UI State
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [selectedYear, setSelectedYear] = useState<string>('2024');
     const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
     const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+
+    // Mobile Swipe State
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+    // ---------------- FETCH DATA -----------------
+    useEffect(() => {
+        const fetchImages = async () => {
+            try {
+                const response = await fetch('/api/gallery');
+                const result = await response.json();
+                if (result.success) {
+                    setGalleryImages(result.data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch gallery:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchImages();
+    }, []);
+
+    // ---------------- CALCULATIONS -----------------
 
     const categories = [
         { id: 'all', name: 'All Events', count: galleryImages.length },
@@ -77,109 +59,114 @@ export default function Gallery() {
         { id: 'special', name: 'Special Moments', count: galleryImages.filter(img => img.category === 'special').length },
     ];
 
-    // ----------- FILTERED IMAGES ----------------
     const filteredImages = galleryImages.filter(image => {
         const categoryMatch = selectedCategory === 'all' || image.category === selectedCategory;
         const yearMatch = selectedYear === 'all' || image.year === selectedYear;
         return categoryMatch && yearMatch;
     });
 
-    // ----------- MODAL OPEN ---------------------
+    // ---------------- NAVIGATION LOGIC -----------------
+
     const openModal = (image: GalleryImage) => {
         setSelectedImage(image);
-        const index = filteredImages.findIndex(img => img.id === image.id);
+        const index = filteredImages.findIndex(img => img._id === image._id);
         setCurrentImageIndex(index);
+        document.body.style.overflow = 'hidden'; // Prevent scrolling background
     };
 
-    const closeModal = () => {
+    const closeModal = useCallback(() => {
         setSelectedImage(null);
         setCurrentImageIndex(0);
-    };
+        document.body.style.overflow = 'unset'; // Restore scrolling
+    }, []);
 
-    // ----------- NAVIGATION ---------------------
-    const goToPrevious = () => {
-        const newIndex =
-            currentImageIndex === 0
-                ? filteredImages.length - 1
-                : currentImageIndex - 1;
-
+    const goToPrevious = useCallback((e?: React.MouseEvent) => {
+        e?.stopPropagation();
+        const newIndex = currentImageIndex === 0 ? filteredImages.length - 1 : currentImageIndex - 1;
         setCurrentImageIndex(newIndex);
         setSelectedImage(filteredImages[newIndex]);
-    };
+    }, [currentImageIndex, filteredImages]);
 
-    const goToNext = () => {
-        const newIndex =
-            currentImageIndex === filteredImages.length - 1
-                ? 0
-                : currentImageIndex + 1;
-
+    const goToNext = useCallback((e?: React.MouseEvent) => {
+        e?.stopPropagation();
+        const newIndex = currentImageIndex === filteredImages.length - 1 ? 0 : currentImageIndex + 1;
         setCurrentImageIndex(newIndex);
         setSelectedImage(filteredImages[newIndex]);
-    };
+    }, [currentImageIndex, filteredImages]);
 
-    // ----------- KEYBOARD CONTROL FIXED -----------
+    // ---------------- KEYBOARD & SWIPE -----------------
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-        if (!selectedImage) return;
-
-        if (e.key === 'Escape') closeModal();
-        if (e.key === 'ArrowLeft') goToPrevious();
-        if (e.key === 'ArrowRight') goToNext();
-    };
-
-    // ❗ FIXED: useEffect instead of useState
     useEffect(() => {
-        if (selectedImage) {
-            document.addEventListener('keydown', handleKeyDown);
-        }
-
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown);
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (!selectedImage) return;
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'ArrowLeft') goToPrevious();
+            if (e.key === 'ArrowRight') goToNext();
         };
-    }, [selectedImage, currentImageIndex]);
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [selectedImage, goToNext, goToPrevious, closeModal]);
 
-    // ---------------------------------------------
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchEnd(null);
+        setTouchStart(e.targetTouches[0].clientX);
+    };
 
+    const handleTouchMove = (e: React.TouchEvent) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const handleTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > 50;
+        const isRightSwipe = distance < -50;
+
+        if (isLeftSwipe) goToNext();
+        if (isRightSwipe) goToPrevious();
+    };
+
+    // ---------------- RENDER -----------------
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
+            </div>
+        );
+    }
 
     return (
-        <div className="min-h-screen bg-linear-to-br mt-20 from-gray-50 to-blue-50 py-12">
+        <div className="min-h-screen bg-gradient-to-br mt-20 from-gray-50 to-blue-50 py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
                 {/* HEADER */}
                 <div className="text-center mb-12">
-                    <h1 className="text-5xl font-black text-gray-800 mb-4">
-                        INDEP <span className="gradient-text">Gallery</span>
+                    <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">
+                        INDEP <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Gallery</span>
                     </h1>
-                    <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                    <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                         Relive the magical moments from past INDEP editions.
                     </p>
                 </div>
 
-                {/* --------------- FILTER SECTION ---------------- */}
-                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 mb-8">
-                    <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
-
-                        {/* CATEGORY FILTER */}
-                        <div className="flex-1 w-full">
-                            <label className="block text-sm font-medium text-gray-700 mb-3">
-                                Filter by Category
-                            </label>
-
-                            <div className="flex flex-wrap gap-2">
+                {/* FILTERS */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-gray-100 mb-8  top-20 z-10">
+                    <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
+                        {/* Categories */}
+                        <div className="flex-1 w-full overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
+                            <div className="flex gap-2 min-w-max">
                                 {categories.map(category => (
                                     <button
                                         key={category.id}
                                         onClick={() => setSelectedCategory(category.id)}
-                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 
+                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border
                                             ${selectedCategory === category.id
-                                                ? 'bg-linear-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}
-                                    `}
+                                                ? 'bg-gray-900 text-white border-gray-900'
+                                                : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'}`}
                                     >
                                         {category.name}
-                                        <span className={`ml-2 px-1.5 py-0.5 rounded-full text-xs 
-                                            ${selectedCategory === category.id ? 'bg-white/20' : 'bg-gray-300'}
-                                        `}>
+                                        <span className={`ml-2 text-xs opacity-60`}>
                                             {category.count}
                                         </span>
                                     </button>
@@ -187,167 +174,147 @@ export default function Gallery() {
                             </div>
                         </div>
 
-                        {/* YEAR FILTER */}
-                        <div className="lg:w-48">
-                            <label className="block text-sm font-medium text-gray-700 mb-3">
-                                Filter by Year
-                            </label>
+                        {/* Years */}
+                        <div className="w-full lg:w-48">
                             <select
                                 value={selectedYear}
                                 onChange={(e) => setSelectedYear(e.target.value)}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer hover:border-gray-400 transition-colors"
                             >
                                 <option value="all">All Years</option>
                                 {years.map(year => (
-                                    <option key={year} value={year}>
-                                        INDEP {year}
-                                    </option>
+                                    <option key={year} value={year}>INDEP {year}</option>
                                 ))}
                             </select>
                         </div>
-
                     </div>
                 </div>
 
-                {/* ---------------- GALLERY GRID ---------------- */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+                {/* GALLERY GRID */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 mb-12">
                     {filteredImages.map((image) => (
                         <div
-                            key={image.id}
-                            className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover-lift transition-all duration-300"
+                            key={image._id}
+                            className="group cursor-pointer relative aspect-[4/3] bg-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
                             onClick={() => openModal(image)}
                         >
-                            {/* IMAGE CONTAINER */}
-                            <div className="relative overflow-hidden aspect-[4/3] bg-linear-to-br from-gray-200 to-gray-300">
-                                <Image
-                                    src={image.src}
-                                    alt={image.alt}
-                                    fill
-                                    className="object-cover transform group-hover:scale-110 transition-transform duration-500"
-                                />
-
-                                {/* OVERLAY */}
-                                <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
-                                    <div className="p-4 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                                        <h3 className="font-bold text-lg mb-1">{image.title}</h3>
-                                        <div className="flex items-center justify-between text-sm">
-                                            <span className="capitalize">{image.category.replace('-', ' ')}</span>
-                                            <span className="bg-white/20 px-2 py-1 rounded-full">
-                                                INDEP {image.year}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* QUICK VIEW ICON */}
-                                <div className="absolute top-4 right-4 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    <span className="text-lg">🔍</span>
-                                </div>
+                            <Image
+                                src={image.src}
+                                alt={image.alt}
+                                fill
+                                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                                <h3 className="text-white font-medium text-sm truncate">{image.title}</h3>
+                                <p className="text-white/80 text-xs mt-1 capitalize">{image.category.replace('-', ' ')}</p>
                             </div>
                         </div>
                     ))}
                 </div>
 
-                {/* ---------------- EMPTY STATE ---------------- */}
+                {/* EMPTY STATE */}
                 {filteredImages.length === 0 && (
-                    <div className="text-center py-16">
-                        <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <span className="text-3xl">📷</span>
+                    <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
+                        <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <SearchIcon className="w-6 h-6 text-gray-400" />
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-700 mb-2">No images found</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">No images found</h3>
+                        <p className="text-gray-500 text-sm mb-6">Try adjusting your filters</p>
                         <button
-                            onClick={() => {
-                                setSelectedCategory('all');
-                                setSelectedYear('all');
-                            }}
-                            className="px-6 py-3 bg-linear-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover-lift"
+                            onClick={() => { setSelectedCategory('all'); setSelectedYear('all'); }}
+                            className="px-5 py-2.5 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
                         >
                             Reset Filters
                         </button>
                     </div>
                 )}
-
             </div>
 
-            {/* ---------------- MODAL ---------------- */}
+            {/* IMMERSIVE MODAL */}
             {selectedImage && (
                 <div
-                    className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4"
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md animate-in fade-in duration-200"
                     onClick={closeModal}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
                 >
+                    {/* Close Button - Floating Top Right */}
+                    <button
+                        onClick={closeModal}
+                        className="absolute top-4 right-4 z-50 p-2 bg-black/50 hover:bg-white/20 text-white rounded-full transition-colors backdrop-blur-sm"
+                    >
+                        <X className="w-6 h-6" />
+                    </button>
+
+                    {/* Navigation Buttons (Hidden on Mobile) */}
+                    {filteredImages.length > 1 && (
+                        <>
+                            <button
+                                onClick={goToPrevious}
+                                className="hidden md:flex absolute left-4 z-50 p-3 bg-black/20 hover:bg-white/10 text-white rounded-full transition-all backdrop-blur-sm group"
+                            >
+                                <ChevronLeft className="w-8 h-8 group-hover:-translate-x-0.5 transition-transform" />
+                            </button>
+                            <button
+                                onClick={goToNext}
+                                className="hidden md:flex absolute right-4 z-50 p-3 bg-black/20 hover:bg-white/10 text-white rounded-full transition-all backdrop-blur-sm group"
+                            >
+                                <ChevronRight className="w-8 h-8 group-hover:translate-x-0.5 transition-transform" />
+                            </button>
+                        </>
+                    )}
+
+                    {/* Main Image Container */}
                     <div
-                        className="relative max-w-6xl w-full max-h-[90vh] bg-white rounded-2xl overflow-hidden"
+                        className="relative w-full h-full max-w-7xl max-h-screen p-4 flex flex-col items-center justify-center"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* HEADER */}
-                        <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
-                            <div className="flex items-center space-x-4">
-                                <h3 className="text-xl font-bold text-gray-800">
-                                    {selectedImage.title}
-                                </h3>
-                                <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
-                                    INDEP {selectedImage.year}
-                                </span>
-                            </div>
-
-                            <button
-                                onClick={closeModal}
-                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors group"
-                            >
-                                <X className="w-6 h-6 text-gray-600 group-hover:text-gray-800" />
-                            </button>
-                        </div>
-
-                        {/* IMAGE VIEWER */}
-                        <div className="relative bg-black flex items-center justify-center min-h-[400px] max-h-[70vh]">
-
-                            {/* LEFT ARROW */}
-                            {filteredImages.length > 1 && (
-                                <>
-                                    <button
-                                        onClick={goToPrevious}
-                                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
-                                    >
-                                        <ChevronLeft className="w-6 h-6 text-gray-800" />
-                                    </button>
-
-                                    <button
-                                        onClick={goToNext}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
-                                    >
-                                        <ChevronRight className="w-6 h-6 text-gray-800" />
-                                    </button>
-                                </>
-                            )}
-
-                            {/* IMAGE */}
+                        <div className="relative w-full h-full flex items-center justify-center">
                             <Image
                                 src={selectedImage.src}
                                 alt={selectedImage.alt}
-                                width={1200}
-                                height={800}
-                                className="max-w-full max-h-full object-contain"
+                                width={1920}
+                                height={1080}
+                                className="max-w-full max-h-[85vh] w-auto md:w-[80vw] h-auto object-contain shadow-2xl rounded-sm select-none"
+                                priority
                             />
+                        </div>
 
-                            {/* COUNTER */}
-                            {filteredImages.length > 1 && (
-                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm font-medium">
+                        {/* Caption Overlay (Bottom) */}
+                        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent text-white backdrop-blur-[1px]">
+                            <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
+                                <div>
+                                    <h2 className="text-xl md:text-2xl font-bold mb-2">{selectedImage.title}</h2>
+                                    <div className="flex items-center gap-4 text-sm text-gray-300">
+                                        <span className="flex items-center gap-1.5 capitalize bg-white/10 px-3 py-1 rounded-full">
+                                            <Tag className="w-3.5 h-3.5" />
+                                            {selectedImage.category.replace('-', ' ')}
+                                        </span>
+                                        <span className="flex items-center gap-1.5 bg-white/10 px-3 py-1 rounded-full">
+                                            <Calendar className="w-3.5 h-3.5" />
+                                            {selectedImage.year}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="text-xs text-gray-400 font-mono">
                                     {currentImageIndex + 1} / {filteredImages.length}
                                 </div>
-                            )}
+                            </div>
                         </div>
-
-                        {/* INFO */}
-                        <div className="p-6 bg-white">
-                            <p className="text-gray-600">
-                                Beautiful moment captured during INDEP {selectedImage.year}.
-                                This image showcases talent, creativity, and the vibrant spirit of INDEP.
-                            </p>
-                        </div>
-
                     </div>
                 </div>
             )}
         </div>
     );
+}
+
+// Helper Icon for empty state
+function SearchIcon({ className }: { className?: string }) {
+    return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+    )
 }
