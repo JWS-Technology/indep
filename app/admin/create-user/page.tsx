@@ -21,6 +21,8 @@ import {
     Settings,
     Eye,
     EyeOff,
+    Phone,
+    Mail
 } from "lucide-react";
 
 export default function AddUserPage() {
@@ -31,7 +33,10 @@ export default function AddUserPage() {
         role: "student",
         department: "",
         shift: "",
+        email: "",
+        phone: ""
     });
+    console.log(form)
 
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
@@ -286,6 +291,70 @@ export default function AddUserPage() {
                                             </div>
                                             {isFieldInvalid('password') && <p className="text-red-500 text-xs flex items-center mt-1"><AlertCircle className="w-3 h-3 mr-1" /> Required</p>}
                                         </div>
+
+                                        {/* phone number */}
+                                        <div className="space-y-2">
+                                            <label className="flex items-center space-x-2 text-sm font-semibold text-slate-700">
+                                                <Phone className="w-4 h-4" />
+                                                <span>Phone Number</span>
+                                                <span className="text-red-500">*</span>
+                                            </label>
+
+                                            <div
+                                                className={`relative flex items-center pr-4 rounded-lg border-2 transition-all duration-200 ${isFieldInvalid('phone')
+                                                    ? 'border-red-300 bg-red-50'
+                                                    : 'border-slate-200 hover:border-slate-300 focus-within:border-slate-400'
+                                                    }`}
+                                            >
+                                                <input
+                                                    type="tel"
+                                                    placeholder="Enter phone number"
+                                                    className="w-full bg-transparent rounded-lg px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none"
+                                                    value={form.phone}
+                                                    onChange={(e) => handleInputChange('phone', e.target.value)}
+                                                    required
+                                                />
+                                            </div>
+
+                                            {isFieldInvalid('phone') && (
+                                                <p className="text-red-500 text-xs flex items-center mt-1">
+                                                    <AlertCircle className="w-3 h-3 mr-1" /> Required
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        {/* EMAIL */}
+                                        <div className="space-y-2">
+                                            <label className="flex items-center space-x-2 text-sm font-semibold text-slate-700">
+                                                <Mail className="w-4 h-4" />
+                                                <span>Email</span>
+                                                <span className="text-red-500">*</span>
+                                            </label>
+
+                                            <div
+                                                className={`relative flex items-center pr-4 rounded-lg border-2 transition-all duration-200 ${isFieldInvalid('email')
+                                                        ? 'border-red-300 bg-red-50'
+                                                        : 'border-slate-200 hover:border-slate-300 focus-within:border-slate-400'
+                                                    }`}
+                                            >
+                                                <input
+                                                    type="email"
+                                                    placeholder="Enter email address"
+                                                    className="w-full bg-transparent rounded-lg px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none"
+                                                    value={form.email}
+                                                    onChange={(e) => handleInputChange('email', e.target.value)}
+                                                    required
+                                                />
+                                            </div>
+
+                                            {isFieldInvalid('email') && (
+                                                <p className="text-red-500 text-xs flex items-center mt-1">
+                                                    <AlertCircle className="w-3 h-3 mr-1" /> Required
+                                                </p>
+                                            )}
+                                        </div>
+
+
                                     </div>
                                 )}
 
