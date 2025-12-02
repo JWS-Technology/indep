@@ -14,12 +14,18 @@ import {
   Clock,
   Sparkles,
   Ticket,
+  MapPin,
   Loader2,
   AlertCircle,
 } from "lucide-react";
 
-// --- Types matching your Database ---
+// ------------------ TYPES (MATCHING ADMIN PAGE) ------------------
 type FilterType = "ON_STAGE" | "OFF_STAGE";
+
+interface Incharge {
+  name: string;
+  department: string;
+}
 
 interface EventItem {
   _id: string;
@@ -29,10 +35,11 @@ interface EventItem {
   venue: string;
   date: string;
   time: string;
-  incharge?: { name: string; department: string }[];
+  incharge?: Incharge[];
   status?: string;
 }
 
+// ------------------ ICONS ------------------
 const getEventIcon = (category: string) => {
   switch (category) {
     case "Music": return Music;
@@ -46,27 +53,26 @@ const getEventIcon = (category: string) => {
 };
 
 export default function EventsPage() {
-  // State
+
   const [events, setEvents] = useState<EventItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const [activeFilter, setActiveFilter] = useState<FilterType>("ON_STAGE");
 
-  // --- Fetch Data EXACTLY like your working admin file ---
+  // ------------------ FETCH EVENTS (MATCHING ADMIN PAGE EXACTLY) ------------------
   const fetchEvents = async () => {
     try {
       const res = await fetch("/api/events");
       const data = await res.json();
 
       if (data.events) {
-        setEvents(data.events); // SAME as working admin code
+        setEvents(data.events);
       } else {
         setEvents([]);
       }
     } catch (err) {
-      console.error("Error fetching:", err);
-      setError("Could not load the official lineup.");
+      console.error("Fetch error:", err);
+      setError("Unable to load events.");
     } finally {
       setIsLoading(false);
     }
@@ -76,10 +82,10 @@ export default function EventsPage() {
     fetchEvents();
   }, []);
 
-  // Filter events
+  // ------------------ FILTER ------------------
   const filteredEvents = events.filter((e) => e.stageType === activeFilter);
 
-  // Animations
+  // ------------------ ANIMATIONS ------------------
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
@@ -90,41 +96,42 @@ export default function EventsPage() {
     visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
   };
 
-  // Loading Screen
+  // ------------------ LOADING ------------------
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
-        <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mb-4" />
-        <p className="text-slate-500 font-medium">Loading lineup...</p>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
+        <Loader2 className="w-10 h-10 animate-spin text-indigo-600 mb-3" />
+        <p className="text-slate-500 font-medium">Loading events…</p>
       </div>
     );
   }
 
-  // Error Screen
+  // ------------------ ERROR ------------------
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
-        <div className="bg-red-50 text-red-600 p-6 rounded-2xl flex flex-col items-center max-w-md text-center border border-red-100">
-          <AlertCircle className="w-10 h-10 mb-2" />
-          <h3 className="font-bold text-lg">Unable to connect</h3>
-          <p className="text-sm opacity-80">{error}</p>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-4">
+        <div className="bg-red-50 border border-red-200 p-6 rounded-xl max-w-md text-center text-red-600">
+          <AlertCircle className="w-10 h-10 mx-auto mb-3" />
+          <h1 className="text-lg font-bold">Error</h1>
+          <p>{error}</p>
         </div>
       </div>
     );
   }
 
+  // ------------------ UI ------------------
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 mt-20">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
           <div>
             <div className="inline-flex items-center gap-2 text-indigo-600 font-bold tracking-wider uppercase text-xs mb-2">
               <Sparkles size={14} /> Official Lineup
             </div>
-            <h1 className="text-4xl md:text-5xl font-black text-slate-900 leading-none">
-              Event <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Feed</span>
+            <h1 className="text-4xl md:text-5xl font-black text-slate-900">
+              Event <span className="bg-gradient-to-r from-indigo-600 to-purple-600 text-transparent bg-clip-text">Feed</span>
             </h1>
           </div>
 
@@ -161,89 +168,63 @@ export default function EventsPage() {
         </div>
 
 
+
         {/* Event Grid */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeFilter}
-            variants={containerVariants}
             initial="hidden"
             animate="visible"
-            exit="hidden"
+            variants={containerVariants}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             {filteredEvents.map((event, idx) => {
               const Icon = getEventIcon(event.category);
-              const isActiveOn = activeFilter === "ON_STAGE";
-              const themeColor = isActiveOn ? "text-indigo-600" : "text-pink-600";
-              const bgColor = isActiveOn ? "bg-indigo-50" : "bg-pink-50";
-              const borderColor = isActiveOn ? "group-hover:border-indigo-200" : "group-hover:border-pink-200";
 
               return (
                 <motion.div
                   key={event._id}
                   variants={cardVariants}
-                  className={`
-                    group relative bg-white rounded-xl border border-slate-200 overflow-hidden cursor-pointer hover:shadow-lg transition-all flex flex-row h-32 md:h-36 ${borderColor}
-                  `}
+                  className="group flex bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg transition-all h-36"
                 >
-                  {/* Left stub */}
-                  <div className={`w-24 md:w-28 flex flex-col items-center justify-center border-r-2 border-dashed border-slate-200 relative ${bgColor}`}>
-                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-slate-50 rounded-full border border-slate-200" />
-                    <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-slate-50 rounded-full border border-slate-200" />
-
-                    <span className={`text-3xl font-black opacity-30 ${themeColor}`}>
+                  {/* Left Side */}
+                  <div className="w-28 bg-slate-50 flex flex-col items-center justify-center border-r border-slate-200">
+                    <span className="text-3xl font-black opacity-30 text-indigo-600">
                       {String(idx + 1).padStart(2, "0")}
                     </span>
-                    <Icon size={24} className={`mt-2 opacity-60 ${themeColor}`} />
+                    <Icon size={26} className="opacity-60 text-indigo-600 mt-2" />
                   </div>
 
-                  {/* Right content */}
+                  {/* Right */}
                   <div className="flex-1 p-4 flex flex-col justify-between relative">
+
+                    {/* Tag Row */}
                     <div className="flex justify-between items-start">
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 bg-slate-100 px-2 py-0.5 rounded-sm">
+                      <span className="text-[10px] bg-slate-100 px-2 py-0.5 rounded font-bold uppercase tracking-widest text-slate-500">
                         {event.category}
                       </span>
-                      <Ticket size={16} className="text-slate-300 group-hover:text-slate-800 transition-colors" />
+                      <Ticket size={16} className="text-slate-300" />
                     </div>
 
-                    <h3 className="text-lg font-bold text-slate-800 leading-tight line-clamp-2 group-hover:text-slate-900">
+                    {/* Title */}
+                    <h3 className="text-lg font-bold leading-tight text-slate-800">
                       {event.title}
                     </h3>
 
-                    <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
-<<<<<<< HEAD
-                      {/* <div className="flex items-center gap-1">
-                        <User size={12} />
-                        <span>Solo</span>
-                      </div> */}
-=======
+                    {/* Venue + Time */}
+                    <div className="flex items-center gap-4 text-xs text-slate-500 font-medium">
                       <div className="flex items-center gap-1">
-                        {/* You can make this dynamic if your DB has 'isTeam' */}
-                        {isTeam ? <Users size={12} /> : <User size={12} />}
-                        <span>{isTeam ? "Team" : "Solo"}</span>
+                        <MapPin size={12} />
+                        <span>{event.venue || "No venue"}</span>
                       </div>
 
->>>>>>> 088d291dfb92706edffe7121f28db7cd6dc139dc
-                      <div className="w-1 h-1 rounded-full bg-slate-300" />
+                      <div className="w-1 h-1 bg-slate-300 rounded-full" />
+
                       <div className="flex items-center gap-1">
                         <Clock size={12} />
                         <span>{event.time || "TBA"}</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
-
-<<<<<<< HEAD
-                    <div className={`absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity ${isActiveOn ? "bg-indigo-600" : "bg-pink-600"}`} />
-=======
-                      <div className="flex items-center gap-1">
-                        <Lightbulb size={12} />
-                        {/* Displaying dynamic time from DB */}
-                        <span>{event.venue || "TBA"}</span>
-                      </div>
-                    </div>
-                    {/* Hover Reveal Gradient */}
-                    <div className={`absolute inset-0 opacity-0 group-hover:opacity-5 pointer-events-none transition-opacity duration-300 ${isActiveOn ? 'bg-indigo-600' : 'bg-pink-600'}`} />
->>>>>>> 088d291dfb92706edffe7121f28db7cd6dc139dc
                   </div>
                 </motion.div>
               );
@@ -252,9 +233,9 @@ export default function EventsPage() {
         </AnimatePresence>
 
         {/* Empty */}
-        {!isLoading && filteredEvents.length === 0 && (
+        {filteredEvents.length === 0 && (
           <div className="text-center py-20 opacity-50">
-            <p className="text-xl font-bold text-slate-400">No events found in this category.</p>
+            <p className="text-xl font-bold text-slate-400">No events found.</p>
           </div>
         )}
       </div>
