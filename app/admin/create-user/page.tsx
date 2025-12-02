@@ -93,6 +93,8 @@ export default function AddUserPage() {
                     role: "student",
                     department: "",
                     shift: "",
+                    phone: "",
+                    email: ""
                 });
                 setActiveStep(1);
                 setTouched({
