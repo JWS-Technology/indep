@@ -228,7 +228,7 @@ export default function AddUserPage() {
                                                         placeholder="Enter full name"
                                                         className="w-full bg-transparent rounded-lg px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none"
                                                         value={form.name}
-                                                        onChange={(e) => handleInputChange('name', e.target.value)}
+                                                        onChange={(e) => handleInputChange('name', e.target.value.toUpperCase())}
                                                         required
                                                     />
                                                 </div>
@@ -256,7 +256,7 @@ export default function AddUserPage() {
                                                         placeholder="Example: 23UBC506"
                                                         className="w-full bg-transparent rounded-lg px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none"
                                                         value={form.collegeId}
-                                                        onChange={(e) => handleInputChange('collegeId', e.target.value)}
+                                                        onChange={(e) => handleInputChange('collegeId', e.target.value.toUpperCase())}
                                                         required
                                                     />
                                                 </div>
