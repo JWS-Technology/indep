@@ -18,7 +18,10 @@ import {
     Sparkles,
     Shield,
     GraduationCap,
-    Settings
+    Settings,
+    Eye,
+    EyeOff,
+
 } from "lucide-react";
 
 export default function AddUserPage() {
@@ -40,6 +43,8 @@ export default function AddUserPage() {
         password: false,
         department: false
     });
+
+    const [showPassword, setshowPassword] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -276,18 +281,23 @@ export default function AddUserPage() {
                                                 <span>Password</span>
                                                 <span className="text-red-500">*</span>
                                             </label>
-                                            <div className={`relative rounded-lg border-2 transition-all duration-200 ${isFieldInvalid('password')
+                                            <div className={`relative flex items-center pr-4  rounded-lg border-2 transition-all duration-200 ${isFieldInvalid('password')
                                                 ? 'border-red-300 bg-red-50'
                                                 : 'border-slate-200 hover:border-slate-300 focus-within:border-slate-400'
                                                 }`}>
                                                 <input
-                                                    type="password"
+                                                    type={showPassword ? "text" : "password"}
                                                     placeholder="Enter secure password"
                                                     className="w-full bg-transparent rounded-lg px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none"
                                                     value={form.password}
                                                     onChange={(e) => handleInputChange('password', e.target.value)}
                                                     required
                                                 />
+                                                {/* <Eye />
+                                                <EyeOff /> */}
+                                                <div onClick={() => setshowPassword(prev => !prev)}>
+                                                    {showPassword ? <Eye /> : <EyeOff />}
+                                                </div>
                                             </div>
                                             {isFieldInvalid('password') && (
                                                 <p className="text-red-500 text-sm flex items-center space-x-1">
