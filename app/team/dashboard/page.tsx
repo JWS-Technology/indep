@@ -29,7 +29,7 @@ export default function DepartmentDashboard() {
 
     const fetchTeamStatus = async () => {
         try {
-            const res = await fetch("/api/department/me");
+            const res = await fetch("/api/me");
             const data = await res.json();
 
             if (!data.success) {
@@ -49,7 +49,7 @@ export default function DepartmentDashboard() {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            const res = await fetch("/api/department/update-password", {
+            const res = await fetch("/api/update-password", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ newPassword }),
@@ -99,6 +99,7 @@ export default function DepartmentDashboard() {
 
     // 🔴 STATE 1: FORCE PASSWORD CHANGE
     if (!teamData?.isPasswordChanged) {
+        // {console.log(teamData?.isPasswordChanged)}
         return (
             <div className="min-h-screen bg-red-50 flex items-center justify-center p-4">
                 <div className="bg-white max-w-md w-full p-8 rounded-2xl shadow-xl border border-red-100">
