@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import jwt from "jsonwebtoken";
 import dbConnect from "@/utils/dbConnect";
-import Team from "@/models/Departments";
+import Team from "@/models/Team";
 
 export const dynamic = "force-dynamic";
 
