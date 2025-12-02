@@ -113,7 +113,7 @@ export default function Login() {
                                     <input
                                         type="text"
                                         value={form.collegeId}
-                                        onChange={(e) => setForm({ ...form, collegeId: e.target.value })}
+                                        onChange={(e) => setForm({ ...form, collegeId: e.target.value.toUpperCase() })}
                                         className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
                                         placeholder="e.g. 23UBC506"
                                         required
