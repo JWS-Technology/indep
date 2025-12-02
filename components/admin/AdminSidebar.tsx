@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -7,25 +8,42 @@ import {
     Users,
     UserPlus,
     Calendar,
-    Trophy,
     Settings,
     LogOut,
     Shield,
     Upload,
-    Files 
+    Files,
+    Image as ImageIcon,
+    ChevronDown,
+    ChevronRight,
+    List
 } from "lucide-react";
 
 export default function AdminSidebar() {
     const pathname = usePathname();
+    const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
+        Gallery: true // Default open, or allow it to be closed
+    });
+
+    const toggleMenu = (name: string) => {
+        setOpenMenus(prev => ({ ...prev, [name]: !prev[name] }));
+    };
 
     const navItems = [
         { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
         { name: "All Users", href: "/admin/users", icon: Users },
-        { name: "Create User", href: "/admin/create-user", icon: UserPlus }, // Assuming you move the add-user page here
+        { name: "Create User", href: "/admin/create-user", icon: UserPlus },
         { name: "Manage Events", href: "/admin/events", icon: Calendar },
-        // { name: "Results", href: "/admin/results", icon: Trophy },
-        { name: "Files", href: "/admin/files", icon: Files   },
-        { name: "Upload", href: "/admin/upload", icon: Upload  },
+        {
+            name: "Gallery",
+            icon: ImageIcon,
+            href: "#", // Parent item
+            subItems: [
+                { name: "Manage Gallery", href: "/admin/gallery", icon: List },
+                { name: "Upload Image", href: "/admin/upload-gallery", icon: Upload },
+            ]
+        },
+        { name: "Files", href: "/admin/files", icon: Files },
         { name: "Settings", href: "/admin/settings", icon: Settings },
     ];
 
@@ -35,7 +53,7 @@ export default function AdminSidebar() {
     };
 
     return (
-        <aside className="w-64 bg-slate-900 text-white h-screen fixed left-0 top-0 flex flex-col border-r border-slate-800">
+        <aside className="w-64 bg-slate-900 text-white h-screen fixed left-0 top-0 flex flex-col border-r border-slate-800 z-50">
 
             {/* Logo Area */}
             <div className="p-6 border-b border-slate-800 flex items-center gap-3">
@@ -49,10 +67,52 @@ export default function AdminSidebar() {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+            <nav className="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
                 {navItems.map((item) => {
                     const Icon = item.icon;
-                    const isActive = pathname === item.href;
+                    // Check if this item (or its sub-items) is currently active
+                    const isActive = item.href === pathname || item.subItems?.some(sub => sub.href === pathname);
+                    const hasSubItems = item.subItems && item.subItems.length > 0;
+                    const isOpen = openMenus[item.name];
+
+                    if (hasSubItems) {
+                        return (
+                            <div key={item.name} className="space-y-1">
+                                <button
+                                    onClick={() => toggleMenu(item.name)}
+                                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${isActive ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"}`}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <Icon size={20} className={isActive ? "text-blue-400" : "text-slate-500 group-hover:text-white"} />
+                                        <span className="font-medium text-sm">{item.name}</span>
+                                    </div>
+                                    {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                                </button>
+
+                                {isOpen && (
+                                    <div className="pl-4 space-y-1">
+                                        {item.subItems!.map((sub) => {
+                                            const SubIcon = sub.icon;
+                                            const isSubActive = pathname === sub.href;
+                                            return (
+                                                <Link
+                                                    key={sub.name}
+                                                    href={sub.href}
+                                                    className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 ${isSubActive
+                                                            ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
+                                                            : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                                                        }`}
+                                                >
+                                                    {SubIcon && <SubIcon size={16} className={isSubActive ? "text-white" : "text-slate-500"} />}
+                                                    <span className="font-medium text-sm">{sub.name}</span>
+                                                </Link>
+                                            )
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }
 
                     return (
                         <Link

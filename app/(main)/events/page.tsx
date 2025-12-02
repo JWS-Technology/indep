@@ -211,18 +211,39 @@ export default function EventsPage() {
                     </h3>
 
                     <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
+<<<<<<< HEAD
                       {/* <div className="flex items-center gap-1">
                         <User size={12} />
                         <span>Solo</span>
                       </div> */}
+=======
+                      <div className="flex items-center gap-1">
+                        {/* You can make this dynamic if your DB has 'isTeam' */}
+                        {isTeam ? <Users size={12} /> : <User size={12} />}
+                        <span>{isTeam ? "Team" : "Solo"}</span>
+                      </div>
+
+>>>>>>> 088d291dfb92706edffe7121f28db7cd6dc139dc
                       <div className="w-1 h-1 rounded-full bg-slate-300" />
                       <div className="flex items-center gap-1">
                         <Clock size={12} />
                         <span>{event.time || "TBA"}</span>
                       </div>
                     </div>
+                    <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
 
+<<<<<<< HEAD
                     <div className={`absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity ${isActiveOn ? "bg-indigo-600" : "bg-pink-600"}`} />
+=======
+                      <div className="flex items-center gap-1">
+                        <Lightbulb size={12} />
+                        {/* Displaying dynamic time from DB */}
+                        <span>{event.venue || "TBA"}</span>
+                      </div>
+                    </div>
+                    {/* Hover Reveal Gradient */}
+                    <div className={`absolute inset-0 opacity-0 group-hover:opacity-5 pointer-events-none transition-opacity duration-300 ${isActiveOn ? 'bg-indigo-600' : 'bg-pink-600'}`} />
+>>>>>>> 088d291dfb92706edffe7121f28db7cd6dc139dc
                   </div>
                 </motion.div>
               );

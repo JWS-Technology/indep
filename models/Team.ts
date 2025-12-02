@@ -1,25 +1,50 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, model, models, Document } from "mongoose";
 
 export interface ITeam extends Document {
+  teamId: string;
   teamName: string;
+  password: string;
   shift: string;
+  isPasswordChanged: boolean;
+  membersCreated: {
+    faculty: boolean;
+    student: boolean;
+  };
 }
 
 const TeamSchema = new Schema<ITeam>(
   {
+    teamId: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
     teamName: {
       type: String,
       required: true,
-      trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
     },
     shift: {
       type: String,
       required: true,
-      trim: true,
+    },
+    isPasswordChanged: {
+      type: Boolean,
+      default: false,
+    },
+    membersCreated: {
+      faculty: { type: Boolean, default: false },
+      student: { type: Boolean, default: false },
     },
   },
   { timestamps: true }
 );
 
-// Fix model overwrite error in Next.js
-export default mongoose.models.Team || mongoose.model<ITeam>("Team", TeamSchema);
+const Team =
+  (models.Team as mongoose.Model<ITeam>) || model<ITeam>("Team", TeamSchema);
+
+export default Team;

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { 
-  BookOpen, 
-  Calendar, 
-  Users, 
-  Award, 
-  AlertTriangle, 
-  Mic, 
+import {
+  BookOpen,
+  Calendar,
+  Users,
+  Award,
+  AlertTriangle,
+  Mic,
   Palette,
   Music,
   Camera,
@@ -89,22 +89,22 @@ export default function RulesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 py-8 px-4">
+    <div className="min-h-screen mt-20 bg-gradient-to-br from-slate-50 via-white to-slate-100 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-600 to-red-800 rounded-2xl mb-6 shadow-lg">
+          {/* <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-600 to-red-800 rounded-2xl mb-6 shadow-lg">
             <BookOpen className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-4xl font-bold text-slate-900 mb-3">
+          </div> */}
+          {/* <h1 className="text-4xl font-bold text-slate-900 mb-3">
             St. Joseph's College (Autonomous)
-          </h1>
+          </h1> */}
           <h2 className="text-3xl font-bold bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent mb-2">
-            INDEP 2025 – Rules & Regulations
+            Rules & Regulations
           </h2>
-          <p className="text-slate-600 text-lg">
+          {/* <p className="text-slate-600 text-lg">
             Comprehensive Event Guidelines Handbook
-          </p>
+          </p> */}
           <div className="mt-6 flex justify-center space-x-4">
             <button
               onClick={downloadPDF}
@@ -125,8 +125,8 @@ export default function RulesPage() {
             </h3>
           </div>
           <p className="text-slate-700 leading-relaxed">
-            We take pleasure in presenting you with the Rules and Regulations for INDEP 2025. 
-            We request the Heads of the Departments, the Team in-charges, and the secretaries 
+            We take pleasure in presenting you with the Rules and Regulations for INDEP 2025.
+            We request the Heads of the Departments, the Team in-charges, and the secretaries
             to take initiative in selecting the 'Cream' to represent their departments.
           </p>
         </div>
@@ -330,13 +330,13 @@ export default function RulesPage() {
               <h3 className="text-xl font-bold text-red-900 mb-4">⚠️ Important Note</h3>
               <div className="space-y-4 text-red-800">
                 <p className="leading-relaxed">
-                  Dialogues containing double meaning, criticism of the college management, staff, 
-                  departments, hostels, SHEPHERD activities, Canteen, mentioning names of the government 
+                  Dialogues containing double meaning, criticism of the college management, staff,
+                  departments, hostels, SHEPHERD activities, Canteen, mentioning names of the government
                   officials and any form of obscenity are to be avoided.
                 </p>
                 <p className="leading-relaxed">
-                  The sensitive political and religious situation and sentiments should not be brought on the stage. 
-                  The Presidents of the Associations will bear the responsibility. Any violation of this rule will 
+                  The sensitive political and religious situation and sentiments should not be brought on the stage.
+                  The Presidents of the Associations will bear the responsibility. Any violation of this rule will
                   lead to disqualification. The Presidents are requested to extend their full cooperation.
                 </p>
                 <p className="leading-relaxed font-bold">
@@ -351,9 +351,9 @@ export default function RulesPage() {
         <div className="mb-10">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center space-x-3">
             <Palette className="w-8 h-8 text-purple-600" />
-            <span>🎨 Art & Literary Events</span>
+            <span>Art & Literary Events</span>
           </h2>
-          
+
           {/* Poetry Writing Tamil */}
           <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl border border-slate-200 shadow-sm mb-4 overflow-hidden">
             <button
@@ -741,7 +741,7 @@ export default function RulesPage() {
         <div className="mb-10">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center space-x-3">
             <Mic className="w-8 h-8 text-blue-600" />
-            <span>🎤 Speech & Performance Events</span>
+            <span>Speech & Performance Events</span>
           </h2>
 
           {/* Elocution Tamil */}
@@ -1066,7 +1066,7 @@ export default function RulesPage() {
         <div className="mb-10">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center space-x-3">
             <Sparkles className="w-8 h-8 text-pink-600" />
-            <span>💃 Dance Events</span>
+            <span>Dance Events</span>
           </h2>
 
           {/* Classical Dance */}
@@ -1488,7 +1488,7 @@ export default function RulesPage() {
         <div className="mb-10">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center space-x-3">
             <Layers className="w-8 h-8 text-indigo-600" />
-            <span>🖼️ Other Events</span>
+            <span>Other Events</span>
           </h2>
 
           {/* Collage */}
@@ -1781,13 +1781,13 @@ export default function RulesPage() {
                 <Check className="w-5 h-5 text-green-600 mt-0.5" />
                 <div>
                   <h4 className="font-semibold text-slate-900">INDEP Portal URL</h4>
-                  <a 
-                    href="https://sites.google.com/mail.sjctni.edu/indep-2025/home"
+                  <a
+                    href="#"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:text-blue-800 text-sm break-all"
                   >
-                    https://sites.google.com/mail.sjctni.edu/indep-2025/home
+                    To be announced
                   </a>
                 </div>
               </div>
@@ -1826,12 +1826,16 @@ export default function RulesPage() {
           <p className="mb-2">
             For any queries, contact Fine Arts Association Coordinator:
           </p>
-          <p className="font-semibold text-slate-900 text-lg">
-            Dr. A. Vimal Jerald - 9698111008
-          </p>
-          <p className="mt-4 text-slate-500">
+          <div className="flex items-center justify-center">
+            <p className="font-semibold text-slate-900 text-lg">
+              Dr. A. Vimal Jerald -
+            </p>
+            <a href="tel:+919698111008" className="font-semibold text-slate-900 text-lg" >9698111008</a>
+
+          </div>
+          {/* <p className="mt-4 text-slate-500">
             © 2025 St. Joseph's College (Autonomous) | INDEP 2025 | All Rights Reserved
-          </p>
+          </p> */}
         </div>
       </div>
 

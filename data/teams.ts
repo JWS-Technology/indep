@@ -19,7 +19,7 @@ export const shiftTwo = [
   "Commerce CA",
   "Data Sci. & AI",
   "Commerce",
-  "Counselling Psychology & Chem",
+  "Counselling Psychology",
   "Computer Science",
   "Information Technology",
   "Electronics",
@@ -27,6 +27,7 @@ export const shiftTwo = [
   "Mathematics",
   "Physics",
   "B.Voc SD & SA",
-  "B.Voc Visom & Vis.com Tech",
-  "B.Com Honours, B.Com SF & BA",
+  "B.Voc Viscom Tech & B.Sc Viscom",
+  "B.Com Honours",
+  "B.Com SF & BA, Physical Education",
 ];

@@ -57,12 +57,7 @@ export default function Contact() {
             title: "Event Coordinators",
             description: "For technical queries, rules, and participation details",
             contacts: [
-                {
-                    name: "Dr. A. Simi",
-                    phone: "9894520549",
-                    image: "/images/simi.jpg",
-                    role: "Staff Coordinator"
-                },
+
                 {
                     name: "Dr. A. Vimal Jerald",
                     phone: "9698111008",
@@ -70,9 +65,15 @@ export default function Contact() {
                     role: "Staff Coordinator"
                 },
                 {
-                    name: "S. Frank Antony Vimal",
-                    phone: "6379363903",
-                    image: "/images/frank.jpg",
+                    name: "Dr. K. JOHN KENNEDY",
+                    phone: "9894520549",
+                    image: "https://sjctni.edu/images/Tphotos/25cta53.jpg",
+                    role: "Staff Coordinator"
+                },
+                {
+                    name: "K. Samkumar",
+                    phone: "9025469183",
+                    image: "https://sjctni.edu/images/SPhotos/23/23ucs147.jpg",
                     role: "Student Coordinator"
                 }
             ]
