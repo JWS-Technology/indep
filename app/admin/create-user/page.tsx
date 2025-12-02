@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { shiftOne, shiftTwo } from "@/data/teams";
 import {
@@ -36,7 +35,6 @@ export default function AddUserPage() {
         email: "",
         phone: ""
     });
-    console.log(form)
 
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
@@ -46,7 +44,9 @@ export default function AddUserPage() {
         name: false,
         collegeId: false,
         password: false,
-        department: false
+        department: false,
+        email: false,
+        phone: false
     });
 
     const [showPassword, setshowPassword] = useState(false);
@@ -101,7 +101,10 @@ export default function AddUserPage() {
                     name: false,
                     collegeId: false,
                     password: false,
-                    department: false
+                    department: false,
+                    email: false,
+                    phone: false
+
                 });
             } else {
                 setMessage(data.error || "Failed to create user");
@@ -132,7 +135,9 @@ export default function AddUserPage() {
                     name: true,
                     collegeId: true,
                     password: true,
-                    department: touched.department
+                    department: touched.department,
+                    email: true,
+                    phone: true
                 });
                 return;
             }
@@ -335,8 +340,8 @@ export default function AddUserPage() {
 
                                             <div
                                                 className={`relative flex items-center pr-4 rounded-lg border-2 transition-all duration-200 ${isFieldInvalid('email')
-                                                        ? 'border-red-300 bg-red-50'
-                                                        : 'border-slate-200 hover:border-slate-300 focus-within:border-slate-400'
+                                                    ? 'border-red-300 bg-red-50'
+                                                    : 'border-slate-200 hover:border-slate-300 focus-within:border-slate-400'
                                                     }`}
                                             >
                                                 <input
