@@ -8,7 +8,6 @@ import {
   Drama,
   Paintbrush,
   Code,
-  Lightbulb,
   Gamepad2,
   Users,
   User,
@@ -16,7 +15,7 @@ import {
   Sparkles,
   Ticket,
   Loader2,
-  AlertCircle
+  AlertCircle,
 } from "lucide-react";
 
 // --- Types matching your Database ---
@@ -47,47 +46,51 @@ const getEventIcon = (category: string) => {
 };
 
 export default function EventsPage() {
-  // 1. State for Data & UI
+  // State
   const [events, setEvents] = useState<EventItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [activeFilter, setActiveFilter] = useState<FilterType>("ON_STAGE");
 
-  // 2. Fetch Data from API
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const res = await fetch('/api/events');
-        if (!res.ok) throw new Error('Failed to fetch events');
-        const data = await res.json();
-        setEvents(data.events || []);
-      } catch (err) {
-        setError("Could not load the official lineup.");
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // --- Fetch Data EXACTLY like your working admin file ---
+  const fetchEvents = async () => {
+    try {
+      const res = await fetch("/api/events");
+      const data = await res.json();
 
+      if (data.events) {
+        setEvents(data.events); // SAME as working admin code
+      } else {
+        setEvents([]);
+      }
+    } catch (err) {
+      console.error("Error fetching:", err);
+      setError("Could not load the official lineup.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchEvents();
   }, []);
 
-  // 3. Filter the fetched data
+  // Filter events
   const filteredEvents = events.filter((e) => e.stageType === activeFilter);
 
-  // Animation Variants
+  // Animations
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.05 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
   };
 
   const cardVariants = {
     hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
   };
 
-  // 4. Loading State
+  // Loading Screen
   if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
@@ -97,7 +100,7 @@ export default function EventsPage() {
     );
   }
 
-  // 5. Error State
+  // Error Screen
   if (error) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
@@ -114,7 +117,7 @@ export default function EventsPage() {
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 mt-20">
       <div className="max-w-7xl mx-auto">
 
-        {/* --- Header & Filter Compact Row --- */}
+        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
           <div>
             <div className="inline-flex items-center gap-2 text-indigo-600 font-bold tracking-wider uppercase text-xs mb-2">
@@ -157,7 +160,8 @@ export default function EventsPage() {
           </div>
         </div>
 
-        {/* --- Dense Ticket Grid --- */}
+
+        {/* Event Grid */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeFilter}
@@ -169,7 +173,6 @@ export default function EventsPage() {
           >
             {filteredEvents.map((event, idx) => {
               const Icon = getEventIcon(event.category);
-              const isTeam = false; // You can fetch this from DB if you add a field for it
               const isActiveOn = activeFilter === "ON_STAGE";
               const themeColor = isActiveOn ? "text-indigo-600" : "text-pink-600";
               const bgColor = isActiveOn ? "bg-indigo-50" : "bg-pink-50";
@@ -177,29 +180,25 @@ export default function EventsPage() {
 
               return (
                 <motion.div
-                  key={event._id} // Using MongoDB _id
+                  key={event._id}
                   variants={cardVariants}
                   className={`
-                    group relative bg-white rounded-xl border border-slate-200 overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300
-                    flex flex-row h-32 md:h-36 ${borderColor}
+                    group relative bg-white rounded-xl border border-slate-200 overflow-hidden cursor-pointer hover:shadow-lg transition-all flex flex-row h-32 md:h-36 ${borderColor}
                   `}
                 >
-                  {/* Left Side: The "Stub" */}
+                  {/* Left stub */}
                   <div className={`w-24 md:w-28 flex flex-col items-center justify-center border-r-2 border-dashed border-slate-200 relative ${bgColor}`}>
-                    {/* Semi-circles for ticket punch holes */}
-                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-slate-50 rounded-full border border-slate-200 z-10" />
-                    <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-slate-50 rounded-full border border-slate-200 z-10" />
+                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-slate-50 rounded-full border border-slate-200" />
+                    <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-slate-50 rounded-full border border-slate-200" />
 
                     <span className={`text-3xl font-black opacity-30 ${themeColor}`}>
-                      {String(idx + 1).padStart(2, '0')}
+                      {String(idx + 1).padStart(2, "0")}
                     </span>
                     <Icon size={24} className={`mt-2 opacity-60 ${themeColor}`} />
                   </div>
 
-                  {/* Right Side: Content */}
+                  {/* Right content */}
                   <div className="flex-1 p-4 flex flex-col justify-between relative">
-
-                    {/* Category Tag */}
                     <div className="flex justify-between items-start">
                       <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 bg-slate-100 px-2 py-0.5 rounded-sm">
                         {event.category}
@@ -207,30 +206,23 @@ export default function EventsPage() {
                       <Ticket size={16} className="text-slate-300 group-hover:text-slate-800 transition-colors" />
                     </div>
 
-                    {/* Title */}
-                    <div>
-                      <h3 className="text-lg font-bold text-slate-800 leading-tight line-clamp-2 group-hover:text-slate-900">
-                        {event.title}
-                      </h3>
-                    </div>
+                    <h3 className="text-lg font-bold text-slate-800 leading-tight line-clamp-2 group-hover:text-slate-900">
+                      {event.title}
+                    </h3>
 
-                    {/* Footer Details */}
                     <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
-                      <div className="flex items-center gap-1">
-                        {/* You can make this dynamic if your DB has 'isTeam' */}
-                        {isTeam ? <Users size={12} /> : <User size={12} />}
-                        <span>{isTeam ? "Team" : "Solo"}</span>
-                      </div>
+                      {/* <div className="flex items-center gap-1">
+                        <User size={12} />
+                        <span>Solo</span>
+                      </div> */}
                       <div className="w-1 h-1 rounded-full bg-slate-300" />
                       <div className="flex items-center gap-1">
                         <Clock size={12} />
-                        {/* Displaying dynamic time from DB */}
                         <span>{event.time || "TBA"}</span>
                       </div>
                     </div>
 
-                    {/* Hover Reveal Gradient */}
-                    <div className={`absolute inset-0 opacity-0 group-hover:opacity-5 pointer-events-none transition-opacity duration-300 ${isActiveOn ? 'bg-indigo-600' : 'bg-pink-600'}`} />
+                    <div className={`absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity ${isActiveOn ? "bg-indigo-600" : "bg-pink-600"}`} />
                   </div>
                 </motion.div>
               );
@@ -238,13 +230,12 @@ export default function EventsPage() {
           </motion.div>
         </AnimatePresence>
 
-        {/* --- Empty State --- */}
+        {/* Empty */}
         {!isLoading && filteredEvents.length === 0 && (
           <div className="text-center py-20 opacity-50">
             <p className="text-xl font-bold text-slate-400">No events found in this category.</p>
           </div>
         )}
-
       </div>
     </div>
   );
