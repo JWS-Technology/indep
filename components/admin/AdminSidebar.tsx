@@ -16,7 +16,8 @@ import {
     Image as ImageIcon,
     ChevronDown,
     ChevronRight,
-    List
+    List,
+    Ticket
 } from "lucide-react";
 
 export default function AdminSidebar() {
@@ -44,6 +45,7 @@ export default function AdminSidebar() {
             ]
         },
         { name: "Files", href: "/admin/files", icon: Files },
+        { name: "Lot", href: "/admin/lot/select-event", icon: Ticket },
         { name: "Settings", href: "/admin/settings", icon: Settings },
     ];
 
