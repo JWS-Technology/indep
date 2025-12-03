@@ -8,7 +8,8 @@ export function Sidebar({ open, setOpen }: { open: boolean; setOpen: (v: boolean
     const pathname = usePathname();
 
     const navItems = [
-        { icon: <Home size={20} />, label: "Dashboard", href: "/dashboard" },
+        { icon: <Home size={20} />, label: "Dashboard", href: "/team/dashboard" },
+        { icon: <Home size={20} />, label: "Registration", href: "/team/registration" },
         // { icon: <Users size={20} />, label: "Members", href: "/members" }, // Example
         // { icon: <Settings size={20} />, label: "Settings", href: "/settings" }, // Example
     ];
@@ -45,9 +46,9 @@ export function Sidebar({ open, setOpen }: { open: boolean; setOpen: (v: boolean
                     {navItems.map((item) => (
                         <Link
                             key={item.label}
-                            href="#" // Replace with item.href in real app
+                            href={item.href} // Replace with item.href in real app
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium
-              ${pathname === item.href || item.label === "Dashboard" // Mock active state
+                            ${pathname === item.href || item.label === "Dashboard" // Mock active state
                                     ? "bg-indigo-50 text-indigo-600 shadow-sm"
                                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}
                         >
