@@ -77,10 +77,7 @@ export default function NavbarDesktop({ navItems }: NavbarDesktopProps) {
                 >
                     Sign In
                 </Link>
-                <Link
-                    href="/register"
-                    className="relative px-8 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group overflow-hidden"
-                >
+                
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <span className="relative flex items-center space-x-2">
                         <span>Register</span>
