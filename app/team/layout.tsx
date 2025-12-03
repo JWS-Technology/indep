@@ -32,7 +32,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Sidebar open={open} setOpen={setOpen} />
             <div className="flex-1 flex flex-col md:ml-64 min-h-screen transition-all duration-300">
                 <Navbar setOpen={setOpen} teamName={teamData?.teamName} />
-                <main className="flex-1 p -6 md:p- 8 max-w-7xl mx-auto w-full animate-in fade-in duration-500">
+                <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full animate-in fade-in duration-500">
                     {children}
                 </main>
             </div>
