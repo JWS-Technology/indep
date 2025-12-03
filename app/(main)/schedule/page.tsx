@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Loader2, AlertCircle } from "lucide-react";
-import EventSection from "../../../components/ScheduleSection"; // Keep your existing path
+import EventSection from "@/components/schedule/ScheduleSection"; // Keep your existing path
 
 // Define the shape of data coming from your DB
 type FilterType = "ON_STAGE" | "OFF_STAGE";
