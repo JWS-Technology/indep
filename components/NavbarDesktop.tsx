@@ -78,12 +78,7 @@ export default function NavbarDesktop({ navItems }: NavbarDesktopProps) {
                     Sign In
                 </Link>
                 
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <span className="relative flex items-center space-x-2">
-                        <span>Register</span>
-                        <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
-                    </span>
-                </Link>
+                 
             </div>
         </div>
     );
