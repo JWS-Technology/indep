@@ -18,24 +18,24 @@ import {
     ChevronRight,
     List,
     Ticket,
-    BookOpen
+    BookOpen,
 } from "lucide-react";
 
 export default function AdminSidebar() {
     const pathname = usePathname();
-    const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
-        Gallery: true // Default open, or allow it to be closed
-    });
+    const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
     const toggleMenu = (name: string) => {
-        setOpenMenus(prev => ({ ...prev, [name]: !prev[name] }));
+        setOpenMenus((prev) => ({ ...prev, [name]: !prev[name] }));
     };
 
     const navItems = [
         { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
         { name: "All Users", href: "/admin/users", icon: Users },
+        { name: "Coordinators", href: "/admin/manage-coordinator", icon: Users },
         { name: "Create User", href: "/admin/create-user", icon: UserPlus },
         { name: "Manage Events", href: "/admin/events", icon: Calendar },
+        { name: "Open Registration", href: "/admin/registration", icon: BookOpen },
         {
             name: "Gallery",
             icon: ImageIcon,
@@ -43,12 +43,12 @@ export default function AdminSidebar() {
             subItems: [
                 { name: "Manage Gallery", href: "/admin/gallery", icon: List },
                 { name: "Upload Image", href: "/admin/upload-gallery", icon: Upload },
-            ]
+            ],
         },
-        { name: "Files", href: "/admin/files", icon: Files },
-        { name: "Open Registration", href: "/admin/registration", icon: BookOpen},
-        { name: "Lot", href: "/admin/lot/select-event", icon: Ticket },
-        { name: "Settings", href: "/admin/settings", icon: Settings },
+        // { name: "Files", href: "/admin/files", icon: Files },
+
+        // { name: "Lot", href: "/admin/lot/select-event", icon: Ticket },
+        // { name: "Settings", href: "/admin/settings", icon: Settings },
     ];
 
     const handleLogout = async () => {
@@ -58,7 +58,6 @@ export default function AdminSidebar() {
 
     return (
         <aside className="w-64 bg-slate-900 text-white h-screen fixed left-0 top-0 flex flex-col border-r border-slate-800 z-50">
-
             {/* Logo Area */}
             <div className="p-6 border-b border-slate-800 flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -75,7 +74,9 @@ export default function AdminSidebar() {
                 {navItems.map((item) => {
                     const Icon = item.icon;
                     // Check if this item (or its sub-items) is currently active
-                    const isActive = item.href === pathname || item.subItems?.some(sub => sub.href === pathname);
+                    const isActive =
+                        item.href === pathname ||
+                        item.subItems?.some((sub) => sub.href === pathname);
                     const hasSubItems = item.subItems && item.subItems.length > 0;
                     const isOpen = openMenus[item.name];
 
@@ -84,13 +85,27 @@ export default function AdminSidebar() {
                             <div key={item.name} className="space-y-1">
                                 <button
                                     onClick={() => toggleMenu(item.name)}
-                                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${isActive ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"}`}
+                                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
+                                            ? "bg-slate-800 text-white"
+                                            : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                                        }`}
                                 >
                                     <div className="flex items-center gap-3">
-                                        <Icon size={20} className={isActive ? "text-blue-400" : "text-slate-500 group-hover:text-white"} />
+                                        <Icon
+                                            size={20}
+                                            className={
+                                                isActive
+                                                    ? "text-blue-400"
+                                                    : "text-slate-500 group-hover:text-white"
+                                            }
+                                        />
                                         <span className="font-medium text-sm">{item.name}</span>
                                     </div>
-                                    {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                                    {isOpen ? (
+                                        <ChevronDown size={16} />
+                                    ) : (
+                                        <ChevronRight size={16} />
+                                    )}
                                 </button>
 
                                 {isOpen && (
@@ -107,10 +122,19 @@ export default function AdminSidebar() {
                                                             : "text-slate-400 hover:bg-slate-800 hover:text-white"
                                                         }`}
                                                 >
-                                                    {SubIcon && <SubIcon size={16} className={isSubActive ? "text-white" : "text-slate-500"} />}
-                                                    <span className="font-medium text-sm">{sub.name}</span>
+                                                    {SubIcon && (
+                                                        <SubIcon
+                                                            size={16}
+                                                            className={
+                                                                isSubActive ? "text-white" : "text-slate-500"
+                                                            }
+                                                        />
+                                                    )}
+                                                    <span className="font-medium text-sm">
+                                                        {sub.name}
+                                                    </span>
                                                 </Link>
-                                            )
+                                            );
                                         })}
                                     </div>
                                 )}
@@ -123,11 +147,18 @@ export default function AdminSidebar() {
                             key={item.name}
                             href={item.href}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                                ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
-                                : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                                    ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
+                                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
                                 }`}
                         >
-                            <Icon size={20} className={isActive ? "text-white" : "text-slate-500 group-hover:text-white"} />
+                            <Icon
+                                size={20}
+                                className={
+                                    isActive
+                                        ? "text-white"
+                                        : "text-slate-500 group-hover:text-white"
+                                }
+                            />
                             <span className="font-medium text-sm">{item.name}</span>
                         </Link>
                     );
