@@ -1,12 +1,22 @@
 import React from 'react';
 
+interface Team {
+  id: string;
+  name: string;
+  shift: 'I' | 'II';
+}
+
 interface TeamListProps {
     title: string;
-    teams: string[];
+    teams: Team[];
     color?: string;
 }
 
-export default function TeamListModern({ title, teams, color = "from-blue-600 to-cyan-500" }: TeamListProps) {
+
+
+
+export default function TeamList({ title, teams, color = "from-blue-600 to-cyan-500" }: TeamListProps) {
+    
     return (
         <section className="font-sans h-full">
             {/* Header */}
@@ -15,16 +25,11 @@ export default function TeamListModern({ title, teams, color = "from-blue-600 to
                 <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">{title}</h2>
             </div>
 
-            {/* Grid Logic: 
-                1 col on mobile (narrow).
-                2 cols on tablet/desktop (sm:grid-cols-2). 
-                If the parent container gets squished on 'lg' screens, you might want to revert to 1,
-                but 'sm:grid-cols-2' is usually the best balance for lists.
-            */}
+            {/* Teams Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {teams.map((team, idx) => (
                     <div
-                        key={idx}
+                        key={team.id}
                         className="group relative flex items-center p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-100 transition-all duration-300 hover:-translate-y-1"
                     >
                         {/* Large Gradient Number */}
@@ -39,7 +44,7 @@ export default function TeamListModern({ title, teams, color = "from-blue-600 to
 
                         <div className="flex flex-col border-l border-gray-100 pl-4 h-full justify-center">
                             <span className="text-base font-bold text-gray-700 group-hover:text-gray-900 transition-colors leading-tight">
-                                {team}
+                                {team.name}
                             </span>
                         </div>
 

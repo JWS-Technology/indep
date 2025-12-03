@@ -1,12 +1,80 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import TeamList from '@/components/teams/TeamList';
-import { shiftOne, shiftTwo } from '@/data/teams';
+
+interface Team {
+  id: string;
+  name: string;
+  shift: 'I' | 'II';
+}
 
 export default function Teams() {
+    const [teams, setTeams] = useState<{ shiftOne: Team[]; shiftTwo: Team[] }>({
+        shiftOne: [],
+        shiftTwo: []
+    });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+   useEffect(() => {
+    const fetchTeams = async () => {
+        try {
+            const res = await fetch('/api/team');
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+            const data = await res.json();
+            console.log('Raw API response:', data);
+
+            if (!Array.isArray(data.teams)) throw new Error('Unexpected API response');
+
+            // Map API objects to our Team interface
+            const mappedTeams: Team[] = data.teams.map((team: any) => ({
+                id: team.teamId,
+                name: team.teamName,
+                shift: team.shift === 'Shift I' ? 'I' : 'II',
+            }));
+
+            // Filter by shift
+            const shiftOne = mappedTeams.filter(team => team.shift === 'I');
+            const shiftTwo = mappedTeams.filter(team => team.shift === 'II');
+
+            console.log('Shift I teams:', shiftOne);
+            console.log('Shift II teams:', shiftTwo);
+
+            setTeams({ shiftOne, shiftTwo });
+
+        } catch (err: any) {
+            console.error('Failed to fetch teams:', err);
+            setError(err.message || 'Failed to fetch teams');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchTeams();
+}, []);
+
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p className="text-xl text-gray-600">Loading teams...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p className="text-xl text-red-500">Error: {error}</p>
+            </div>
+        );
+    }
+
     return (
-        // Added px-5 here to ensure the ml-5 mr-5 look on mobile/desktop
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12 px-5 mt-20">
             <div className="max-w-7xl mx-auto">
-
                 {/* Header */}
                 <div className="text-center mb-16">
                     <h1 className="text-5xl md:text-6xl font-black text-gray-800 mb-6 tracking-tight">
@@ -18,55 +86,23 @@ export default function Teams() {
                     </p>
                 </div>
 
-                {/* Teams Grid Wrapper 
-                   - Removed w-350 (which was breaking the layout)
-                   - Uses grid-cols-1 on mobile, grid-cols-2 on large screens
-                   - items-start prevents cards from stretching unnaturally if lists are different lengths
-                */}
-                {/* Teams Grid Wrapper */}
+                {/* Teams Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
-
-                    {/* Card 1 - Green Theme (Shift I) */}
                     <div className="hover-lift bg-white/80 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-xl shadow-green-900/5 border border-white">
                         <TeamList
                             title="Shift I"
-                            teams={shiftOne}
+                            teams={teams.shiftOne}
                             color="from-green-600 to-emerald-500"
                         />
                     </div>
-
-                    {/* Card 2 - Red Theme (Shift II) */}
                     <div className="hover-lift bg-white/80 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-xl shadow-red-900/5 border border-white">
                         <TeamList
                             title="Shift II"
-                            teams={shiftTwo}
+                            teams={teams.shiftTwo}
                             color="from-red-600 to-rose-500"
                         />
                     </div>
-
                 </div>
-
-                {/* CTA / Info Card */}
-                <div className="mt-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-10 text-white text-center shadow-2xl shadow-blue-900/20 relative overflow-hidden group">
-                    {/* Decorative circles */}
-                    <div className="absolute top-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-x-1/2 -translate-y-1/2 group-hover:scale-150 transition-transform duration-700"></div>
-                    <div className="absolute bottom-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full translate-x-1/2 translate-y-1/2 group-hover:scale-150 transition-transform duration-700"></div>
-
-                    <div className="relative z-10">
-                        <h3 className="text-3xl font-bold mb-4">Ready to Represent?</h3>
-                        <p className="text-blue-50 text-lg mb-8 max-w-2xl mx-auto">
-                            Join your department team and be part of the biggest cultural extravaganza of the year!
-                        </p>
-                        <a
-                            href="/register"
-                            className="inline-flex items-center px-8 py-4 bg-white text-blue-700 rounded-xl font-bold text-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-                        >
-                            Register Now
-                            <svg className="w-5 h-5 ml-2 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
-                        </a>
-                    </div>
-                </div>
-
             </div>
         </div>
     );
