@@ -17,7 +17,7 @@ const UserSchema = new Schema(
       required: true,
       unique: true, // Email should typically be unique
     },
-    // 🔥 Added Phone field from the form
+    
     phone: {
       type: String,
       required: false, // Phone might be optional, adjust as needed
