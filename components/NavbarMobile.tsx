@@ -119,9 +119,7 @@ const NavbarMobile: React.FC<Props> = ({ navItems }) => {
                         <Link href="/login" className="flex-1 py-3 text-center text-gray-600 font-semibold bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                             Sign In
                         </Link>
-                        <Link href="/register" className="flex-1 py-3 text-center text-white font-semibold bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-md hover:shadow-lg transition-all active:scale-95">
-                            Register
-                        </Link>
+                     
                     </div>
                 </div>
             </div>
