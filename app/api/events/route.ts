@@ -4,7 +4,6 @@ import dbConnect from "@/utils/dbConnect";
 
 export async function GET() {
   await dbConnect();
-  await dbConnect();
   try {
     const events = await Event.find({}).sort({ date: 1, time: 1 });
     return NextResponse.json({ events });
@@ -17,7 +16,6 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  await dbConnect();
   await dbConnect();
   try {
     const body = await req.json();
