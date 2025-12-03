@@ -1,9 +1,10 @@
-import React from 'react'
+import TeamDashboard from "./dashboard/page";
+import DashboardLayout from "./layout";
 
-const page = () => {
+export default function Page() {
   return (
-    <div>page</div>
-  )
+    <DashboardLayout >
+      <TeamDashboard />
+    </DashboardLayout>
+  );
 }
-
-export default page
