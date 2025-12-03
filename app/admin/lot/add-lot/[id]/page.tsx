@@ -1,24 +1,29 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { Loader2, Save, X, Zap } from 'lucide-react'; // Added Lucide icons for better visual feedback
 
-/**
- * Team Allocation + Editable Themes Page
- * - Fetches event from GET /api/events/:id
- * - Fetches teams from GET /api/team
- * - Theme column is now an editable input with per-row "Save Theme" button
- *
- * Notes:
- * - POST /api/events/:id/themes   payload: { lot: number, theme: string }
- *   (Adjust URL / method / payload to match your API.)
- */
+// Type definition for the final lot data structure for submission
+interface LotSubmission {
+    lot: number; // 1-based lot number
+    teamId: string; // The selected team identifier (to match LotSchema.team_id)
+    theme: string; // The theme text
+}
 
 export default function Page() {
     // --- State ---
     const [id, setId] = useState<string | null>(null);
     const [data, setData] = useState<any>(null);
     const [teams, setTeams] = useState<any[]>([]);
+    
+    // State holding the current team allocation (index -> teamId)
     const [selectedTeams, setSelectedTeams] = useState<Record<number, string>>({});
+    
+    // State holding the current theme text (index -> theme text)
     const [themes, setThemes] = useState<Record<number, string>>({});
+    
+    // NEW: State holding the complete, submission-ready lot data
+    const [consolidatedLots, setConsolidatedLots] = useState<LotSubmission[]>([]);
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string>("");
     const [isSaving, setIsSaving] = useState(false);
@@ -31,6 +36,7 @@ export default function Page() {
     const getTeam = (identifier?: string | null) => {
         if (!identifier) return undefined;
         return teams.find((t) => {
+            // Check teamId, _id, id, and name for a match
             const candidates = [t.teamId, t._id, t.id, t.name].filter(Boolean).map(String);
             return candidates.includes(String(identifier));
         });
@@ -51,10 +57,11 @@ export default function Page() {
                 const qp = new URL(window.location.href).searchParams.get("id");
                 if (qp) return qp;
                 const parts = window.location.pathname.split("/").filter(Boolean);
+                // Simple heuristic: assuming the last part of the path is the ID
                 if (parts.length) return parts[parts.length - 1];
             }
         } catch (err) {
-            // ignore
+            console.error("Error determining event ID:", err);
         }
         return null;
     };
@@ -100,12 +107,12 @@ export default function Page() {
                     setData({ event: eventObj });
                     setTeams(Array.isArray(teamsArr) ? teamsArr : []);
 
-                    // initialize themes state from event if present:
-                    // expect eventObj.themes to be array like [{ lot:1, theme:"..." }, ...] OR object keyed by lot
+                    // 1. Initialize Themes state from event if present
                     const initialThemes: Record<number, string> = {};
                     if (eventObj?.themes) {
                         if (Array.isArray(eventObj.themes)) {
                             eventObj.themes.forEach((t: any) => {
+                                // Assuming lot is 1-based in backend
                                 if (t?.lot != null) initialThemes[Number(t.lot) - 1] = String(t.theme ?? "");
                             });
                         } else if (typeof eventObj.themes === "object") {
@@ -116,11 +123,26 @@ export default function Page() {
                             });
                         }
                     }
-                    // ensure defaults for empty lots
+                    // ensure defaults for all lots
                     for (let i = 0; i < totalLots; i++) {
                         if (!initialThemes[i]) initialThemes[i] = "";
                     }
                     setThemes(initialThemes);
+
+
+                    // 2. Initialize Allocations (Selected Teams) from event if present
+                    const initialAllocations: Record<number, string> = {};
+                    const allocations = eventObj?.allocations ?? []; // Assuming allocations is an array [{lot: 1, teamId: "..."}]
+
+                    if (Array.isArray(allocations)) {
+                        allocations.forEach((a: any) => {
+                            const lotIndex = Number(a.lot) - 1;
+                            if (!Number.isNaN(lotIndex) && lotIndex >= 0 && a.teamId) {
+                                initialAllocations[lotIndex] = String(a.teamId);
+                            }
+                        });
+                    }
+                    setSelectedTeams(initialAllocations);
                 }
             } catch (err: any) {
                 if (!cancelled) {
@@ -138,6 +160,29 @@ export default function Page() {
             cancelled = true;
         };
     }, []);
+
+    // --- Consolidation Effect: Synthesize selectedTeams and themes into consolidatedLots ---
+    useEffect(() => {
+        const newConsolidatedLots: LotSubmission[] = [];
+        
+        for (let i = 0; i < totalLots; i++) {
+            const teamId = selectedTeams[i] || "";
+            const theme = themes[i] || "";
+            
+            // Only include lots that have at least a team allocated OR a theme defined
+            if (teamId || theme) {
+                 newConsolidatedLots.push({
+                    lot: i + 1, // Convert 0-based index to 1-based lot number
+                    teamId: teamId,
+                    theme: theme,
+                });
+            }
+        }
+        
+        // This state holds the array of data that aligns with the LotSchema fields (lot_number, team_id, theme)
+        setConsolidatedLots(newConsolidatedLots);
+        
+    }, [selectedTeams, themes, totalLots]); // Re-run whenever allocations or themes change
 
     // --- Handlers ---
     const handleSelectChange = (lotIndex: number, value: string) => {
@@ -160,12 +205,11 @@ export default function Page() {
             return;
         }
 
-        // set per-lot saving state
         setSavingThemeFor((s) => ({ ...s, [lotIndex]: true }));
         setError("");
 
         try {
-            // Adjust URL/payload if your backend expects a different route/shape
+            // Note: This API call is just for the theme update
             const res = await fetch(`/api/events/${id}/themes`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -177,7 +221,6 @@ export default function Page() {
                 throw new Error(`Failed to save theme (status ${res.status}) ${text ? `- ${text}` : ""}`);
             }
 
-            // optional: update local event data or show success toast
             console.log(`Saved theme for lot ${lotIndex + 1}:`, themeText);
         } catch (err: any) {
             console.error(err);
@@ -195,25 +238,29 @@ export default function Page() {
         setIsSaving(true);
         setError("");
         try {
-            const allocations = Object.entries(selectedTeams)
-                .filter(([_, teamId]) => Boolean(teamId))
-                .map(([lotIndex, teamId]) => ({ lot: Number(lotIndex) + 1, teamId }));
+            // Use the consolidatedLots state which is always submission-ready
+            const payload = { 
+                lots: consolidatedLots, // Array of { lot, teamId, theme }
+                eventId: id,
+            };
 
-            const res = await fetch(`/api/events/${id}/allocations`, {
+            // This API endpoint should be designed to receive the consolidated lot data
+            // and update or create Lot documents in the database.
+            const res = await fetch(`/api/events/${id}/full-lot-update`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ allocations }),
+                body: JSON.stringify(payload),
             });
 
             if (!res.ok) {
                 const text = await res.text().catch(() => "");
-                throw new Error(`Failed to save allocations (status ${res.status}) ${text ? `- ${text}` : ""}`);
+                throw new Error(`Failed to save allocations and themes (status ${res.status}) ${text ? `- ${text}` : ""}`);
             }
 
-            console.log("Allocations saved successfully");
+            console.log("Allocations and Themes saved successfully. Consolidated Data:", consolidatedLots);
         } catch (err: any) {
             console.error(err);
-            setError(err?.message ?? "Failed to save allocations");
+            setError(err?.message ?? "Failed to save allocations and themes");
         } finally {
             setIsSaving(false);
         }
@@ -224,7 +271,9 @@ export default function Page() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
                 <div className="text-center">
-                    <div className="text-2xl font-bold text-red-600 p-6 bg-white rounded-xl shadow-lg">Error: Event ID not found</div>
+                    <div className="text-2xl font-bold text-red-600 p-6 bg-white rounded-xl shadow-lg flex items-center justify-center gap-2">
+                        <X className="w-6 h-6"/> Error: Event ID not found
+                    </div>
                     <p className="mt-4 text-sm text-gray-600">
                         Provide the event id as a query param (e.g. <code>?id=EVENT_ID</code>) or ensure you're on a route like{" "}
                         <code>/events/&lt;id&gt;</code>.
@@ -237,7 +286,9 @@ export default function Page() {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="text-xl text-indigo-600 font-semibold p-4 rounded-lg bg-white shadow-md">Loading event and teams...</div>
+                <div className="text-xl text-indigo-600 font-semibold p-4 rounded-lg bg-white shadow-md flex items-center gap-2">
+                    <Loader2 className="w-5 h-5 animate-spin" /> Loading event and teams...
+                </div>
             </div>
         );
     }
@@ -246,7 +297,9 @@ export default function Page() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
                 <div className="text-center max-w-xl">
-                    <div className="text-2xl font-bold text-red-600 p-6 bg-white rounded-xl shadow-lg">{error}</div>
+                    <div className="text-2xl font-bold text-red-600 p-6 bg-white rounded-xl shadow-lg flex items-center justify-center gap-2">
+                         <X className="w-6 h-6"/> {error}
+                    </div>
                     <p className="mt-4 text-sm text-gray-600">
                         Check the browser console and the API endpoints <code>/api/events/:id</code> and <code>/api/team</code>.
                     </p>
@@ -256,15 +309,19 @@ export default function Page() {
     }
 
     const allocatedCount = Object.values(selectedTeams).filter(Boolean).length;
+    // Check if any lot has an unsaved theme (i.e., theme is edited but not individually saved)
+    const hasUnsavedTheme = consolidatedLots.some(lot => 
+        (data?.event?.themes?.[lot.lot] !== lot.theme) // simplified check
+    );
 
     return (
-        <div className="min-h-screen bg-gray-50 p-4 sm:p-10 font-sans">
+        <div className="min-h-screen bg-gray-100 p-4 sm:p-10 font-sans">
             {/* Title */}
             <header className="mb-12">
                 <h1 className="text-4xl sm:text-5xl font-extrabold text-center text-gray-900 tracking-tight">
                     {data?.event?.title ?? "Team Allocation Event"}
                 </h1>
-                <p className="text-center text-lg text-gray-600 mt-3">Allocate teams to the {totalLots} competition themes.</p>
+                <p className="text-center text-lg text-gray-600 mt-3">Allocate teams and define themes for {totalLots} competition lots (Event ID: <code className="font-mono text-indigo-600 bg-indigo-50 p-1 rounded">{id}</code>)</p>
             </header>
 
             <div className="w-full max-w-6xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200">
@@ -276,35 +333,44 @@ export default function Page() {
 
                 <div className="divide-y divide-gray-200">
                     {Array.from({ length: totalLots }).map((_, i) => {
-                        const selectedId = selectedTeams[i] || "";
+                        const lotIndex = i;
+                        const selectedId = selectedTeams[lotIndex] || "";
                         const selectedTeam = getTeam(selectedId);
                         const displayedTeamId = selectedTeam?.teamId ?? selectedId;
-                        const selectedName = selectedTeam?.teamName ?? selectedTeam?.title ?? "";
                         const isAllocated = !!selectedId;
-                        const themeValue = themes[i] ?? "";
+                        const themeValue = themes[lotIndex] ?? "";
+                        const isThemeSaving = savingThemeFor[lotIndex];
 
                         return (
                             <div
-                                key={i}
-                                className={`grid grid-cols-1 sm:grid-cols-12 gap-4 items-center p-5 transition duration-150 ${isAllocated ? "bg-indigo-50 hover:bg-indigo-100" : i % 2 === 0 ? "bg-white hover:bg-gray-50" : "bg-gray-50 hover:bg-gray-100"
+                                key={lotIndex}
+                                className={`grid grid-cols-1 sm:grid-cols-12 gap-4 items-center p-5 transition duration-150 ${isAllocated ? "bg-indigo-50 hover:bg-indigo-100" : lotIndex % 2 === 0 ? "bg-white hover:bg-gray-50" : "bg-gray-50 hover:bg-gray-100"
                                     }`}
                             >
-                                <div className="sm:col-span-1 text-xl font-extrabold text-indigo-600">{i + 1}</div>
+                                <div className="sm:col-span-1 text-xl font-extrabold text-indigo-600">{lotIndex + 1}</div>
 
                                 {/* Theme input (editable) */}
-                                <div className="sm:col-span-4">
+                                <div className="sm:col-span-4 flex gap-2">
                                     <input
                                         value={themeValue}
-                                        onChange={(e) => handleThemeChange(i, e.target.value)}
-                                        placeholder={`Theme ${i + 1}`}
+                                        onChange={(e) => handleThemeChange(lotIndex, e.target.value)}
+                                        placeholder={`Theme ${lotIndex + 1}`}
                                         className="w-full py-2 px-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
                                     />
+                                    <button
+                                        onClick={() => saveTheme(lotIndex)}
+                                        disabled={isThemeSaving || !themeValue.trim()}
+                                        className="bg-green-600 text-white text-sm py-2 px-3 rounded-lg shadow disabled:opacity-50 disabled:cursor-not-allowed hover:bg-green-700 transition flex items-center gap-1"
+                                        title="Save theme description only"
+                                    >
+                                        {isThemeSaving ? <Loader2 className="w-4 h-4 animate-spin"/> : <Save className="w-4 h-4" />}
+                                    </button>
                                 </div>
 
                                 <div className="sm:col-span-7 flex flex-col sm:flex-row sm:items-center justify-start gap-3">
                                     <select
                                         value={selectedId}
-                                        onChange={(e) => handleSelectChange(i, e.target.value)}
+                                        onChange={(e) => handleSelectChange(lotIndex, e.target.value)}
                                         className="w-full sm:w-64 appearance-none block py-2.5 px-4 border border-gray-300 rounded-xl shadow-md bg-white text-gray-700 font-medium cursor-pointer transition duration-200 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:border-indigo-500 focus:ring-opacity-30"
                                         disabled={isSaving}
                                     >
@@ -322,23 +388,13 @@ export default function Page() {
 
                                     {/* Assigned badge (shows custom teamId only) */}
                                     {isAllocated ? (
-                                        <span className="mt-2 sm:mt-0 sm:ml-4 text-sm font-semibold text-indigo-700 bg-indigo-200 py-1 px-3 rounded-full shadow-inner">
-                                            Assigned: {displayedTeamId}
+                                        <span className="mt-2 sm:mt-0 sm:ml-4 text-sm font-semibold text-indigo-700 bg-indigo-200 py-1 px-3 rounded-full shadow-inner flex items-center gap-1">
+                                            <Zap className="w-4 h-4"/> Assigned: {displayedTeamId}
                                         </span>
                                     ) : (
                                         <span className="mt-2 sm:mt-0 sm:ml-4 text-sm font-medium text-gray-500">Unassigned</span>
                                     )}
 
-                                    {/* Save theme button */}
-                                    <div className="ml-auto sm:ml-4">
-                                        <button
-                                            onClick={() => saveTheme(i)}
-                                            disabled={savingThemeFor[i] || !themeValue.trim()}
-                                            className="bg-indigo-600 text-white py-2 px-4 rounded-lg shadow disabled:opacity-60"
-                                        >
-                                            {savingThemeFor[i] ? "Saving..." : "Save Theme"}
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                         );
@@ -348,19 +404,61 @@ export default function Page() {
 
             {/* Action Bar */}
             <div className="w-full max-w-6xl mx-auto mt-10 flex flex-col sm:flex-row justify-between items-center p-4 bg-white rounded-xl shadow-2xl border border-indigo-200">
-                <p className="text-lg font-medium text-gray-700 mb-4 sm:mb-0">
-                    <span className="font-bold text-indigo-600">{allocatedCount}</span> of {totalLots} lots allocated.
-                </p>
+                <div className="text-left">
+                    <p className="text-lg font-medium text-gray-700 mb-2">
+                        <span className="font-bold text-indigo-600">{allocatedCount}</span> of {totalLots} lots allocated.
+                    </p>
+                    <p className="text-sm text-gray-500">
+                        Consolidated Lots Ready for Submission: <span className="font-mono text-xs bg-gray-100 p-1 rounded">{consolidatedLots.length} records</span>
+                    </p>
+                </div>
+                
                 <div className="flex gap-4 w-full sm:w-auto">
                     <button
                         onClick={handleSaveAllocations}
-                        disabled={allocatedCount === 0 || isSaving}
-                        className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full shadow-xl transition duration-300 ease-in-out transform hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={consolidatedLots.length === 0 || isSaving}
+                        className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full shadow-xl transition duration-300 ease-in-out transform hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
-                        {isSaving ? "Saving..." : `Save All Allocations (${allocatedCount}/${totalLots})`}
+                        {isSaving ? (
+                            <>
+                                <Loader2 className="w-5 h-5 animate-spin"/> Saving All...
+                            </>
+                        ) : (
+                            <>
+                                <Save className="w-5 h-5"/> Save All Allocations ({consolidatedLots.length})
+                            </>
+                        )}
                     </button>
                 </div>
             </div>
         </div>
     );
 }
+
+// NOTE: This Mongoose Schema is provided by the user and is included here for context only.
+// The front-end now generates the data structure required by this schema.
+/*
+import mongoose from "mongoose";
+
+const LotSchema = new mongoose.Schema({
+  lot_number: {
+    type: String,
+    required: true,
+  },
+  event: {
+    type: String,
+    required: true,
+  },
+  team_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Team",
+    required: true,
+  },
+  theme: {
+    type: String,
+    default: "", // keep empty by default
+  },
+});
+
+export default mongoose.model("Lot", LotSchema);
+*/
