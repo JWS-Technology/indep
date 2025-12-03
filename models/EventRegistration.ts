@@ -46,15 +46,8 @@ const RegistrationSchema = new mongoose.Schema(
     },
 
     registrationDate: {
-      type: String,
-      default: () => {
-        const now = new Date();
-        return now.toLocaleTimeString("en-IN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        });
-      },
+      type: Date,
+      default: Date.now,
     },
   },
   {
