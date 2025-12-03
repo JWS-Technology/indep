@@ -114,6 +114,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en">
+      <meta name="google-site-verification" content="VLLptwMTb5cikCZxmctn32jGyX6rS9FK6MNKn3KZZRQ" />
       <body className="bg-linear-to-br from-gray-50 to-blue-50 min-h-screen">
         <script
           type="application/ld+json"
