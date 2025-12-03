@@ -6,7 +6,7 @@ import { Calendar, Zap, Lightbulb } from 'lucide-react';
 const events = [
     { id: 1, title: "Poetry Writing - English", icon: <Lightbulb className="w-6 h-6 text-pink-500" />, color: "bg-pink-100", hoverColor: "ring-pink-500/50", detail: "Creative arts competition focusing on linguistic rhythm and expression." },
     { id: 2, title: "Tech Quiz - Intercollege", icon: <Zap className="w-6 h-6 text-blue-500" />, color: "bg-blue-100", hoverColor: "ring-blue-500/50", detail: "Fast-paced general knowledge quiz covering technology and science topics." },
-   
+
 ];
 
 export default function Page() {
@@ -22,11 +22,11 @@ export default function Page() {
             </header>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl">
-                
+
                 {events.map((event, index) => (
                     <a
                         key={index}
-                        href={`/events/${event.id}`} // Example link to the event details
+                        href={`./registration/${event.id}`} // Example link to the event details
                         className={`
                             group relative
                             bg-white 
@@ -67,7 +67,7 @@ export default function Page() {
 
                         {/* Call to Action Button/Link */}
                         <div className="absolute bottom-6 right-6">
-                            <span 
+                            <span
                                 className={`
                                     inline-flex items-center px-4 py-2 
                                     text-sm font-semibold 
