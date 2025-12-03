@@ -17,7 +17,8 @@ import {
     ChevronDown,
     ChevronRight,
     List,
-    Ticket
+    Ticket,
+    BookOpen
 } from "lucide-react";
 
 export default function AdminSidebar() {
@@ -45,6 +46,7 @@ export default function AdminSidebar() {
             ]
         },
         { name: "Files", href: "/admin/files", icon: Files },
+        { name: "Open Registration", href: "/admin/registration", icon: BookOpen},
         { name: "Lot", href: "/admin/lot/select-event", icon: Ticket },
         { name: "Settings", href: "/admin/settings", icon: Settings },
     ];
