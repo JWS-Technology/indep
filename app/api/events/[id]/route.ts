@@ -44,3 +44,20 @@ export async function DELETE(req: Request, { params }: Props) {
     return NextResponse.json({ error: "Delete failed" }, { status: 500 });
   }
 }
+
+export async function GET(req: Request, { params }: Props) {
+  await dbConnect();
+  try {
+    const { id } = await params;
+
+    const event = await Event.findById(id);
+
+    if (!event) {
+      return NextResponse.json({ error: "Event not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ event });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to fetch event" }, { status: 500 });
+  }
+}
