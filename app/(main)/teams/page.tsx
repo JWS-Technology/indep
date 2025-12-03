@@ -1,4 +1,4 @@
-import TeamList from '@/components/TeamList';
+import TeamList from '@/components/teams/TeamList';
 import { shiftOne, shiftTwo } from '@/data/teams';
 
 export default function Teams() {
