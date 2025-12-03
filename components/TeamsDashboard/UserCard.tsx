@@ -72,7 +72,7 @@ export default function UserCard({
     const config = isFaculty
         ? {
             color: "indigo",
-            title: "Faculty Representative",
+            title: "Team Manager",
             icon: <Briefcase className="w-5 h-5 text-indigo-600" />,
             bg: "bg-indigo-50",
             border: "border-indigo-100",
@@ -81,7 +81,7 @@ export default function UserCard({
         }
         : {
             color: "violet",
-            title: "Student Representative",
+            title: "Team Secretary",
             icon: <GraduationCap className="w-5 h-5 text-violet-600" />,
             bg: "bg-violet-50",
             border: "border-violet-100",

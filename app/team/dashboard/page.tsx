@@ -41,7 +41,7 @@ export default function TeamDashboard() {
         <div className="space-y-8">
             <div className="bg-gradient-to-r from-indigo-600 to-violet-600 p-8 rounded-2xl text-white shadow-lg">
                 <h1 className="text-3xl font-bold">User Creation - {teamData.teamName}</h1>
-                <p className="opacity-80">Create your Team President and Secretary</p>
+                <p className="opacity-80">Create your Team Manager and Secretary</p>
             </div>
 
             <UserCreationSection teamData={teamData} refresh={fetchTeamStatus} />
