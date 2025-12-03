@@ -69,7 +69,7 @@ export const metadata: Metadata = {
 
   // Verification for Search Console (You need to get this code from GSC)
   verification: {
-    google: "YOUR_GOOGLE_VERIFICATION_CODE",
+    google: "VLLptwMTb5cikCZxmctn32jGyX6rS9FK6MNKn3KZZRQ",
   },
 };
 
