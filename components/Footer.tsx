@@ -174,10 +174,10 @@ export default function Footer() {
                                     <Phone size={18} className="text-red-400" />
                                 </div>
                                 <a
-                                    href="tel:+919342757987"
+                                    href="tel:+916381574827"
                                     className="text-gray-300 hover:text-white transition-colors duration-300 text-sm lg:text-base"
                                 >
-                                    +91 93427 57987
+                                    +91 63815 74827
                                 </a>
                             </li>
                         </ul>
