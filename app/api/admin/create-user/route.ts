@@ -12,7 +12,7 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const { name, collegeId, password, role, department, email, phone } = body;
-    console.log(role);
+
     // Validate department exists in your arrays
     // const validDepartments = [...shiftOne, ...shiftTwo];
 
