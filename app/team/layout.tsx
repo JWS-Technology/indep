@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             if (!data.success) return router.push("/login");
             setTeamData(data.team);
-            console.log(data)
+            // console.log(data)
         } finally {
             setLoading(false);
         }
@@ -25,7 +25,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     useEffect(() => {
         fetchTeamStatus();
     }, []);
-    console.log("team", teamData)
+    // console.log("team", teamData)
 
     return (
         <div className="min-h-screen bg-gray-50/50 flex">
