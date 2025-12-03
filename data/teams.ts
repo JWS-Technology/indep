@@ -1,3 +1,14 @@
+// types/team.ts or add to an existing types file
+export interface Team {
+  _id: string;
+  name: string;
+  shift: number | string;
+  department?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+
 export const shiftOne = [
   "Botany",
   "Chemistry",
