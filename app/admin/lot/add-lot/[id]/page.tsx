@@ -2,51 +2,43 @@
 import React, { useEffect, useState } from "react";
 
 /**
- * Team Allocation Page (full file)
- *
+ * Team Allocation + Editable Themes Page
  * - Fetches event from GET /api/events/:id
  * - Fetches teams from GET /api/team
- * - Attempts to determine the `id` from multiple sources:
- *   1. window.__NEXT_DATA__ (Next.js dynamic route props)
- *   2. query param `?id=...`
- *   3. last pathname segment
+ * - Theme column is now an editable input with per-row "Save Theme" button
  *
- * This version uses your custom `teamId` (e.g. "25IAD01") as the selectable value when available
- * and shows both the teamName and the teamId in the Assigned badge.
+ * Notes:
+ * - POST /api/events/:id/themes   payload: { lot: number, theme: string }
+ *   (Adjust URL / method / payload to match your API.)
  */
 
-export default function Page(): JSX.Element {
+export default function Page() {
     // --- State ---
     const [id, setId] = useState<string | null>(null);
     const [data, setData] = useState<any>(null);
     const [teams, setTeams] = useState<any[]>([]);
     const [selectedTeams, setSelectedTeams] = useState<Record<number, string>>({});
+    const [themes, setThemes] = useState<Record<number, string>>({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string>("");
     const [isSaving, setIsSaving] = useState(false);
+    // track per-lot theme-save status
+    const [savingThemeFor, setSavingThemeFor] = useState<Record<number, boolean>>({});
 
     const totalLots = 28;
 
     // --- Helpers ---
-    // Resolve a team object by identifier (prefer teamId, then _id/id/name)
-    const getTeam = (identifier?: string | null | undefined) => {
+    const getTeam = (identifier?: string | null) => {
         if (!identifier) return undefined;
         return teams.find((t) => {
-            const idCandidates = [t.teamId, t._id, t.id, t.name].filter(Boolean).map(String);
-            return idCandidates.includes(String(identifier));
+            const candidates = [t.teamId, t._id, t.id, t.name].filter(Boolean).map(String);
+            return candidates.includes(String(identifier));
         });
     };
 
-    const getTeamName = (teamIdentifier?: string | null | undefined) => {
-        if (!teamIdentifier) return "";
-        const team = getTeam(teamIdentifier);
-        return team?.teamName ?? team?.title ?? teamIdentifier;
-    };
-
-    // Determine event id from a few client-side heuristics
+    // Try multiple heuristics to determine the event id from the environment / URL
     const getEventId = (): string | null => {
         try {
-            // 1) Next's injected data (if present)
             // @ts-ignore
             const nextData = typeof window !== "undefined" ? (window as any).__NEXT_DATA__ : undefined;
             if (nextData?.props?.pageProps?.params?.id) {
@@ -55,16 +47,11 @@ export default function Page(): JSX.Element {
                 return String(p);
             }
 
-            // 2) Query param ?id=...
             if (typeof window !== "undefined") {
                 const qp = new URL(window.location.href).searchParams.get("id");
                 if (qp) return qp;
-            }
-
-            // 3) Last segment of pathname
-            if (typeof window !== "undefined") {
-                const pathSegments = window.location.pathname.split("/").filter(Boolean);
-                if (pathSegments.length) return pathSegments[pathSegments.length - 1];
+                const parts = window.location.pathname.split("/").filter(Boolean);
+                if (parts.length) return parts[parts.length - 1];
             }
         } catch (err) {
             // ignore
@@ -112,6 +99,28 @@ export default function Page(): JSX.Element {
                 if (!cancelled) {
                     setData({ event: eventObj });
                     setTeams(Array.isArray(teamsArr) ? teamsArr : []);
+
+                    // initialize themes state from event if present:
+                    // expect eventObj.themes to be array like [{ lot:1, theme:"..." }, ...] OR object keyed by lot
+                    const initialThemes: Record<number, string> = {};
+                    if (eventObj?.themes) {
+                        if (Array.isArray(eventObj.themes)) {
+                            eventObj.themes.forEach((t: any) => {
+                                if (t?.lot != null) initialThemes[Number(t.lot) - 1] = String(t.theme ?? "");
+                            });
+                        } else if (typeof eventObj.themes === "object") {
+                            // object keyed by lot index (1-based or 0-based)
+                            Object.entries(eventObj.themes).forEach(([k, v]) => {
+                                const idx = Number(k) - 1;
+                                if (!Number.isNaN(idx)) initialThemes[idx] = String(v ?? "");
+                            });
+                        }
+                    }
+                    // ensure defaults for empty lots
+                    for (let i = 0; i < totalLots; i++) {
+                        if (!initialThemes[i]) initialThemes[i] = "";
+                    }
+                    setThemes(initialThemes);
                 }
             } catch (err: any) {
                 if (!cancelled) {
@@ -135,6 +144,49 @@ export default function Page(): JSX.Element {
         setSelectedTeams((prev) => ({ ...prev, [lotIndex]: value }));
     };
 
+    const handleThemeChange = (lotIndex: number, value: string) => {
+        setThemes((prev) => ({ ...prev, [lotIndex]: value }));
+    };
+
+    // Save a single theme for a lot to backend
+    const saveTheme = async (lotIndex: number) => {
+        if (!id) {
+            setError("Event id missing. Cannot save theme.");
+            return;
+        }
+        const themeText = (themes[lotIndex] ?? "").trim();
+        if (!themeText) {
+            setError("Theme cannot be empty.");
+            return;
+        }
+
+        // set per-lot saving state
+        setSavingThemeFor((s) => ({ ...s, [lotIndex]: true }));
+        setError("");
+
+        try {
+            // Adjust URL/payload if your backend expects a different route/shape
+            const res = await fetch(`/api/events/${id}/themes`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ lot: lotIndex + 1, theme: themeText }),
+            });
+
+            if (!res.ok) {
+                const text = await res.text().catch(() => "");
+                throw new Error(`Failed to save theme (status ${res.status}) ${text ? `- ${text}` : ""}`);
+            }
+
+            // optional: update local event data or show success toast
+            console.log(`Saved theme for lot ${lotIndex + 1}:`, themeText);
+        } catch (err: any) {
+            console.error(err);
+            setError(err?.message ?? "Failed to save theme");
+        } finally {
+            setSavingThemeFor((s) => ({ ...s, [lotIndex]: false }));
+        }
+    };
+
     const handleSaveAllocations = async () => {
         if (!id) {
             setError("Event id missing. Cannot save.");
@@ -142,7 +194,6 @@ export default function Page(): JSX.Element {
         }
         setIsSaving(true);
         setError("");
-
         try {
             const allocations = Object.entries(selectedTeams)
                 .filter(([_, teamId]) => Boolean(teamId))
@@ -168,7 +219,7 @@ export default function Page(): JSX.Element {
         }
     };
 
-    // --- Render guards ---
+    // --- Render Guards ---
     if (!id) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
@@ -225,12 +276,12 @@ export default function Page(): JSX.Element {
 
                 <div className="divide-y divide-gray-200">
                     {Array.from({ length: totalLots }).map((_, i) => {
-                        const selectedIdentifier = selectedTeams[i] || "";
-                        const selectedTeam = getTeam(selectedIdentifier);
-                        const selectedName = selectedTeam?.teamName ?? selectedTeam?.title ?? selectedIdentifier;
-                        // prefer to display custom teamId (team.teamId). fallback to _id or the identifier used.
-                        const displayedId = selectedTeam?.teamId ?? selectedTeam?._id ?? selectedIdentifier;
-                        const isAllocated = !!selectedIdentifier;
+                        const selectedId = selectedTeams[i] || "";
+                        const selectedTeam = getTeam(selectedId);
+                        const displayedTeamId = selectedTeam?.teamId ?? selectedId;
+                        const selectedName = selectedTeam?.teamName ?? selectedTeam?.title ?? "";
+                        const isAllocated = !!selectedId;
+                        const themeValue = themes[i] ?? "";
 
                         return (
                             <div
@@ -240,34 +291,54 @@ export default function Page(): JSX.Element {
                             >
                                 <div className="sm:col-span-1 text-xl font-extrabold text-indigo-600">{i + 1}</div>
 
-                                <div className="sm:col-span-4 text-lg font-medium text-gray-800">Theme {i + 1}</div>
+                                {/* Theme input (editable) */}
+                                <div className="sm:col-span-4">
+                                    <input
+                                        value={themeValue}
+                                        onChange={(e) => handleThemeChange(i, e.target.value)}
+                                        placeholder={`Theme ${i + 1}`}
+                                        className="w-full py-2 px-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                    />
+                                </div>
 
-                                <div className="sm:col-span-7 flex flex-col sm:flex-row sm:items-center justify-start">
+                                <div className="sm:col-span-7 flex flex-col sm:flex-row sm:items-center justify-start gap-3">
                                     <select
-                                        value={selectedIdentifier}
+                                        value={selectedId}
                                         onChange={(e) => handleSelectChange(i, e.target.value)}
                                         className="w-full sm:w-64 appearance-none block py-2.5 px-4 border border-gray-300 rounded-xl shadow-md bg-white text-gray-700 font-medium cursor-pointer transition duration-200 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:border-indigo-500 focus:ring-opacity-30"
                                         disabled={isSaving}
                                     >
                                         <option value="">-- Select Team --</option>
                                         {teams.map((team) => {
-                                            // prefer team.teamId as the value, fallback to _id/id/name if teamId is missing
                                             const valueId = team.teamId ?? team._id ?? team.id ?? team.name;
+                                            const label = `${team.teamName ?? team.title ?? valueId} (${team.teamId ?? valueId})`;
                                             return (
                                                 <option key={team._id ?? String(valueId)} value={valueId}>
-                                                    {`${team.teamName ?? team.title ?? valueId} (${team.teamId ?? (team._id ?? valueId)})`}
+                                                    {label}
                                                 </option>
                                             );
                                         })}
                                     </select>
 
+                                    {/* Assigned badge (shows custom teamId only) */}
                                     {isAllocated ? (
                                         <span className="mt-2 sm:mt-0 sm:ml-4 text-sm font-semibold text-indigo-700 bg-indigo-200 py-1 px-3 rounded-full shadow-inner">
-                                            Assigned: {selectedName} ({displayedId})
+                                            Assigned: {displayedTeamId}
                                         </span>
                                     ) : (
                                         <span className="mt-2 sm:mt-0 sm:ml-4 text-sm font-medium text-gray-500">Unassigned</span>
                                     )}
+
+                                    {/* Save theme button */}
+                                    <div className="ml-auto sm:ml-4">
+                                        <button
+                                            onClick={() => saveTheme(i)}
+                                            disabled={savingThemeFor[i] || !themeValue.trim()}
+                                            className="bg-indigo-600 text-white py-2 px-4 rounded-lg shadow disabled:opacity-60"
+                                        >
+                                            {savingThemeFor[i] ? "Saving..." : "Save Theme"}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         );
