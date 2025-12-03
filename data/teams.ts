@@ -1,0 +1,43 @@
+// types/team.ts or add to an existing types file
+export interface Team {
+  _id: string;
+  name: string;
+  shift: number | string;
+  department?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export const shiftOne = [
+  "Botany",
+  "Chemistry",
+  "Commerce",
+  "Computer Science",
+  "Economics",
+  "English",
+  "HRM",
+  "History",
+  "Mathematics",
+  "Physics",
+  "Statistics",
+  "Tamil",
+];
+
+export const shiftTwo = [
+  "Bio-Chemistry & Bio-Technology",
+  "Business Administration (BBA)",
+  "Commerce CA",
+  "Data Sci. & AI",
+  "Commerce",
+  "Counselling Psychology",
+  "Computer Science",
+  "Information Technology",
+  "Electronics",
+  "English",
+  "Mathematics",
+  "Physics",
+  "B.Voc SD & SA",
+  "B.Voc Viscom Tech & B.Sc Viscom",
+  "B.Com Honours",
+  "B.Com SF & BA, Physical Education",
+];
