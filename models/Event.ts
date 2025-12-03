@@ -23,6 +23,10 @@ const EventSchema = new Schema(
         department: String,
       },
     ],
+    openRegistration: {
+      type: Boolean,
+      default: false
+    },
   },
   { timestamps: true }
 );
