@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import User from "@/models/User";
 import { shiftOne, shiftTwo } from "@/data/teams"; // your arrays
 import dbConnect from "@/utils/dbConnect";
+import Team from "@/models/Team";
 
 export async function POST(req: Request) {
   console.log("req came");
@@ -11,7 +12,7 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const { name, collegeId, password, role, department, email, phone } = body;
-
+    console.log(role);
     // Validate department exists in your arrays
     // const validDepartments = [...shiftOne, ...shiftTwo];
 
@@ -44,8 +45,22 @@ export async function POST(req: Request) {
       phone,
     });
     newUser.save();
+    if (role === "faculty" || role === "student") {
+      await Team.updateOne(
+        { teamName: department },
+        {
+          $set: {
+            [`membersCreated.${role}`]: true, // ⬅ DYNAMICALLY update faculty OR student
+          },
+        }
+      );
+    }
 
-    return NextResponse.json({ message: "User created", user: newUser });
+    return NextResponse.json({
+      success: true,
+      message: "User created",
+      user: newUser,
+    });
   } catch (err) {
     console.log(err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
