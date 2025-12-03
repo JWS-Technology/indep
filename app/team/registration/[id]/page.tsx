@@ -118,6 +118,7 @@ export default function Page() {
         songTitle: "",
         tune: "",
       });
+      window.location.href = "/team/dashboard";
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     } finally {
