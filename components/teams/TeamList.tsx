@@ -1,9 +1,9 @@
 import React from 'react';
 
 interface Team {
-  id: string;
-  name: string;
-  shift: 'I' | 'II';
+    id: string;
+    name: string;
+    shift: 'I' | 'II';
 }
 
 interface TeamListProps {
@@ -16,7 +16,9 @@ interface TeamListProps {
 
 
 export default function TeamList({ title, teams, color = "from-blue-600 to-cyan-500" }: TeamListProps) {
-    
+    const sortedTeams = [...teams].sort((a, b) =>
+        a.name.localeCompare(b.name)
+    );
     return (
         <section className="font-sans h-full">
             {/* Header */}
@@ -27,7 +29,7 @@ export default function TeamList({ title, teams, color = "from-blue-600 to-cyan-
 
             {/* Teams Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {teams.map((team, idx) => (
+                {sortedTeams.map((team, idx) => (
                     <div
                         key={team.id}
                         className="group relative flex items-center p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-100 transition-all duration-300 hover:-translate-y-1"
