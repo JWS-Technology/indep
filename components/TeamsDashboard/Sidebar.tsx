@@ -12,7 +12,10 @@ export function Sidebar({ open, setOpen }: { open: boolean; setOpen: (v: boolean
         // { icon: <Users size={20} />, label: "Members", href: "/members" }, // Example
         // { icon: <Settings size={20} />, label: "Settings", href: "/settings" }, // Example
     ];
-
+    const handleLogout = async () => {
+        await fetch("/api/auth/logout", { method: "POST" });
+        window.location.href = "/login";
+    };
     return (
         <>
             {/* Mobile Backdrop */}
@@ -55,7 +58,8 @@ export function Sidebar({ open, setOpen }: { open: boolean; setOpen: (v: boolean
                 </div>
 
                 <div className="absolute bottom-0 w-full p-4 border-t border-gray-100">
-                    <button className="flex items-center gap-3 px-4 py-3 w-full text-red-600 hover:bg-red-50 rounded-xl transition-colors font-medium">
+                    <button onClick={handleLogout}
+                        className="flex items-center gap-3 px-4 py-3 w-full text-red-600 hover:bg-red-50 rounded-xl transition-colors font-medium">
                         <LogOut size={20} />
                         <span>Logout</span>
                     </button>
