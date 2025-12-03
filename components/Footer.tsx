@@ -215,14 +215,14 @@ export default function Footer() {
                     href={whatsAppGroupLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="relative flex items-center justify-center w-14 h-14 bg-green-500 rounded-full shadow-[0_0_20px_rgba(34,197,94,0.5)] hover:bg-green-600 hover:scale-110 transition-all duration-300"
+                    className="relative flex items-center justify-center w-10 h-10 bg-green-500 rounded-full shadow-[0_0_20px_rgba(34,197,94,0.5)] hover:bg-green-600 hover:scale-110 transition-all duration-300"
                     aria-label="Join WhatsApp Group"
                 >
                     {/* Ping Animation Effect */}
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping"></span>
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-50 animate-ping"></span>
 
                     {/* Icon */}
-                    <WhatsAppIcon className="text-white relative z-10" size={32} />
+                    <WhatsAppIcon className="text-white relative z-10" size={25} />
 
                     {/* Notification Badge (Red Dot) */}
                     <span className="absolute top-0 right-0 flex h-4 w-4">
