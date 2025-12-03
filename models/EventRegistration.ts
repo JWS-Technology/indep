@@ -40,7 +40,7 @@ const RegistrationSchema = new mongoose.Schema({
     // NEW FIELD: Remarks for feedback or internal notes
     remark: {
         type: String,
-        default: '',
+        default: 'under review',
         trim: true,
     },
 
