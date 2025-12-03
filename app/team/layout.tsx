@@ -4,7 +4,7 @@ import { Navbar } from "@/components/TeamsDashboard/Navbar";
 import { Sidebar } from "@/components/TeamsDashboard/Sidebar";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-export default function DashboardLayout({ children, teamName }: { children: React.ReactNode }) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const [open, setOpen] = useState(false);
     const router = useRouter();
     const [loading, setLoading] = useState(true);
