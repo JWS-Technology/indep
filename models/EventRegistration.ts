@@ -13,6 +13,10 @@ const RegistrationSchema = new mongoose.Schema({
         required: [true, 'Team name or individual name is required.'],
         trim: true,
     },
+    teamId: {
+        type: String,
+        trim: true,
+    },
 
     // Specific submission details for the competition
     songTitle: {
