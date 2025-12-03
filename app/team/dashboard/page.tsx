@@ -6,69 +6,47 @@ import { Loader2 } from "lucide-react";
 import ForcePasswordChange from "@/components/TeamsDashboard/ForcePasswordChange";
 // Import the new component
 import TeamRegistrationView from "@/components/TeamsDashboard/TeamRegistrationView";
-
 export default function TeamDashboard() {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [teamData, setTeamData] = useState<any>(null);
+    const [registrations, setRegistrations] = useState<any[]>([]); // State for the events list
 
-    // --- MOCK DATA ---
-    const registrations = [
-        {
-            _id: "6541",
-            eventName: "Western Singing",
-            teamName: "Titans",
-            songTitle: "My Heart Will Go On",
-            tune: "Original Key (E Major)",
-            registrationDate: "2024-10-01T10:00:00Z",
-            status: "Pending",
-            remarks: "Under review",
-        },
-        {
-            _id: "6542",
-            eventName: "Group Song (Indian)",
-            teamName: "Titans",
-            songTitle: "Jai Ho",
-            tune: "Acoustic Version",
-            registrationDate: "2024-10-02T14:30:00Z",
-            status: "Approved",
-            remarks: "Good to go",
-        },
-        {
-            _id: "6543",
-            eventName: "Folk Dance",
-            teamName: "Titans",
-            songTitle: "Ghoomar",
-            tune: "Traditional Rajasthan Folk",
-            registrationDate: "2024-10-05T09:15:00Z",
-            status: "Correction Needed",
-            remarks: "Song duration exceeds 5 minutes",
-        },
-        {
-            _id: "6544",
-            eventName: "Western Dance",
-            teamName: "Titans",
-            songTitle: "Uptown Funk",
-            tune: "Remix V2",
-            registrationDate: "2024-10-06T11:20:00Z",
-            status: "Rejected",
-            remarks: "Tune already taken by another team",
-        },
-    ];
-
-    const fetchTeamStatus = async () => {
+    const fetchDashboardData = async () => {
         try {
-            const res = await fetch("/api/me");
-            const data = await res.json();
-            if (!data.success) return router.push("/login");
-            setTeamData(data.team);
+            // 1. Get Logged-in Team Details
+            const meRes = await fetch("/api/me");
+            const meData = await meRes.json();
+
+            if (!meData.success) {
+                router.push("/login");
+                return;
+            }
+
+            const team = meData.team;
+            setTeamData(team);
+
+            // 2. If we have a Team ID, fetch their registered events
+            // Assuming your team object has a 'teamId' or '_id' field used for linking
+            // Adjust 'team.teamId' below to match your actual database field name for the ID
+            if (team.teamId) {
+                const eventsRes = await fetch(`/api/events/get-by-team?teamId=${team.teamId}`);
+                const eventsData = await eventsRes.json();
+                console.log(eventsData)
+                if (eventsData.success) {
+                    setRegistrations(eventsData.registrations);
+                }
+            }
+
+        } catch (error) {
+            console.error("Failed to load dashboard data", error);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchTeamStatus();
+        fetchDashboardData();
     }, []);
 
     if (loading)
@@ -78,11 +56,9 @@ export default function TeamDashboard() {
             </div>
         );
 
+    // Force Password Change Check
     if (!teamData?.isPasswordChanged)
-        return (
-            <ForcePasswordChange onPasswordUpdated={() => router.push("/login")} />
-        );
-
+        return <ForcePasswordChange onPasswordUpdated={() => router.push("/login")} />;
     return (
         <div className="max-w-7xl mx-auto pb-10 px-4 sm:px-6 lg:px-8">
             {/* Simply pass the data to the new component */}

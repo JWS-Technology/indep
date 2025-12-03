@@ -10,7 +10,7 @@ interface Registration {
     tune?: string;
     registrationDate: string;
     status: string;
-    remarks?: string;
+    remark?: string;
 }
 
 interface TeamRegistrationViewProps {
@@ -29,7 +29,7 @@ export default function TeamRegistrationView({ teamName, registrations }: TeamRe
             day: 'numeric'
         });
     };
-
+    console.log(registrations)
     // Helper: Status Styles
     const getStatusStyle = (status: string) => {
         switch (status) {
@@ -109,10 +109,10 @@ export default function TeamRegistrationView({ teamName, registrations }: TeamRe
                                 </div>
 
                                 {/* Remarks Footer */}
-                                {row.remarks && row.remarks !== "-" && (
+                                {row.remark && row.remark !== "-" && (
                                     <div className="mt-4 bg-gray-50 p-3 rounded-lg border border-gray-100 flex items-start gap-2">
                                         <Info className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
-                                        <p className="text-xs text-gray-500 italic">{row.remarks}</p>
+                                        <p className="text-xs text-gray-500 italic">{row.remark}</p>
                                     </div>
                                 )}
                             </div>
@@ -146,7 +146,7 @@ export default function TeamRegistrationView({ teamName, registrations }: TeamRe
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-gray-500 italic">
-                                                {row.remarks === "-" ? "" : row.remarks}
+                                                {row.remark === "-" ? "" : row.remark}
                                             </td>
                                         </tr>
                                     ))}
