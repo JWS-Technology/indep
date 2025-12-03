@@ -24,7 +24,7 @@ export default function Gallery() {
 
     // UI State
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
-    const [selectedYear, setSelectedYear] = useState<string>('2024');
+    const [selectedYear, setSelectedYear] = useState<string>('all');
     const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
     const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 
