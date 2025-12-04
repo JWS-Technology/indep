@@ -171,7 +171,7 @@ export default function TeamRegistrationView({ teamName, registrations }: TeamRe
                                         <th className="px-6 py-4 font-semibold text-gray-700 min-w-[120px]">Date & Time</th>
                                         <th className="px-6 py-4 font-semibold text-gray-700 min-w-[100px]">Status</th>
                                         <th className="px-6 py-4 font-semibold text-gray-700 min-w-[150px] max-w-[250px]">Remarks</th>
-                                        <th className="px-6 py-4 font-semibold text-gray-700 min-w-[80px]">Action</th>
+                                        {/* <th className="px-6 py-4 font-semibold text-gray-700 min-w-[80px]">Action</th> */}
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
@@ -224,7 +224,7 @@ export default function TeamRegistrationView({ teamName, registrations }: TeamRe
                                                 </div>
                                             </td>
                                             
-                                            {/* Actions */}
+                                            {/* Actions
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-2">
                                                     <button 
@@ -240,14 +240,14 @@ export default function TeamRegistrationView({ teamName, registrations }: TeamRe
                                                         <MoreHorizontal className="w-4 h-4" />
                                                     </button>
                                                 </div>
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
                         
-                        {/* Table Footer */}
+                        {/* Table Footer
                         <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-between items-center">
                             <div className="text-sm text-gray-600">
                                 Showing <span className="font-semibold">{registrations.length}</span> registration{registrations.length !== 1 ? 's' : ''}
@@ -261,7 +261,7 @@ export default function TeamRegistrationView({ teamName, registrations }: TeamRe
                                     Next →
                                 </button>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                     
                     {/* Summary Stats */}
