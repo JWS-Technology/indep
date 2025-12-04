@@ -1,17 +1,36 @@
 "use client";
 
-import CoordinatorSidebar from "@/components/Coordinator/CoordinatorSidebar";
+import { useState } from "react";
+import CoordinatorSidebar from "@/components/Coordinator/sidebar"; // adjust path
+import { CoordinatorNavbar } from "@/components/Coordinator/navbar"; // adjust path
 
-export default function CoordinatorLayout({ children }: { children: React.ReactNode }) {
+export default function CoordinatorLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
     return (
-        <div className="flex min-h-screen bg-slate-50">
+        <div className="flex h-screen bg-slate-50">
             {/* Sidebar */}
-            <CoordinatorSidebar />
+            <CoordinatorSidebar open={sidebarOpen} setOpen={setSidebarOpen} />
 
-            {/* Content Area */}
-            <main className="flex-1 ml-64 p-8 md:p-12 transition-all duration-300 ease-in-out">
-                {children}
-            </main>
+            {/* Main Content Area */}
+            <div className="flex-1 flex flex-col md:pl-64 transition-all duration-300">
+
+                {/* Navbar */}
+                <CoordinatorNavbar
+                    setOpen={setSidebarOpen}
+                    coordinatorName="John Doe"
+                    department="23UBC506"
+                />
+
+                {/* Page Content */}
+                <main className="flex-1 overflow-y-auto p-4 md:p-8">
+                    {children}
+                </main>
+            </div>
         </div>
     );
 }
