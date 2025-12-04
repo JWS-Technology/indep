@@ -43,7 +43,7 @@ interface UserTableProps {
 
 // --- SUB-COMPONENT: Role Badge ---
 const RoleBadge = ({ role }: { role: string }) => {
-    const styles: Record<string, { bg: string; text: string; border: string; icon: JSX.Element }> = {
+    const styles: Record<string, { bg: string; text: string; border: string; icon: React.ReactNode }> = {
         admin: {
             bg: "bg-gradient-to-r from-purple-50 to-pink-50",
             text: "text-purple-700",
