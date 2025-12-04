@@ -20,21 +20,21 @@ import {
     Eye,
     EyeOff
 } from "lucide-react";
-
-// --- Types ---
-interface Coordinator {
-    _id: string;
-    name: string;
-    dNo: string;
-    password: string;
-    assignedEvents: string[]; // Stores event titles
-    createdAt?: string;
-}
+import Image from "next/image";
 
 // Basic shape of the Event object coming from your API
 interface EventItem {
     _id: string;
     title: string;
+}
+
+interface Coordinator {
+    _id: string;
+    name: string;
+    dNo: string;
+    password: string;
+    assignedEvents: string[];
+    collegeId: string;   // <-- add this
 }
 
 export default function AdminCoordinatorsPage() {
@@ -219,9 +219,24 @@ export default function AdminCoordinatorsPage() {
                         <div>
                             <div className="flex justify-between items-start mb-4">
                                 <div className="flex gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl font-bold">
-                                        {coord.name.charAt(0)}
+                                    <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl font-bold relative overflow-hidden">
+                                        <Image
+                                            src={
+                                                (coord.collegeId || coord.dNo)
+                                                    ? `https://sjctni.edu/images/SPhotos/${(coord.collegeId || coord.dNo).substring(0, 2)}/${(coord.collegeId || coord.dNo).toLowerCase()}.jpg`
+                                                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(coord.name)}&background=random`
+                                            }
+                                            alt={coord.name}
+                                            fill
+                                            className="object-cover rounded-xl"
+                                            onError={(e) => {
+                                                e.currentTarget.srcset = ""; // Prevent nextjs from using the broken srcset
+                                                e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(coord.name)}&background=random`;
+                                            }}
+                                        />
                                     </div>
+
+
                                     <div>
                                         <h3 className="font-bold text-slate-900 text-lg">{coord.name}</h3>
                                         <div className="flex items-center gap-1.5 text-slate-500 text-sm mt-0.5">
