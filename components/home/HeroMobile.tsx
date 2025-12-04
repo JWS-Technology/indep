@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const AnimatedNumber = ({ value, label }: { value: number; label: string }) => {
     return (
         <div className="flex flex-col items-center mx-1.5">
-            <div className="relative overflow-hidden bg-white/10 backdrop-blur-md border border-white/20 rounded-xl w-16 h-20 flex items-center justify-center shadow-2xl">
+            <div className="relative overflow-hidden bg-white/10 backdrop-blur-md border border-white/20 rounded-xl w-14 h-16 sm:w-16 sm:h-20 flex items-center justify-center shadow-2xl">
                 <AnimatePresence mode="popLayout">
                     <motion.span
                         key={value}
@@ -15,7 +15,7 @@ const AnimatedNumber = ({ value, label }: { value: number; label: string }) => {
                         animate={{ y: "0%", opacity: 1 }}
                         exit={{ y: "-100%", opacity: 0 }}
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        className="absolute text-3xl font-mono font-bold text-white tracking-tighter"
+                        className="absolute text-2xl sm:text-3xl font-mono font-bold text-white tracking-tighter"
                     >
                         {value.toString().padStart(2, "0")}
                     </motion.span>
@@ -30,8 +30,24 @@ const AnimatedNumber = ({ value, label }: { value: number; label: string }) => {
 };
 
 export default function HeroMobile({ timeLeft, isEventStarted }: { timeLeft: any, isEventStarted: boolean }) {
+
+    // The announcement text
+    const announcementText = "REGISTRATION FOR GROUP SONG (INDIAN), GROUP SONG (WESTERN), CLASSICAL DANCE, FOLK DANCE, WESTERN DANCE WILL BE OPENED TODAY 04-12-25 10:00 AM. REGISTER YOUR TEAM VIA YOUR TEAM PORTAL. 📢";
+
+    // Reusable Marquee Content
+    const MarqueeContent = () => (
+        <div className="flex items-center gap-4 px-2">
+            {[...Array(2)].map((_, i) => (
+                <span key={i} className="text-yellow-300 font-mono text-xs tracking-widest font-semibold flex items-center whitespace-nowrap">
+                    <span className="mr-2 text-white">★</span>
+                    {announcementText}
+                </span>
+            ))}
+        </div>
+    );
+
     return (
-        <section className="relative min-h-[100dvh] flex flex-col items-center justify-center text-white bg-gray-900 overflow-hidden px-4 pt-20 pb-10">
+        <section className="relative min-h-[100dvh] flex flex-col items-center justify-center text-white bg-gray-900 overflow-hidden pt-20 pb-20">
 
             {/* --- Background Elements --- */}
             <div className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-60" style={{ backgroundImage: "url(/background.jpg)" }} />
@@ -42,7 +58,7 @@ export default function HeroMobile({ timeLeft, isEventStarted }: { timeLeft: any
             <div className="absolute bottom-[-10%] right-[-10%] w-[300px] h-[300px] bg-blue-600/20 rounded-full blur-[100px]"></div>
 
             {/* --- Main Content --- */}
-            <div className="relative z-10 w-full flex flex-col items-center text-center justify-center flex-1">
+            <div className="relative z-10 w-full flex flex-col items-center text-center justify-center flex-1 px-4">
 
                 {/* Date Badge */}
                 <motion.div
@@ -95,13 +111,13 @@ export default function HeroMobile({ timeLeft, isEventStarted }: { timeLeft: any
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
-                    className="flex flex-col gap-4 w-full px-4"
+                    className="flex flex-col gap-4 w-full px-4 mb-8"
                 >
                     <Link
-                        href="/events"
+                        href="/login"
                         className="px-8 py-3.5 bg-white text-black rounded-xl font-bold text-base shadow-lg w-full text-center hover:scale-105 transition-transform"
                     >
-                        View Events
+                        Login
                     </Link>
                     <Link
                         href="/rules"
@@ -113,10 +129,28 @@ export default function HeroMobile({ timeLeft, isEventStarted }: { timeLeft: any
 
             </div>
 
+            {/* --- SCROLLING ANNOUNCEMENT TICKER (Fixed at Bottom or Inline) --- */}
+            <div className="relative z-20 w-full overflow-hidden bg-black/60 border-y border-yellow-500/30 backdrop-blur-md">
+                <div className="flex w-max animate-marquee py-2">
+                    <MarqueeContent />
+                    <MarqueeContent />
+                </div>
+            </div>
+
             <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+        
         @keyframes shimmer {
           100% { transform: translateX(100%); }
+        }
+
+        @keyframes marquee {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); } 
+        }
+
+        .animate-marquee {
+          animation: marquee 30s linear infinite;
         }
       `}</style>
         </section>
