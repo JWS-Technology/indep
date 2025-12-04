@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { IdCard, Lock, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react"; // Switched User icon to IdCard
@@ -13,6 +13,10 @@ export default function Login() {
     const [isLoading, setIsLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    useEffect(() => {
+        // Clear auth cookies on login page load
+        fetch("/api/auth/clear-cookie");
+    }, []);
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
