@@ -47,7 +47,7 @@ export default function EventsPage() {
     const fetchRegistrations = async () => {
         try {
             setLoading(true);
-            const res = await fetch("/api/cooardinator/registrations");
+            const res = await fetch("/api/coordinator/registrations");
             const data = await res.json();
             setRegistrations(data);
         } catch (error) {
@@ -86,7 +86,7 @@ export default function EventsPage() {
         }
 
         try {
-            const response = await fetch(`/api/cooardinator/registrations/${id}`, {
+            const response = await fetch(`/api/coordinator/registrations/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -123,7 +123,7 @@ export default function EventsPage() {
         if (!confirm("Are you sure you want to approve this registration?")) return;
 
         try {
-            const response = await fetch(`/api/cooardinator/registrations/${id}`, {
+            const response = await fetch(`/api/coordinator/registrations/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ status: "approved" }),

@@ -15,8 +15,8 @@ export default function CoordinatorSidebar() {
     const pathname = usePathname();
 
     const navItems = [
-        { name: "Event Boards", href: "/cooardinator/events", icon: Calendar },
-        { name: "Open Registration", href: "/cooardinator/registration", icon: BookOpen },
+        { name: "Event Boards", href: "/coordinator/events", icon: Calendar },
+        { name: "Open Registration", href: "/coordinator/registration", icon: BookOpen },
     ];
 
     const handleLogout = async () => {
@@ -40,7 +40,7 @@ export default function CoordinatorSidebar() {
     </div>
 
     <div>
-        <h1 className="font-semibold text-lg tracking-wide">COOARDINATOR</h1>
+        <h1 className="font-semibold text-lg tracking-wide">coordinator</h1>
         <p className="text-xs text-slate-400">Control Panel</p>
     </div>
 </div>

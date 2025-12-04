@@ -1,10 +1,10 @@
-export default function cooardinatorDashboard() {
+export default function coordinatorDashboard() {
     return (
         <div className="p-8">
-            <h1 className="text-4xl font-black text-gray-800">Cooardinator Dashboard</h1>
+            <h1 className="text-4xl font-black text-gray-800">coordinator Dashboard</h1>
 
             <p className="text-gray-600 mt-4 text-lg">
-                Welcome to the Cooardinator control panel.  
+                Welcome to the coordinator control panel.  
                 Use the sidebar to navigate between tools and actions.
             </p>
 
