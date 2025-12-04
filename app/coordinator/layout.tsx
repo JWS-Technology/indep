@@ -22,8 +22,6 @@ export default function CoordinatorLayout({
                 {/* Navbar */}
                 <CoordinatorNavbar
                     setOpen={setSidebarOpen}
-                    coordinatorName="John Doe"
-                    department="23UBC506"
                 />
 
                 {/* Page Content */}
