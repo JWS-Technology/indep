@@ -186,6 +186,7 @@ export default function Page() {
         {/* Tune */}
         <div className="mb-6">
           <label className="block font-medium text-gray-700 mb-1">Tune</label>
+          <p>Provide this only if the tune is self-composed.</p>
           <input
             type="text"
             name="tune"
