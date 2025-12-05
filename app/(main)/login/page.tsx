@@ -105,13 +105,13 @@ export default function Login() {
                     >
                         <div className="mb-10">
                             <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back! 👋</h2>
-                            <p className="text-gray-500">Please enter your College ID to sign in.</p>
+                            <p className="text-gray-500">Please enter your Team ID to sign in.</p>
                         </div>
 
                         <form className="space-y-5" onSubmit={handleSubmit}>
                             {/* College ID Input */}
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">College ID</label>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Team ID</label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                         <IdCard size={20} />
@@ -121,7 +121,7 @@ export default function Login() {
                                         value={form.collegeId}
                                         onChange={(e) => setForm({ ...form, collegeId: e.target.value.toUpperCase() })}
                                         className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
-                                        placeholder="e.g. 23UBC506"
+                                        placeholder="e.g. 25ITE01"
                                         required
                                     />
                                 </div>
