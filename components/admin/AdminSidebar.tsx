@@ -31,8 +31,19 @@ export default function AdminSidebar() {
 
     const navItems = [
         { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-        { name: "All Users", href: "/admin/users", icon: Users },
+        {
+            name: "User Management",
+            icon: Users,
+            href: "#",
+            subItems: [
+                { name: "All Users", href: "/admin/users", icon: List },
+                { name: "Students", href: "/admin/users/student", icon: ChevronRight },
+                { name: "Faculty", href: "/admin/users/faculty", icon: ChevronRight },
+                // { name: "Admins", href: "/admin/users/admin", icon: Shield },
+            ]
+        },
         { name: "Coordinators", href: "/admin/manage-coordinator", icon: Users },
+        { name: "Teams", href: "/admin/manage-teams", icon: Users },
         { name: "Create User", href: "/admin/create-user", icon: UserPlus },
         { name: "Manage Events", href: "/admin/events", icon: Calendar },
         { name: "Open Registration", href: "/admin/registration", icon: BookOpen },
@@ -86,8 +97,8 @@ export default function AdminSidebar() {
                                 <button
                                     onClick={() => toggleMenu(item.name)}
                                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                                            ? "bg-slate-800 text-white"
-                                            : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                                        ? "bg-slate-800 text-white"
+                                        : "text-slate-400 hover:bg-slate-800 hover:text-white"
                                         }`}
                                 >
                                     <div className="flex items-center gap-3">
@@ -118,8 +129,8 @@ export default function AdminSidebar() {
                                                     key={sub.name}
                                                     href={sub.href}
                                                     className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 ${isSubActive
-                                                            ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
-                                                            : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                                                        ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
+                                                        : "text-slate-400 hover:bg-slate-800 hover:text-white"
                                                         }`}
                                                 >
                                                     {SubIcon && (
@@ -147,8 +158,8 @@ export default function AdminSidebar() {
                             key={item.name}
                             href={item.href}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                                    ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
-                                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                                ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
+                                : "text-slate-400 hover:bg-slate-800 hover:text-white"
                                 }`}
                         >
                             <Icon

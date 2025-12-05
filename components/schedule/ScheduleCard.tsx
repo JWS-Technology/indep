@@ -40,7 +40,7 @@ export default function EventCard({ event }: EventCardProps) {
           👤 <strong>Incharge:</strong>&nbsp;
           {event.incharge?.map((p, i) => (
             <span key={i}>
-              {p.name} ({p.department || "General"}) &nbsp;&nbsp;
+              {p.name} &nbsp;&nbsp;
             </span>
           ))}
 
