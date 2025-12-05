@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 
 // --- Configuration ---
-const API_ENDPOINT = '/api/upload'; // relative Next.js API route
+const API_ENDPOINT = 'http://localhost:5000/upload'; // relative Next.js API route
 const MAX_RETRIES = 3;
 
 // --- Helper function for Exponential Backoff ---
@@ -22,7 +22,7 @@ const App = () => {
     const uploadFileToServer = async (file: File) => {
         const formData = new FormData();
         // Use key your backend expects
-        formData.append('mediaFile', file, file.name);
+        formData.append('file', file, file.name);
         formData.append('upload_user', 'current_user_id');
 
         let attempts = 0;
