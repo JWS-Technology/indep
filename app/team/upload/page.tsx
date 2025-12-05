@@ -4,7 +4,6 @@ import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 
 // --- Configuration ---
-const API_ENDPOINT = 'http://localhost:5000/upload'; // relative Next.js API route
 const MAX_RETRIES = 3;
 
 // --- Helper function for Exponential Backoff ---
@@ -14,12 +13,13 @@ const sleep = (ms: number): Promise<void> =>
 
 // --- Main Application Component ---
 const App = () => {
+    const [fileType, setfileType] = useState("")
+    const [fileSize, setfileSize] = useState(0);
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [uploadStatus, setUploadStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
     const [attemptCount, setAttemptCount] = useState(0);
     const [teamData, setteamData] = useState('')
-    console.log(teamData)
     useEffect(() => {
         const getMe = async () => {
             const response = await axios.get("/api/me")
@@ -42,9 +42,11 @@ const App = () => {
         });
 
         try {
-            const response = await axios.post("http://localhost:5000/upload-json", {
+            const response = await axios.post(`http://100.78.171.22:5000/upload`, {
+                fileType: fileType,
+                fileSize: fileSize,
                 fileName: file.name,
-                mimeType: file.type,
+                // mimeType: file.type,
                 teamData: teamData,
                 data: base64String     // <-- BASE64 JSON
             });
@@ -62,6 +64,8 @@ const App = () => {
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles.length > 0) {
             const file: File = acceptedFiles[0];
+            setfileSize(file.size)
+            setfileType(file.type)
             setUploadedFile(file);
             setUploadStatus('idle'); // wait for user to press Upload
             setErrorMessage('');
