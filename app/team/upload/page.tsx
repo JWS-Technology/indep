@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 
@@ -11,56 +11,50 @@ const MAX_RETRIES = 3;
 const sleep = (ms: number): Promise<void> =>
     new Promise<void>((resolve) => setTimeout(resolve, ms));
 
+
 // --- Main Application Component ---
 const App = () => {
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [uploadStatus, setUploadStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
     const [attemptCount, setAttemptCount] = useState(0);
+    const [teamData, setteamData] = useState('')
+    console.log(teamData)
+    useEffect(() => {
+        const getMe = async () => {
+            const response = await axios.get("/api/me")
+            setteamData(response.data.team);
+            // console.log(teamId)
+        }
+        getMe();
+    }, [])
 
     // --- 1. The Core Upload Logic (using Axios and Retry) ---
     const uploadFileToServer = async (file: File) => {
-        const formData = new FormData();
-        // Use key your backend expects
-        formData.append('file', file, file.name);
-        formData.append('upload_user', 'current_user_id');
+        setUploadStatus("loading");
+        setErrorMessage("");
 
-        let attempts = 0;
-        setUploadStatus('loading');
-        setErrorMessage('');
-        setAttemptCount(0);
+        const base64String = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve((reader.result as string).split(",")[1]);
+            reader.onerror = (error) => reject(error);
+            reader.readAsDataURL(file);
+        });
 
-        while (attempts < MAX_RETRIES) {
-            attempts++;
-            setAttemptCount(attempts);
+        try {
+            const response = await axios.post("http://localhost:5000/upload-json", {
+                fileName: file.name,
+                mimeType: file.type,
+                teamData: teamData,
+                data: base64String     // <-- BASE64 JSON
+            });
 
-            try {
-                // axios will set proper multipart/form-data headers including boundary if we don't set Content-Type
-                const response = await axios.post(API_ENDPOINT, formData, {
-                    // Optionally set timeout (ms) to avoid hanging:
-                    timeout: 60_000,
-                    // If your API needs cookies/auth, include credentials:
-                    // withCredentials: true,
-                });
-
-                // treat non-2xx as errors (axios throws on non-2xx by default)
-                // success
-                console.log('Upload Success. Server Response:', response.data);
-                setUploadStatus('success');
-                return;
-            } catch (err: any) {
-                console.error(`Attempt ${attempts} failed:`, err);
-
-                // Extract message
-                const errMsg = err?.response?.data?.message || err?.message || 'An unknown error occurred.';
-                if (attempts < MAX_RETRIES) {
-                    const delay = Math.pow(2, attempts) * 1000; // 2^attempts seconds
-                    await sleep(delay);
-                } else {
-                    setErrorMessage(`Upload failed after ${MAX_RETRIES} attempts. Details: ${errMsg}`);
-                    setUploadStatus('error');
-                }
-            }
+            console.log("Success:", response.data);
+            setUploadStatus("success");
+        } catch (err: any) {
+            console.log(err);
+            setUploadStatus("error");
+            setErrorMessage(err.message || "Upload failed");
         }
     };
 
