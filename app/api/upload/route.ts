@@ -4,67 +4,57 @@ import { promises as fs } from "fs";
 import path from "path";
 
 import dbConnect from "@/utils/dbConnect";
-import FileModel from "@/models/File";
+import Upload from "@/models/Upload";
 
 export const runtime = "nodejs";
 
+// Directory: /public/uploads
 const uploadDir = path.join(process.cwd(), "public", "uploads");
 
 export async function POST(req: Request) {
-  await dbConnect(); // ensure MongoDB connection
-
   try {
-    // ensure upload directory exists
-    await fs.mkdir(uploadDir, { recursive: true });
+    await dbConnect();
 
-    const formData = await req.formData();
+    const { fileType, fileSize, fileName, teamData, data, eventName } =
+      await req.json();
 
-    const file = formData.get("mediaFile") as File | null;
-    if (!file) {
+    if (!data || !fileName) {
       return NextResponse.json(
-        { message: "No file uploaded (mediaFile missing)" },
+        { message: "Missing file or data" },
         { status: 400 }
       );
     }
 
-    // get original file name
-    let originalName = `upload-${Date.now()}`;
-    if (file instanceof File && typeof file.name === "string") {
-      originalName = file.name;
-    }
+    // Convert base64 → Buffer
+    const buffer = Buffer.from(data, "base64");
 
-    // get file type (mime)
-    const fileType =
-      file instanceof File && typeof file.type === "string"
-        ? file.type || "application/octet-stream"
-        : "application/octet-stream";
+    // Ensure upload directory exists
+    await fs.mkdir(uploadDir, { recursive: true });
 
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    // Generate safe file path
+    const filePath = path.join(uploadDir, fileName);
 
-    // create unique stored filename to prevent overwriting
-    const uniqueFilename = `${Date.now()}-${originalName}`;
-
-    const filePath = path.join(uploadDir, uniqueFilename);
+    // Write file to disk
     await fs.writeFile(filePath, buffer);
 
-    const fileUrl = `/uploads/${uniqueFilename}`;
+    const newFileName = `${teamData.teamId}_${teamData.teamName}_${fileName}`;
 
-    // SAVE to MongoDB
-    const saved = await FileModel.create({
-      originalName,
-      filename: uniqueFilename,
+    // Save in MongoDB
+    await Upload.create({
+      originalName: fileName,
+      fileName: newFileName,
       fileType,
-      size: buffer.length,
-      url: fileUrl,
-      folder: null,
-      uploadedBy: null,
+      fileSize,
+      teamData,
+      eventName,
+      filePath: `/uploads/${fileName}`, // public URL
+      uploadedAt: new Date(),
     });
-
+    console.log("success")
     return NextResponse.json(
       {
         message: "File uploaded & saved to DB",
-        file: saved,
+        filePath: `/uploads/${fileName}`,
       },
       { status: 200 }
     );
