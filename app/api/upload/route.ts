@@ -14,9 +14,11 @@ const uploadDir = path.join(process.cwd(), "public", "uploads");
 export async function POST(req: Request) {
   try {
     await dbConnect();
-
+    // console.log(await req.json());
+    // console.log(await req.body);
     const { fileType, fileSize, fileName, teamData, data, eventName } =
       await req.json();
+    // console.log(fileType, fileSize, fileName, teamData, eventName);
 
     // return NextResponse.json(
     //   {
@@ -40,7 +42,7 @@ export async function POST(req: Request) {
     await fs.mkdir(uploadDir, { recursive: true });
 
     // Generate safe file path
-    const newFileName = `${teamData.teamId}_${teamData.teamName}_${fileName}`;
+    const newFileName = `${teamData.teamId}_${teamData.teamName}_${eventName}`;
     const filePath = path.join(uploadDir, newFileName);
 
     // Write file to disk

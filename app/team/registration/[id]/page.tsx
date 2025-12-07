@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import FileUploader from "@/components/TeamsDashboard/FileUploader";
 
 export default function Page() {
 
@@ -286,11 +287,13 @@ export default function Page() {
             </>
           }
         </button>
-        <Link href={`/team/upload/${eventId}`}>
-          <button className="mt-5 w-full bg-cyan-600 text-white py-2 rounded-lg font-semibold hover:bg-cyan-700 transition disabled:opacity-60">
-            Upload File
-          </button>
-        </Link>
+        <FileUploader
+          teamId={teamId}
+          teamName={teamName}
+          eventName={eventName}
+          eventId={eventId}
+        />
+
       </form>
     </div>
   );

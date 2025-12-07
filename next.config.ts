@@ -40,4 +40,11 @@ const nextConfig = {
   },
 };
 
+module.exports = {
+  productionBrowserSourceMaps: false,
+  devIndicators: {
+    buildActivity: false,
+  },
+};
+
 export default nextConfig;
