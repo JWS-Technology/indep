@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 export default function Page() {
 
@@ -201,7 +202,7 @@ export default function Page() {
 
 
   return (
-    <div className="min-h-screen p-8 flex items-center justify-center bg-gray-100">
+    <div className="p-8 flex items-center justify-center bg-gray-100">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg border"
@@ -272,7 +273,6 @@ export default function Page() {
         {error && <p className="text-red-600 mb-3">{error}</p>}
 
         <button
-          type="submit"
           disabled={loading}
           className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-60"
         >
@@ -286,6 +286,11 @@ export default function Page() {
             </>
           }
         </button>
+        <Link href={`/team/upload/${eventId}`}>
+          <button className="mt-5 w-full bg-cyan-600 text-white py-2 rounded-lg font-semibold hover:bg-cyan-700 transition disabled:opacity-60">
+            Upload File
+          </button>
+        </Link>
       </form>
     </div>
   );
