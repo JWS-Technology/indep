@@ -2,6 +2,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
+import { useParams } from 'next/navigation';
 
 // --- Configuration ---
 const MAX_RETRIES = 3;
@@ -20,14 +21,28 @@ const App = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [attemptCount, setAttemptCount] = useState(0);
     const [teamData, setteamData] = useState('')
+    const [eventName, seteventName] = useState("")
+
+    const params = useParams();
+
+
     useEffect(() => {
         const getMe = async () => {
             const response = await axios.get("/api/me")
             setteamData(response.data.team);
-            // console.log(teamId)
         }
         getMe();
     }, [])
+
+    useEffect(() => {
+        const getEvent = async () => {
+            const response = await axios.get(`/api/events/${params.id}`)
+            // setteamData(response.data.team);
+            // console.log(response.data.event.title)
+            seteventName(response.data.event.title);
+        }
+        getEvent();
+    }, [params.id])
 
     // --- 1. The Core Upload Logic (using Axios and Retry) ---
     const uploadFileToServer = async (file: File) => {
@@ -40,23 +55,23 @@ const App = () => {
             reader.onerror = (error) => reject(error);
             reader.readAsDataURL(file);
         });
-
+        console.log("Sending req")
         try {
-            const response = await axios.post(`http://100.78.171.22:5000/upload`, {
+            const response = await axios.post(`/api/upload/`, {
                 fileType: fileType,
                 fileSize: fileSize,
                 fileName: file.name,
-                // mimeType: file.type,
                 teamData: teamData,
-                data: base64String     // <-- BASE64 JSON
+                data: base64String,     // <-- BASE64 JSON
+                eventName: eventName
             });
 
             console.log("Success:", response.data);
             setUploadStatus("success");
         } catch (err: any) {
             console.log(err);
+            console.log(err.message);
             setUploadStatus("error");
-            setErrorMessage(err.message || "Upload failed");
         }
     };
 
