@@ -208,9 +208,6 @@ const App = () => {
                 <p className="text-sm text-gray-500">
                     or <strong>click to select</strong> from your device
                 </p>
-                <p className="text-xs text-gray-400 mt-2">
-                    Accepted: JPG, PNG, PDF.
-                </p>
             </>
         );
     };
