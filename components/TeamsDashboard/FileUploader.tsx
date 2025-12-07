@@ -72,13 +72,13 @@ const FileUploader: React.FC<FileUploaderProps> = ({
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
-        multiple: false,
-        accept: {
-            "image/*": [".jpg", ".jpeg", ".png"],
-            "application/pdf": [".pdf"],
-            "audio/*": [".mp3"],
-            "video/*": [".mp4", ".mov", ".avi", ".mkv"],
-        },
+        multiple: true,
+        // accept: {
+        //     "image/*": [".jpg", ".jpeg", ".png"],
+        //     "application/pdf": [".pdf"],
+        //     "audio/*": [".mp3"],
+        //     "video/*": [".mp4", ".mov", ".avi", ".mkv"],
+        // },
     });
 
     // --- Dynamic UI Classes ---

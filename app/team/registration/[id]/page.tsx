@@ -246,6 +246,7 @@ export default function Page() {
         <div className="mb-4">
           <label className="block font-medium text-gray-700 mb-1">Song Title</label>
           <input
+          readOnly
             type="text"
             name="songTitle"
             value={loading ? "loading..." : songTitle}
@@ -260,6 +261,7 @@ export default function Page() {
           <label className="block font-medium text-gray-700 mb-1">Tune</label>
           <p>Provide this only if the tune is self-composed.</p>
           <input
+          readOnly
             type="text"
             name="tune"
             value={loading ? "loading..." : tune}
@@ -274,10 +276,12 @@ export default function Page() {
         {error && <p className="text-red-600 mb-3">{error}</p>}
 
         <button
-          disabled={loading}
+          disabled={true}
+          // disabled={loading}
           className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-60"
         >
-          {previoslyCreated ?
+          Updation Closed
+          {/* {previoslyCreated ?
             <>
               {loading ? "Updating..." : "Update Details"}
             </>
@@ -285,7 +289,7 @@ export default function Page() {
             <>
               {loading ? "Submitting..." : "Submit Registration"}
             </>
-          }
+          } */}
         </button>
         <FileUploader
           teamId={teamId}
