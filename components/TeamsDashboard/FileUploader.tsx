@@ -32,28 +32,25 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         setErrorMessage("");
 
         try {
-            const base64String = await new Promise<string>((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve((reader.result as string).split(",")[1]);
-                reader.onerror = (error) => reject(error);
-                reader.readAsDataURL(file);
-            });
+            const form = new FormData();
+            form.append("file", file);
+            form.append("teamId", teamId);
+            form.append("teamName", teamName);
+            form.append("eventName", eventName);
 
-            const response = await axios.post(`/api/upload/`, {
-                fileType,
-                fileSize,
-                fileName: file.name,
-                teamData: {
-                    teamId,
-                    teamName,
-                },
-                eventName,
-                eventId,
-                data: base64String,
-            });
-            console.log(response);
+            const response = await axios.post(
+                "/api/upload",
+                form,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
 
+            console.log(response.data);
             setUploadStatus("success");
+
         } catch (err: any) {
             console.log(err);
             setUploadStatus("error");

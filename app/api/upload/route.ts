@@ -1,4 +1,3 @@
-// app/api/upload/route.ts
 import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
@@ -8,72 +7,64 @@ import Upload from "@/models/Upload";
 
 export const runtime = "nodejs";
 
-// Directory: /public/uploads
+// File save directory
 const uploadDir = path.join(process.cwd(), "public", "uploads");
 
 export async function POST(req: Request) {
   try {
     await dbConnect();
-    // console.log(await req.json());
-    // console.log(await req.body);
-    const { fileType, fileSize, fileName, teamData, data, eventName } =
-      await req.json();
-    // console.log(fileType, fileSize, fileName, teamData, eventName);
 
-    // return NextResponse.json(
-    //   {
-    //     message: "File uploaded & saved to DB",
-    //     filePath: `/uploads/${fileName}`,
-    //   },
-    //   { status: 200 }
-    // );
+    const form = await req.formData();
 
-    if (!data || !fileName) {
+    const file = form.get("file") as File;
+    const teamId = form.get("teamId") as string;
+    const teamName = form.get("teamName") as string;
+    const eventName = form.get("eventName") as string;
+
+    if (!file) {
       return NextResponse.json(
-        { message: "Missing file or data" },
+        { message: "No file uploaded" },
         { status: 400 }
       );
     }
 
-    // Convert base64 → Buffer
-    const buffer = Buffer.from(data, "base64");
+    // Read stream → buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
 
-    // Ensure upload directory exists
+    // Ensure directory exists
     await fs.mkdir(uploadDir, { recursive: true });
 
-    // Generate safe file path
-    const newFileName = `${teamData.teamId}_${teamData.teamName}_${eventName}`;
+    const ext = file.name.split(".").pop();
+    const newFileName = `${teamId}_${teamName}_${eventName}.${ext}`;
     const filePath = path.join(uploadDir, newFileName);
 
-    // Write file to disk
+    // Write to disk
     await fs.writeFile(filePath, buffer);
 
-    // Save in MongoDB
+    // Save to MongoDB
     await Upload.create({
-      teamName: teamData.teamName,
+      teamName,
       event: eventName,
-      teamId: teamData.teamId,
-      originalName: fileName,
+      teamId,
+      originalName: file.name,
       fileName: newFileName,
-      fileType: fileType,
-      size: fileSize,
-      path: `/uploads/${fileName}`,
+      fileType: file.type,
+      size: file.size,
+      path: `/uploads/${newFileName}`,
     });
-    console.log("success");
+
     return NextResponse.json(
       {
         message: "File uploaded & saved to DB",
-        filePath: `/uploads/${fileName}`,
+        filePath: `/uploads/${newFileName}`,
       },
       { status: 200 }
     );
-  } catch (err) {
-    console.error("upload error:", err);
+  } catch (err: any) {
+    console.error("Upload Error:", err);
     return NextResponse.json(
-      {
-        message: "Upload failed",
-        error: String(err),
-      },
+      { message: "Upload failed", error: err.toString() },
       { status: 500 }
     );
   }
