@@ -18,6 +18,14 @@ export async function POST(req: Request) {
     const { fileType, fileSize, fileName, teamData, data, eventName } =
       await req.json();
 
+    // return NextResponse.json(
+    //   {
+    //     message: "File uploaded & saved to DB",
+    //     filePath: `/uploads/${fileName}`,
+    //   },
+    //   { status: 200 }
+    // );
+
     if (!data || !fileName) {
       return NextResponse.json(
         { message: "Missing file or data" },
@@ -32,25 +40,24 @@ export async function POST(req: Request) {
     await fs.mkdir(uploadDir, { recursive: true });
 
     // Generate safe file path
-    const filePath = path.join(uploadDir, fileName);
+    const newFileName = `${teamData.teamId}_${teamData.teamName}_${fileName}`;
+    const filePath = path.join(uploadDir, newFileName);
 
     // Write file to disk
     await fs.writeFile(filePath, buffer);
 
-    const newFileName = `${teamData.teamId}_${teamData.teamName}_${fileName}`;
-
     // Save in MongoDB
     await Upload.create({
+      teamName: teamData.teamName,
+      event: eventName,
+      teamId: teamData.teamId,
       originalName: fileName,
       fileName: newFileName,
-      fileType,
-      fileSize,
-      teamData,
-      eventName,
-      filePath: `/uploads/${fileName}`, // public URL
-      uploadedAt: new Date(),
+      fileType: fileType,
+      size: fileSize,
+      path: `/uploads/${fileName}`,
     });
-    console.log("success")
+    console.log("success");
     return NextResponse.json(
       {
         message: "File uploaded & saved to DB",
