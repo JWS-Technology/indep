@@ -5,12 +5,12 @@ import dbConnect from "@/utils/dbConnect";
 // Update Registration (Status, Remarks, etc.)
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }   // <-- accept Promise here
 ) {
   try {
     await dbConnect();
     const body = await req.json();
-    const { id } = params;
+    const { id } = await params;                       // <-- await params to get id
 
     const updatedRegistration = await Registration.findByIdAndUpdate(
       id,
@@ -40,11 +40,11 @@ export async function PUT(
 // Delete Registration
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }   // <-- accept Promise here too
 ) {
   try {
     await dbConnect();
-    const { id } = params;
+    const { id } = await params;                       // <-- await params to get id
 
     const deletedRegistration = await Registration.findByIdAndDelete(id);
 

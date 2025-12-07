@@ -51,7 +51,8 @@ interface RegistrationData {
 
 // --- SUB-COMPONENT: Status Badge ---
 const StatusBadge = ({ status }: { status: string }) => {
-    const styles: Record<string, { bg: string; text: string; border: string; icon: JSX.Element }> = {
+    const styles: Record<string, { bg: string; text: string; border: string; icon: React.ReactElement }> = {
+
         approved: {
             bg: "bg-emerald-50",
             text: "text-emerald-700",
