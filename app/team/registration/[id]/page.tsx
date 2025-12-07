@@ -4,10 +4,9 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import FileUploader from "@/components/TeamsDashboard/FileUploader";
+import axios from "axios";
 
 export default function Page() {
-
-
   const [userLoading, setUserLoading] = useState(true); // NEW
   const [userError, setUserError] = useState(""); // NEW
   const [registeredDataId, setregisteredDataId] = useState("");
@@ -15,8 +14,8 @@ export default function Page() {
   const [teamId, setteamId] = useState("");
   const [teamName, setteamName] = useState("");
   const [eventName, seteventName] = useState("");
-  const [songTitle, setsongTitle] = useState("")
-  const [tune, settune] = useState("")
+  const [songTitle, setsongTitle] = useState("");
+  const [tune, settune] = useState("");
 
   const [previoslyCreated, setprevioslyCreated] = useState(false);
 
@@ -38,6 +37,7 @@ export default function Page() {
   // ----------------------------------------------------------
   // FETCH USER DATA ON PAGE LOAD
   // ----------------------------------------------------------
+ 
   useEffect(() => {
     const fetchregisteredData = async () => {
       try {
@@ -94,7 +94,7 @@ export default function Page() {
         const teamName = data.team.teamName;
         const teamId = data.team.teamId;
         setteamName(teamName);
-        setteamId(teamId)
+        setteamId(teamId);
       } catch (err: any) {
         setUserError(err.message || "Something went wrong");
       } finally {
@@ -113,7 +113,7 @@ export default function Page() {
         if (!res.ok) throw new Error("Failed to load user data");
 
         const data = await res.json();
-        seteventName(data.event.title)
+        seteventName(data.event.title);
       } catch (err: any) {
         setUserError(err.message || "Something went wrong");
       } finally {
@@ -148,10 +148,10 @@ export default function Page() {
 
     try {
       const payload: any = {
-        eventId: eventId,        // optional, if you want to store eventId
-        eventName: eventName,    // fetched event name
-        teamName: teamName,      // from /api/me
-        teamId: teamId,          // from /api/me
+        eventId: eventId, // optional, if you want to store eventId
+        eventName: eventName, // fetched event name
+        teamName: teamName, // from /api/me
+        teamId: teamId, // from /api/me
         songTitle: songTitle,
         tune: tune,
       };
@@ -174,7 +174,9 @@ export default function Page() {
       const result = await res.json();
 
       if (!res.ok) {
-        throw new Error(result?.error || result?.message || "Registration failed");
+        throw new Error(
+          result?.error || result?.message || "Registration failed"
+        );
       }
 
       if (method === "POST") {
@@ -199,22 +201,21 @@ export default function Page() {
     }
   };
 
-
-
-
   return (
     <div className="p-8 flex items-center justify-center bg-gray-100">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg border"
       >
-        <h1 className="text-2xl font-bold mb-6 text-gray-800">Event Registration</h1>
-
-
+        <h1 className="text-2xl font-bold mb-6 text-gray-800">
+          Event Registration
+        </h1>
 
         {/* Event Name */}
         <div className="mb-4">
-          <label className="block font-medium text-gray-700 mb-1">Event Name *</label>
+          <label className="block font-medium text-gray-700 mb-1">
+            Event Name *
+          </label>
           <input
             type="text"
             name="eventName"
@@ -229,7 +230,9 @@ export default function Page() {
 
         {/* Team Name */}
         <div className="mb-4">
-          <label className="block font-medium text-gray-700 mb-1">Team Name *</label>
+          <label className="block font-medium text-gray-700 mb-1">
+            Team Name *
+          </label>
           <input
             type="text"
             name="teamName"
@@ -298,7 +301,6 @@ export default function Page() {
           eventName={eventName}
           eventId={eventId}
         />
-
       </form>
     </div>
   );

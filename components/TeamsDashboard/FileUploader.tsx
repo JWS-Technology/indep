@@ -26,6 +26,25 @@ const FileUploader: React.FC<FileUploaderProps> = ({
     const [fileType, setFileType] = useState("");
     const [fileSize, setFileSize] = useState(0);
 
+    const [FileInServer, setFileInServer] = useState(null);
+    console.log(FileInServer)
+
+    useEffect(() => {
+        if (!eventName) return;
+        if (!teamId) return;
+        const getFile = async () => {
+            const response = await axios.post("/api/get-file", {
+                teamId: teamId,
+                eventName: eventName,
+            });
+            // console.log(response.data.fileName);
+            setFileInServer(response.data.fileName);
+        };
+        getFile();
+    }, [teamId, eventName]);
+
+
+
     // 📌 Upload function moved into component
     const uploadFileToServer = async (file: File) => {
         setUploadStatus("loading");
@@ -97,6 +116,15 @@ const FileUploader: React.FC<FileUploaderProps> = ({
 
     return (
         <div className="w-full max-w-md bg-white p-6 rounded-2xl shadow-xl mx-auto">
+
+            {
+                FileInServer && (
+                    <div className="w-full flex items-center text-green-400 p-3 bg-indigo-500 rounded-xl justify-center my-5">
+                        <p className="break-words">File you have uploaded <b>{FileInServer}</b></p>
+                    </div>
+                )
+            }
+
             <h2 className="text-xl font-bold mb-5 text-center">
                 Upload File for {eventName}
             </h2>
@@ -125,6 +153,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
                             : "Drag & Drop file or click to select"}
                     </p>
                 )}
+
 
                 {/* Upload Button */}
                 {uploadedFile && uploadStatus === "idle" && (
