@@ -36,7 +36,7 @@ export default function CoordinatorLoginPage() {
 
             if (res.ok) {
                 // Redirect to coordinator dashboard
-                router.push("/coordinator/dashboard");
+                router.push("/coordinator/my-files");
             } else {
                 setError(data.error || "Login failed");
             }

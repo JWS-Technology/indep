@@ -6,7 +6,8 @@ import {
     LayoutDashboard,
     Calendar,
     LogOut,
-    X
+    X,
+    File
 } from "lucide-react";
 
 interface SidebarProps {
@@ -28,8 +29,9 @@ export default function CoordinatorSidebar({ open, setOpen }: SidebarProps) {
     };
 
     const menuItems = [
-        { name: "Dashboard", href: "/coordinator/dashboard", icon: LayoutDashboard },
+        // { name: "Dashboard", href: "/coordinator/dashboard", icon: LayoutDashboard },
         { name: "My Events", href: "/coordinator/events", icon: Calendar },
+        { name: "Uploaded Files", href: "/coordinator/my-files", icon: File },
         // Add other items here
     ];
 
@@ -79,8 +81,8 @@ export default function CoordinatorSidebar({ open, setOpen }: SidebarProps) {
                                 href={item.href}
                                 onClick={() => setOpen(false)} // Close sidebar on mobile when link clicked
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                                        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-900/20"
-                                        : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-900/20"
+                                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
                                     }`}
                             >
                                 <Icon
