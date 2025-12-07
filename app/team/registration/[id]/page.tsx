@@ -244,9 +244,9 @@ export default function Page() {
 
         {/* Song Title */}
         <div className="mb-4">
-          <label className="block font-medium text-gray-700 mb-1">Song Title</label>
+          <label className="block font-medium text-gray-700 mb-1">Title</label>
           <input
-          readOnly
+            readOnly
             type="text"
             name="songTitle"
             value={loading ? "loading..." : songTitle}
@@ -259,9 +259,9 @@ export default function Page() {
         {/* Tune */}
         <div className="mb-6">
           <label className="block font-medium text-gray-700 mb-1">Tune</label>
-          <p>Provide this only if the tune is self-composed.</p>
+          {/* <p>Provide this only if the tune is self-composed.</p> */}
           <input
-          readOnly
+            readOnly
             type="text"
             name="tune"
             value={loading ? "loading..." : tune}
@@ -280,7 +280,7 @@ export default function Page() {
           // disabled={loading}
           className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-60"
         >
-          Updation Closed
+          Title Registration Closed
           {/* {previoslyCreated ?
             <>
               {loading ? "Updating..." : "Update Details"}
@@ -291,6 +291,7 @@ export default function Page() {
             </>
           } */}
         </button>
+        <p>Files Upload is open!</p>
         <FileUploader
           teamId={teamId}
           teamName={teamName}
