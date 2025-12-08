@@ -98,6 +98,23 @@ export default function Page() {
     fetchregisteredData();
   }, [teamId, eventName, offStageOrOnStage]);
 
+
+  useEffect(() => {
+    if (!teamId) return;
+    if (!eventName) return;
+    const getLotNumber = async () => {
+      try {
+        const res = await axios.post("/api/get-lot", { eventName, teamId })
+        // console.log(res.data.lot.lot_number)
+        setlotNo(res.data.lot.lot_number);
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getLotNumber();
+  }, [teamId, eventName])
+
+
   // GEt me
   useEffect(() => {
     const fetchUser = async () => {
