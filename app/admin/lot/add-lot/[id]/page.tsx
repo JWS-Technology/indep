@@ -1,46 +1,39 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Loader2, Save, X, Zap } from 'lucide-react'; // Added Lucide icons for better visual feedback
+import { Loader2, Save, X, Zap } from 'lucide-react';
+import { useRouter } from "next/navigation";
 
-// Type definition for the final lot data structure for submission
+
+
+// Type definition for the final lot data structure
 interface LotSubmission {
-    lot: number; // 1-based lot number
-    teamId: string; // The selected team identifier (to match LotSchema.team_id)
+    lot: number;
+    teamId: string;
     eventName: string;
     teamName?: string;
-    theme: string; // The theme text
+    theme: string;
 }
 
 export default function Page() {
+
     // --- State ---
     const [id, setId] = useState<string | null>(null);
     const [data, setData] = useState<any>(null);
     const [teams, setTeams] = useState<any[]>([]);
-    // console.log(teams)
-
     const [eventName, seteventName] = useState("");
-
+    const router = useRouter();
 
     useEffect(() => {
         if (!data?.event?.title) return;
-        seteventName(data.event.title)
-    }, [data?.event?.title])
+        seteventName(data.event.title);
+    }, [data?.event?.title]);
 
-
-    // State holding the current team allocation (index -> teamId)
     const [selectedTeams, setSelectedTeams] = useState<Record<number, string>>({});
-
-    // State holding the current theme text (index -> theme text)
     const [themes, setThemes] = useState<Record<number, string>>({});
-
-    // NEW: State holding the complete, submission-ready lot data
     const [consolidatedLots, setConsolidatedLots] = useState<LotSubmission[]>([]);
-    // console.log(consolidatedLots)
-
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string>("");
     const [isSaving, setIsSaving] = useState(false);
-    // track per-lot theme-save status
     const [savingThemeFor, setSavingThemeFor] = useState<Record<number, boolean>>({});
 
     const totalLots = 28;
@@ -49,45 +42,45 @@ export default function Page() {
     const getTeam = (identifier?: string | null) => {
         if (!identifier) return undefined;
         return teams.find((t) => {
-            // Check teamId, _id, id, and name for a match
-            const candidates = [t.teamId, t._id, t.id, t.name].filter(Boolean).map(String);
+            const candidates = [
+                t.teamId,
+                t._id,
+                t.id,
+                t.name,
+            ].filter(Boolean).map(String);
+
             return candidates.includes(String(identifier));
         });
     };
 
-    // Try multiple heuristics to determine the event id from the environment / URL
     const getEventId = (): string | null => {
         try {
-            const nextData = typeof window !== "undefined" ? (window as any).__NEXT_DATA__ : undefined;
+            const nextData = (window as any)?.__NEXT_DATA__;
             if (nextData?.props?.pageProps?.params?.id) {
                 const p = nextData.props.pageProps.params.id;
-                if (Array.isArray(p)) return String(p[0]);
-                return String(p);
+                return Array.isArray(p) ? String(p[0]) : String(p);
             }
 
-            if (typeof window !== "undefined") {
-                const qp = new URL(window.location.href).searchParams.get("id");
-                if (qp) return qp;
-                const parts = window.location.pathname.split("/").filter(Boolean);
-                // Simple heuristic: assuming the last part of the path is the ID
-                if (parts.length) return parts[parts.length - 1];
-            }
+            const qp = new URL(window.location.href).searchParams.get("id");
+            if (qp) return qp;
+
+            const parts = window.location.pathname.split("/").filter(Boolean);
+            if (parts.length) return parts[parts.length - 1];
+
         } catch (err) {
             console.error("Error determining event ID:", err);
         }
         return null;
     };
 
-    // --- Fetch event and teams using real API endpoints ---
+    // --- Fetch event & teams ---
     useEffect(() => {
         const resolvedId = getEventId();
         setId(resolvedId);
 
         if (!resolvedId) {
             setLoading(false);
-            setError(
-                "Unable to determine event id from URL. Provide ?id=... or ensure you're on a dynamic route like /events/[id]."
-            );
+            setError("Unable to determine event id from URL.");
             return;
         }
 
@@ -96,73 +89,79 @@ export default function Page() {
         const fetchAll = async () => {
             setLoading(true);
             setError("");
+
             try {
                 // Fetch event
                 const evRes = await fetch(`/api/events/${resolvedId}`);
                 if (!evRes.ok) {
                     const text = await evRes.text().catch(() => "");
-                    throw new Error(`Failed to fetch event (status ${evRes.status}) ${text ? `- ${text}` : ""}`);
+                    throw new Error(`Failed to fetch event ${text}`);
                 }
                 const evJson = await evRes.json();
-                const eventObj = evJson?.event ?? evJson?.data?.event ?? evJson?.data ?? evJson;
+                const eventObj = evJson?.event ?? evJson?.data ?? evJson;
 
                 // Fetch teams
                 const tRes = await fetch(`/api/team`);
                 if (!tRes.ok) {
                     const text = await tRes.text().catch(() => "");
-                    throw new Error(`Failed to fetch teams (status ${tRes.status}) ${text ? `- ${text}` : ""}`);
+                    throw new Error(`Failed to fetch teams ${text}`);
                 }
+
                 const tJson = await tRes.json();
-                const teamsArr = Array.isArray(tJson) ? tJson : tJson?.teams ?? tJson?.data ?? tJson;
+                const teamsArr = Array.isArray(tJson) ? tJson : (tJson?.teams ?? tJson?.data ?? tJson ?? []);
+
+                // ------------------------------------------------------
+                // 🔥🔥 SORT TEAMS ALPHABETICALLY HERE (A → Z)
+                // ------------------------------------------------------
+                const sortedTeams = [...teamsArr].sort((a, b) => {
+                    const nameA = (a.teamName ?? a.title ?? a.name ?? "").toLowerCase();
+                    const nameB = (b.teamName ?? b.title ?? b.name ?? "").toLowerCase();
+                    return nameA.localeCompare(nameB);
+                });
+                // ------------------------------------------------------
 
                 if (!cancelled) {
                     setData({ event: eventObj });
-                    setTeams(Array.isArray(teamsArr) ? teamsArr : []);
+                    setTeams(sortedTeams);
 
-                    // 1. Initialize Themes state from event if present
+                    // --- INITIAL THEMES ---
                     const initialThemes: Record<number, string> = {};
-                    if (eventObj?.themes) {
-                        if (Array.isArray(eventObj.themes)) {
-                            eventObj.themes.forEach((t: any) => {
-                                // Assuming lot is 1-based in backend
-                                if (t?.lot != null) initialThemes[Number(t.lot) - 1] = String(t.theme ?? "");
-                            });
-                        } else if (typeof eventObj.themes === "object") {
-                            // object keyed by lot index (1-based or 0-based)
-                            Object.entries(eventObj.themes).forEach(([k, v]) => {
-                                const idx = Number(k) - 1;
-                                if (!Number.isNaN(idx)) initialThemes[idx] = String(v ?? "");
-                            });
-                        }
+
+                    if (Array.isArray(eventObj?.themes)) {
+                        eventObj.themes.forEach((t: any) => {
+                            if (t?.lot != null) initialThemes[Number(t.lot) - 1] = String(t.theme ?? "");
+                        });
+                    } else if (typeof eventObj?.themes === "object") {
+                        Object.entries(eventObj.themes).forEach(([k, v]) => {
+                            const idx = Number(k) - 1;
+                            if (!Number.isNaN(idx)) initialThemes[idx] = String(v ?? "");
+                        });
                     }
-                    // ensure defaults for all lots
+
                     for (let i = 0; i < totalLots; i++) {
                         if (!initialThemes[i]) initialThemes[i] = "";
                     }
                     setThemes(initialThemes);
 
-
-                    // 2. Initialize Allocations (Selected Teams) from event if present
-                    const initialAllocations: Record<number, string> = {};
-                    const allocations = eventObj?.allocations ?? []; // Assuming allocations is an array [{lot: 1, teamId: "..."}]
+                    // --- INITIAL TEAM ALLOCATIONS ---
+                    const initialAlloc: Record<number, string> = {};
+                    const allocations = eventObj?.allocations ?? [];
 
                     if (Array.isArray(allocations)) {
                         allocations.forEach((a: any) => {
                             const lotIndex = Number(a.lot) - 1;
-                            if (!Number.isNaN(lotIndex) && lotIndex >= 0 && a.teamId) {
-                                initialAllocations[lotIndex] = String(a.teamId);
+                            if (!isNaN(lotIndex) && lotIndex >= 0 && a.teamId) {
+                                initialAlloc[lotIndex] = String(a.teamId);
                             }
                         });
                     }
-                    console.log("this is initial allocation")
-                    // console.log(initialAllocations)
-                    setSelectedTeams(initialAllocations);
+
+                    setSelectedTeams(initialAlloc);
                 }
+
             } catch (err: any) {
-                if (!cancelled) {
-                    console.error(err);
-                    setError(err?.message ?? "Unknown error while fetching data");
-                }
+                console.error(err);
+                if (!cancelled) setError(err?.message ?? "Unknown error");
             } finally {
                 if (!cancelled) setLoading(false);
             }
@@ -170,10 +169,11 @@ export default function Page() {
 
         fetchAll();
 
-        return () => {
-            cancelled = true;
-        };
+        return () => { cancelled = true };
     }, []);
+
+    
+
 
     // --- Consolidation Effect: Synthesize selectedTeams and themes into consolidatedLots ---
     // --- Consolidation Effect: Synthesize selectedTeams and themes into consolidatedLots ---
@@ -249,39 +249,48 @@ export default function Page() {
             setSavingThemeFor((s) => ({ ...s, [lotIndex]: false }));
         }
     };
+const handleSaveAllocations = async () => {
+    if (!id) {
+        setError("Event id missing. Cannot save.");
+        return;
+    }
 
-    const handleSaveAllocations = async () => {
-        if (!id) {
-            setError("Event id missing. Cannot save.");
-            return;
+    setIsSaving(true);
+    setError("");
+
+    try {
+        const payload = {
+            lots: consolidatedLots, // Array of { lot, teamId, theme }
+            eventId: id,
+            eventName: eventName
+        };
+
+        const res = await fetch(`/api/add-lot`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to save allocations and themes");
         }
-        setIsSaving(true);
-        setError("");
-        try {
-            // Use the consolidatedLots state which is always submission-ready
-            const payload = {
-                lots: consolidatedLots, // Array of { lot, teamId, theme }
-                eventId: id,
-                eventName: eventName
-            };
 
-            // This API endpoint should be designed to receive the consolidated lot data
-            // and update or create Lot documents in the database.
-            const res = await fetch(`/api/add-lot`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
+        console.log("Allocations and Themes saved successfully. Consolidated Data:", consolidatedLots);
 
+        // OPTIONAL: toast
+        // toast.success("Allocations saved successfully!");
 
-            console.log("Allocations and Themes saved successfully. Consolidated Data:", consolidatedLots);
-        } catch (err: any) {
-            console.error(err);
-            setError(err?.message ?? "Failed to save allocations and themes");
-        } finally {
-            setIsSaving(false);
-        }
-    };
+        // 🔥 REDIRECT AFTER SUCCESS
+        router.push("/admin/lot/select-event");
+
+    } catch (err: any) {
+        console.error(err);
+        setError(err?.message ?? "Failed to save allocations and themes");
+    } finally {
+        setIsSaving(false);
+    }
+};
+
 
     // --- Render Guards ---
     if (!id) {
