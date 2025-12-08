@@ -30,21 +30,17 @@ const RegistrationSchema = new mongoose.Schema(
       default: "", // Optional submission item, perhaps a key or style
       trim: true,
     },
-
     status: {
       type: String,
       enum: ["pending", "approved", "correction"], // Enforces specific allowed values
       default: "pending", // Default status upon creation
       required: true,
     },
-
-    // NEW FIELD: Remarks for feedback or internal notes
     remark: {
       type: String,
       default: "under review",
       trim: true,
     },
-
     registrationDate: {
       type: Date,
       default: Date.now,

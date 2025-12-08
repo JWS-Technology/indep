@@ -16,7 +16,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
     eventName,
     eventId,
 }) => {
-    console.log(teamId, teamName, eventName, eventId);
+    // console.log(teamId, teamName, eventName, eventId);
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [uploadStatus, setUploadStatus] = useState<
         "idle" | "loading" | "success" | "error"
@@ -27,21 +27,20 @@ const FileUploader: React.FC<FileUploaderProps> = ({
     const [fileSize, setFileSize] = useState(0);
 
     const [FileInServer, setFileInServer] = useState(null);
-    console.log(FileInServer)
 
-    useEffect(() => {
-        if (!eventName) return;
-        if (!teamId) return;
-        const getFile = async () => {
-            const response = await axios.post("/api/get-file", {
-                teamId: teamId,
-                eventName: eventName,
-            });
-            // console.log(response.data.fileName);
-            setFileInServer(response.data.fileName);
-        };
-        getFile();
-    }, [teamId, eventName]);
+    // useEffect(() => {
+    //     if (!eventName) return;
+    //     if (!teamId) return;
+    //     const getFile = async () => {
+    //         const response = await axios.post("/api/get-file", {
+    //             teamId: teamId,
+    //             eventName: eventName,
+    //         });
+    //         // console.log(response.data.fileName);
+    //         setFileInServer(response.data.fileName);
+    //     };
+    //     getFile();
+    // }, [teamId, eventName]);
 
 
 
@@ -67,7 +66,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
                 }
             );
 
-            console.log(response.data);
+            // console.log(response.data);
             setUploadStatus("success");
 
         } catch (err: any) {

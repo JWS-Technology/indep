@@ -9,6 +9,7 @@ const EventSchema = new Schema(
       enum: ["ON_STAGE", "OFF_STAGE"],
       required: true,
     },
+    contestantCount: Number,
     date: { type: String, default: "" },
     time: { type: String, default: "" },
     venue: { type: String, default: "" },
@@ -25,7 +26,7 @@ const EventSchema = new Schema(
     ],
     openRegistration: {
       type: Boolean,
-      default: false
+      default: false,
     },
   },
   { timestamps: true }

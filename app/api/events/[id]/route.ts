@@ -58,6 +58,9 @@ export async function GET(req: Request, { params }: Props) {
 
     return NextResponse.json({ event });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch event" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch event" },
+      { status: 500 }
+    );
   }
 }
