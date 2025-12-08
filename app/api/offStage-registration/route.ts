@@ -56,8 +56,15 @@ export async function PATCH(req: NextRequest) {
   try {
     await dbConnect();
 
-    const { dNo, contestantName, teamId, teamName, eventName } =
-      await req.json();
+    const {
+      dNo,
+      contestantName,
+      teamId,
+      teamName,
+      eventName,
+      secondContestant,
+      secondDno,
+    } = await req.json();
 
     if (!teamId || !eventName) {
       return NextResponse.json(
@@ -67,8 +74,16 @@ export async function PATCH(req: NextRequest) {
     }
 
     const updated = await OffStageEventReg.findOneAndUpdate(
-      { teamId, eventName },
-      { dNo, contestantName, teamId, teamName, eventName },
+      { teamId: teamId, eventName: eventName }, // same identifiers as POST
+      {
+        eventName: eventName,
+        teamId: teamId,
+        teamName: teamName,
+        contestantName: contestantName,
+        dNo: dNo,
+        secondContestantName: secondContestant,
+        secondDno: secondDno,
+      },
       { new: true }
     );
 
