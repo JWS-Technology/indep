@@ -1,23 +1,21 @@
+// models/Lot.js
 import mongoose from "mongoose";
 
 const LotSchema = new mongoose.Schema({
   lot_number: {
     type: String,
-    required: true,
   },
   event: {
     type: String,
-    required: true,
   },
-  team_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Team",
-    required: true,
-  },
+  team_id: String,
+  teamName: String,
   theme: {
     type: String,
-    default: "", // keep empty by default
+    default: "",
   },
 });
 
-export default mongoose.model("Lot", LotSchema);
+// Use existing model if compiled (prevents OverwriteModelError in dev/hmr)
+const Lot = mongoose.models.Lot || mongoose.model("Lot", LotSchema);
+export default Lot;
