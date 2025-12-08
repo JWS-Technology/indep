@@ -47,6 +47,7 @@ export default function AdminSidebar() {
         { name: "Create User", href: "/admin/create-user", icon: UserPlus },
         { name: "Manage Events", href: "/admin/events", icon: Calendar },
         { name: "Open Registration", href: "/admin/registration", icon: BookOpen },
+        { name: "Add Lot", href: "/admin/lot/select-event", icon: Ticket },
         {
             name: "Gallery",
             icon: ImageIcon,
