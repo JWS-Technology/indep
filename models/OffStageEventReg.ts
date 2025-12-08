@@ -19,11 +19,13 @@ const OffStageEventRegSchema = new mongoose.Schema(
     contestantName: {
       type: String,
     },
+    secondContestantName: String,
     lot: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Lot",
     },
     dNo: String,
+    secondDno: String,
   },
   {
     timestamps: true,

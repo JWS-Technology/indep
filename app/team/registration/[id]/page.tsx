@@ -18,6 +18,10 @@ export default function Page() {
   const [tune, settune] = useState("");
 
   const [contestantName, setcontestantName] = useState("");
+  const [secondContestant, setsecondContestant] = useState("");
+  console.log(secondContestant);
+  const [secondDno, setsecondDno] = useState("");
+  console.log(secondDno);
   const [dNo, setdNo] = useState("");
   const [lotNo, setlotNo] = useState("");
 
@@ -80,7 +84,9 @@ export default function Page() {
         }
 
         // registration exists -> set state for update
-        // console.log(data.registeredData.dNo)
+        console.log(data.registeredData);
+        setsecondContestant(data.registeredData.secondContestantName);
+        setsecondDno(data.registeredData.secondDno);
         setcontestantName(data.registeredData.contestantName);
         setdNo(data.registeredData.dNo);
         setprevioslyCreated(true);
@@ -98,22 +104,20 @@ export default function Page() {
     fetchregisteredData();
   }, [teamId, eventName, offStageOrOnStage]);
 
-
   useEffect(() => {
     if (!teamId) return;
     if (!eventName) return;
     const getLotNumber = async () => {
       try {
-        const res = await axios.post("/api/get-lot", { eventName, teamId })
+        const res = await axios.post("/api/get-lot", { eventName, teamId });
         // console.log(res.data.lot.lot_number)
         setlotNo(res.data.lot.lot_number);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-    }
+    };
     getLotNumber();
-  }, [teamId, eventName])
-
+  }, [teamId, eventName]);
 
   // GEt me
   useEffect(() => {
@@ -192,6 +196,8 @@ export default function Page() {
         tune: tune,
         contestantName: contestantName,
         dNo: dNo,
+        secondContestant: secondContestant,
+        secondDno: secondDno,
       };
       console.log(payload);
 
@@ -206,7 +212,7 @@ export default function Page() {
         method = "PATCH";
         payload.registeredDataId = registeredDataId;
       }
-      console.log(method)
+      console.log(method);
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
@@ -324,16 +330,21 @@ export default function Page() {
         {offStageOrOnStage === "OFF_STAGE" && (
           <div className="mb-6">
             <label className="block font-medium text-gray-700 mb-1">
-              Contestant Name
+              {eventName === "Quiz - Prelims"
+                ? "First Contestant Name"
+                : "Contestant Name"}
             </label>
             {/* <p>Provide this only if the tune is self-composed.</p> */}
+            <p className="text-sm text-gray-500 mb-3">
+              Format: Adam Ben A &nbsp;
+            </p>
             <input
               type="text"
               name="contestantName"
               value={contestantName}
               onChange={(e) => {
-                const cleaned = e.target.value.replace(/[^A-Za-z]/g, "");
-                setcontestantName(cleaned.toUpperCase())
+                const cleaned = e.target.value.replace(/[^A-Za-z ]/g, ""); // allow space
+                setcontestantName(cleaned.toUpperCase());
               }}
               className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Enter Contestant Name"
@@ -343,8 +354,13 @@ export default function Page() {
 
         {offStageOrOnStage === "OFF_STAGE" && (
           <div className="mb-6">
-            <label className="block font-medium text-gray-700 mb-1">D.No</label>
+            <label className="block font-medium text-gray-700 mb-1">
+              {eventName === "Quiz - Prelims"
+                ? "First Contestant D.No"
+                : "Contestant D.No"}
+            </label>
             {/* <p>Provide this only if the tune is self-composed.</p> */}
+
             <input
               type="text"
               name="dNo"
@@ -356,12 +372,53 @@ export default function Page() {
             />
           </div>
         )}
+        {eventName === "Quiz - Prelims" && (
+          <div className="mb-6">
+            <label className="block font-medium text-gray-700 mb-1">
+              Second Contestant Name
+            </label>
+            {/* <p>Provide this only if the tune is self-composed.</p> */}
+            <p className="text-sm text-gray-500 mb-3">
+              Format: Adam Ben A &nbsp;
+            </p>
+            <input
+              type="text"
+              name="contestantName"
+              value={secondContestant}
+              onChange={(e) => {
+                const cleaned = e.target.value.replace(/[^A-Za-z ]/g, ""); // allow space
+                setsecondContestant(cleaned.toUpperCase());
+              }}
+              className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Enter Contestant Name"
+            />
+          </div>
+        )}
 
+        {eventName === "Quiz - Prelims" && (
+          <div className="mb-6">
+            <label className="block font-medium text-gray-700 mb-1">
+              {eventName === "Quiz - Prelims"
+                ? "Second Contestant D.No"
+                : "Contestant D.No"}
+            </label>
+            {/* <p>Provide this only if the tune is self-composed.</p> */}
+            <input
+              type="text"
+              name="dNo"
+              maxLength={8}
+              value={secondDno}
+              onChange={(e) => setsecondDno(e.target.value.toUpperCase())}
+              className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Enter D.No"
+            />
+          </div>
+        )}
+        {/* 
         <div className="mb-6">
           <label className="block font-medium text-gray-700 mb-1">
             Lot Number
           </label>
-          {/* <p>Provide this only if the tune is self-composed.</p> */}
           <input
             readOnly
             type="text"
@@ -371,7 +428,7 @@ export default function Page() {
             className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="Lot will be updated shortly"
           />
-        </div>
+        </div> */}
 
         {/* Status */}
         {success && <p className="text-green-600 mb-3">{success}</p>}
@@ -388,16 +445,16 @@ export default function Page() {
               ? "Update Registration"
               : "Registration Closed"
             : isRegistrationOpen
-              ? "Register"
-              : "Registration Closed"}
+            ? "Register"
+            : "Registration Closed"}
         </button>
-        <p>Files Upload is open!</p>
+        {/* <p>Files Upload is open!</p>
         <FileUploader
           teamId={teamId}
           teamName={teamName}
           eventName={eventName}
           eventId={eventId}
-        />
+        /> */}
       </form>
     </div>
   );

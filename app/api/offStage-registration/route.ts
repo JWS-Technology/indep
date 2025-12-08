@@ -5,15 +5,38 @@ import { NextResponse, NextRequest } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
-    const { dNo, contestantName, teamId, teamName, eventName } =
-      await req.json();
-
-    const registered = await OffStageEventReg.create({
-      eventName,
+    const {
+      dNo,
+      contestantName,
       teamId,
       teamName,
-      contestantName,
+      eventName,
+      secondContestant,
+      secondDno,
+    } = await req.json();
+
+    console.log(
       dNo,
+      contestantName,
+      teamId,
+      teamName,
+      eventName,
+      secondContestant,
+      secondDno
+    );
+    // return NextResponse.json({
+    //   message: "registration successful",
+    //   success: true,
+    // });
+
+    const registered = await OffStageEventReg.create({
+      eventName: eventName,
+      teamId: teamId,
+      teamName: teamName,
+      contestantName: contestantName,
+      dNo: dNo,
+      secondContestantName: secondContestant,
+      secondDno: secondDno,
     });
 
     return NextResponse.json({
