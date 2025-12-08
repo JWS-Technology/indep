@@ -9,11 +9,12 @@ const LotSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  team_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Team",
-    required: true,
-  },
+  team_id: String,
+  // team_id: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "Team",
+  //   required: true,
+  // },
   theme: {
     type: String,
     default: "", // keep empty by default
