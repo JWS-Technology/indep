@@ -17,6 +17,16 @@ export default function Page() {
   const [songTitle, setsongTitle] = useState("");
   const [tune, settune] = useState("");
 
+  const [contestantName, setcontestantName] = useState("")
+  const [dNo, setdNo] = useState("")
+  const [lotNo, setlotNo] = useState("")
+
+
+  const [offStageOrOnStage, setoffStageOrOnStage] = useState("");
+  // console.log(offStageOrOnStage)
+  const [isRegistrationOpen, setisRegistrationOpen] = useState(false);
+  // console.log(isRegistrationOpen)
+
   const [previoslyCreated, setprevioslyCreated] = useState(false);
 
   const [loading, setLoading] = useState(false);
@@ -37,7 +47,8 @@ export default function Page() {
   // ----------------------------------------------------------
   // FETCH USER DATA ON PAGE LOAD
   // ----------------------------------------------------------
- 
+
+  // get registered data
   useEffect(() => {
     const fetchregisteredData = async () => {
       try {
@@ -84,6 +95,8 @@ export default function Page() {
     fetchregisteredData();
   }, [teamId, eventName]);
 
+
+  // GEt me
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -105,6 +118,7 @@ export default function Page() {
     fetchUser();
   }, []);
 
+  // get event details
   useEffect(() => {
     const fetchEvent = async () => {
       try {
@@ -113,6 +127,9 @@ export default function Page() {
         if (!res.ok) throw new Error("Failed to load user data");
 
         const data = await res.json();
+        // console.log(data.event.openRegistration);
+        setisRegistrationOpen(data.event.openRegistration);
+        setoffStageOrOnStage(data.event.stageType)
         seteventName(data.event.title);
       } catch (err: any) {
         setUserError(err.message || "Something went wrong");
@@ -154,10 +171,13 @@ export default function Page() {
         teamId: teamId, // from /api/me
         songTitle: songTitle,
         tune: tune,
+        contestantName: contestantName,
+        dNo: dNo,
       };
+      console.log(payload)
 
       let method = "POST";
-      let url = "/api/event-registration";
+      const url = offStageOrOnStage === "ON_STAGE" ? "/api/event-registration" : "/api/offStage-registration";
 
       // If previously created, switch to PATCH and include registeredDataId
       if (previoslyCreated && registeredDataId) {
@@ -246,29 +266,78 @@ export default function Page() {
         </div>
 
         {/* Song Title */}
-        <div className="mb-4">
-          <label className="block font-medium text-gray-700 mb-1">Title</label>
-          <input
-            readOnly
-            type="text"
-            name="songTitle"
-            value={loading ? "loading..." : songTitle}
-            onChange={(e) => setsongTitle(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="Enter song title"
-          />
-        </div>
+        {
+          offStageOrOnStage === "ON_STAGE" && (
+            <div className="mb-4">
+              <label className="block font-medium text-gray-700 mb-1">Title</label>
+              <input
+                readOnly
+                type="text"
+                name="songTitle"
+                value={loading ? "loading..." : songTitle}
+                onChange={(e) => setsongTitle(e.target.value)}
+                className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Enter song title"
+              />
+            </div>
+          )
+        }
+
 
         {/* Tune */}
+        {
+          offStageOrOnStage === "ON_STAGE" && (<div className="mb-6">
+            <label className="block font-medium text-gray-700 mb-1">Tune</label>
+            <input
+              readOnly
+              type="text"
+              name="tune"
+              value={loading ? "loading..." : tune}
+              onChange={(e) => settune(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Enter tune"
+            />
+          </div>)}
+
+        {
+
+          offStageOrOnStage === "OFF_STAGE" && (<div className="mb-6">
+            <label className="block font-medium text-gray-700 mb-1">Contestant Name</label>
+            {/* <p>Provide this only if the tune is self-composed.</p> */}
+            <input
+              type="text"
+              name="contestantName"
+              value={contestantName}
+              onChange={(e) => setcontestantName(e.target.value.toUpperCase())}
+              className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Enter tune"
+            />
+          </div>)}
+
+
+        {offStageOrOnStage === "OFF_STAGE" && (<div className="mb-6">
+          <label className="block font-medium text-gray-700 mb-1">D.No</label>
+          {/* <p>Provide this only if the tune is self-composed.</p> */}
+          <input
+            type="text"
+            name="dNo"
+            value={dNo}
+            onChange={(e) => setdNo(e.target.value.toUpperCase())}
+            className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Enter tune"
+          />
+        </div>)}
+
+
         <div className="mb-6">
-          <label className="block font-medium text-gray-700 mb-1">Tune</label>
+          <label className="block font-medium text-gray-700 mb-1">Lot Number</label>
           {/* <p>Provide this only if the tune is self-composed.</p> */}
           <input
             readOnly
             type="text"
-            name="tune"
-            value={loading ? "loading..." : tune}
-            onChange={(e) => settune(e.target.value)}
+            name="lotNo"
+            value={loading ? "loading..." : lotNo}
+            onChange={(e) => setlotNo(e.target.value)}
             className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="Enter tune"
           />
@@ -276,14 +345,15 @@ export default function Page() {
 
         {/* Status */}
         {success && <p className="text-green-600 mb-3">{success}</p>}
-        {error && <p className="text-red-600 mb-3">{error}</p>}
+        {/* {error && <p className="text-red-600 mb-3">{error}</p>} */}
 
         <button
-          disabled={true}
+          disabled={!isRegistrationOpen}
           // disabled={loading}
           className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-60"
         >
-          Title Registration Closed
+          {isRegistrationOpen ? "Register" : "Registration Closed"}
+
           {/* {previoslyCreated ?
             <>
               {loading ? "Updating..." : "Update Details"}
