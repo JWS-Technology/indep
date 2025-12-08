@@ -5,10 +5,25 @@ import { NextResponse } from "next/server";
 export async function POST(req: NextResponse) {
   try {
     await dbConnect();
-    const { dNo, contestantName, teamId, teamName, eventName } =
-      await req.json();
+    const {
+      dNo,
+      contestantName,
+      teamId,
+      teamName,
+      eventName,
+      secondContestant,
+      secondDno,
+    } = await req.json();
 
-    // console.log(dNo, contestantName, teamId, teamName, eventName);
+    console.log(
+      dNo,
+      contestantName,
+      teamId,
+      teamName,
+      eventName,
+      secondContestant,
+      secondDno
+    );
     // return NextResponse.json({
     //   message: "registration successful",
     //   success: true,
@@ -20,6 +35,8 @@ export async function POST(req: NextResponse) {
       teamName: teamName,
       contestantName: contestantName,
       dNo: dNo,
+      secondContestantName: secondContestant,
+      secondDno: secondDno,
     });
 
     return NextResponse.json({
