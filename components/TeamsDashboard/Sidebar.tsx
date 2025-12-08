@@ -1,19 +1,20 @@
 "use client";
 
-import { 
-  X, 
-  Home, 
-  Users, 
-  Settings, 
-  LogOut, 
-  LayoutDashboard,
-  Calendar,
-  FileText,
-  Trophy,
-  Bell,
-  ClipboardCheck,
-  UserCircle,
-  ChevronRight
+import {
+    X,
+    Home,
+    Users,
+    Settings,
+    LogOut,
+    LayoutDashboard,
+    Calendar,
+    FileText,
+    Trophy,
+    Bell,
+    Files,
+    ClipboardCheck,
+    UserCircle,
+    ChevronRight
 } from "lucide-react";
 
 import Link from "next/link";
@@ -25,6 +26,7 @@ export function Sidebar({ open, setOpen }: { open: boolean; setOpen: (v: boolean
     const navItems = [
         { icon: <Home size={20} />, label: "Dashboard", href: "/team/dashboard" },
         { icon: <ClipboardCheck size={20} />, label: "Registration", href: "/team/registration" },
+        { icon: <Files size={20} />, label: "Uploads", href: "/team/my-files" },
         // { icon: <Calendar size={20} />, label: "Events", href: "/team/events" },
         // { icon: <Users size={20} />, label: "Team Members", href: "/team/members" },
         // { icon: <Trophy size={20} />, label: "Results", href: "/team/results" },
@@ -84,8 +86,8 @@ export function Sidebar({ open, setOpen }: { open: boolean; setOpen: (v: boolean
                                     href={item.href}
                                     onClick={() => window.innerWidth < 768 && setOpen(false)}
                                     className={`group flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium
-                                        ${active 
-                                            ? "bg-indigo-50 text-indigo-600 shadow-sm border-l-3 border-indigo-500" 
+                                        ${active
+                                            ? "bg-indigo-50 text-indigo-600 shadow-sm border-l-3 border-indigo-500"
                                             : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}
                                 >
                                     <div className="flex items-center gap-3">
