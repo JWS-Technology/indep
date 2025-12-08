@@ -7,6 +7,8 @@ import ForcePasswordChange from "@/components/TeamsDashboard/ForcePasswordChange
 // Import the new component
 import TeamRegistrationView from "@/components/TeamsDashboard/TeamRegistrationView";
 import TeamFilesWidget from "@/components/TeamsDashboard/TeamFilesWidget";
+import OffstageTeamDashboard from "@/components/TeamsDashboard/OffstageTeamDashboard";
+
 export default function TeamDashboard() {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
@@ -73,7 +75,11 @@ export default function TeamDashboard() {
                     Submit INDEP Director Entry
                 </button>
             </div>
-            <TeamFilesWidget />
+            {/* <TeamFilesWidget /> */}
+            <OffstageTeamDashboard
+                teamId={teamData.teamId}
+                teamName={teamData.teamName}
+            />
 
             {/* <TeamRegistrationView
                 teamName={teamData.teamName}
@@ -82,3 +88,4 @@ export default function TeamDashboard() {
         </div>
     );
 }
+[]
