@@ -63,12 +63,22 @@ export default function TeamDashboard() {
     return (
         <div className="max-w-7xl mx-auto pb-10 px-4 sm:px-6 lg:px-8">
             {/* Simply pass the data to the new component */}
-
+            <div className="my-6">
+                <button
+                    onClick={() =>
+                        router.push("registration/director/692bdcc333d496ae7261cc25")
+                    }
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition"
+                >
+                    Submit INDEP Director Entry
+                </button>
+            </div>
             <TeamFilesWidget />
-            <TeamRegistrationView
+
+            {/* <TeamRegistrationView
                 teamName={teamData.teamName}
                 registrations={registrations}
-            />
+            /> */}
         </div>
     );
 }
