@@ -155,7 +155,7 @@ export default function MyFiles() {
                                         <a
                                             href={file.url}
                                             target="_blank"
-                                            className="flex-1 text-gray-800 hover:text-blue-600 font-medium truncate"
+                                            className="flex-1 text-[0.7rem] md:text-sm text-gray-800 wrap-break-words hover:text-blue-600 font-medium"
                                         >
                                             {file.name}
                                         </a>

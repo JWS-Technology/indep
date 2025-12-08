@@ -6,6 +6,9 @@ import { Loader2 } from "lucide-react";
 import ForcePasswordChange from "@/components/TeamsDashboard/ForcePasswordChange";
 // Import the new component
 import TeamRegistrationView from "@/components/TeamsDashboard/TeamRegistrationView";
+import TeamFilesWidget from "@/components/TeamsDashboard/TeamFilesWidget";
+import OffstageTeamDashboard from "@/components/TeamsDashboard/OffstageTeamDashboard";
+
 export default function TeamDashboard() {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
@@ -62,10 +65,27 @@ export default function TeamDashboard() {
     return (
         <div className="max-w-7xl mx-auto pb-10 px-4 sm:px-6 lg:px-8">
             {/* Simply pass the data to the new component */}
-            <TeamRegistrationView
+            <div className="my-6">
+                <button
+                    onClick={() =>
+                        router.push("registration/director/692bdcc333d496ae7261cc25")
+                    }
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition"
+                >
+                    Submit INDEP Director Entry
+                </button>
+            </div>
+            {/* <TeamFilesWidget /> */}
+            <OffstageTeamDashboard
+                teamId={teamData.teamId}
+                teamName={teamData.teamName}
+            />
+
+            {/* <TeamRegistrationView
                 teamName={teamData.teamName}
                 registrations={registrations}
-            />
+            /> */}
         </div>
     );
 }
+[]

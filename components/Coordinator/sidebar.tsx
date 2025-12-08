@@ -6,6 +6,7 @@ import {
     LayoutDashboard,
     Calendar,
     LogOut,
+    Users,
     X,
     File
 } from "lucide-react";
@@ -32,6 +33,7 @@ export default function CoordinatorSidebar({ open, setOpen }: SidebarProps) {
         // { name: "Dashboard", href: "/coordinator/dashboard", icon: LayoutDashboard },
         { name: "My Events", href: "/coordinator/events", icon: Calendar },
         { name: "Uploaded Files", href: "/coordinator/my-files", icon: File },
+        { name: "Users", href: "/coordinator/team-users", icon: Users },
         // Add other items here
     ];
 

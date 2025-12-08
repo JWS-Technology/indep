@@ -1,8 +1,8 @@
 import OffStageEventReg from "@/models/OffStageEventReg";
 import dbConnect from "@/utils/dbConnect";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
-export async function POST(req: NextResponse) {
+export async function POST(req: NextRequest) {
   try {
     await dbConnect();
     const {
@@ -44,15 +44,15 @@ export async function POST(req: NextResponse) {
       success: true,
     });
   } catch (error) {
-    console.log("error in off stage event registration");
-    console.log(error);
+    console.log("error in off stage event registration", error);
     return NextResponse.json({
       message: "error in off stage registration",
       success: false,
     });
   }
 }
-export async function PATCH(req: Request) {
+
+export async function PATCH(req: NextRequest) {
   try {
     await dbConnect();
 
@@ -100,8 +100,7 @@ export async function PATCH(req: Request) {
       data: updated,
     });
   } catch (error) {
-    console.log("error in PATCH off stage event registration");
-    console.log(error);
+    console.log("error in PATCH off stage event registration", error);
     return NextResponse.json({
       message: "error in off stage registration update",
       success: false,
