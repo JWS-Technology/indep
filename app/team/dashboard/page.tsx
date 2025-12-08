@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import ForcePasswordChange from "@/components/TeamsDashboard/ForcePasswordChange";
 // Import the new component
 import TeamRegistrationView from "@/components/TeamsDashboard/TeamRegistrationView";
+import TeamFilesWidget from "@/components/TeamsDashboard/TeamFilesWidget";
 export default function TeamDashboard() {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
@@ -62,6 +63,8 @@ export default function TeamDashboard() {
     return (
         <div className="max-w-7xl mx-auto pb-10 px-4 sm:px-6 lg:px-8">
             {/* Simply pass the data to the new component */}
+
+            <TeamFilesWidget />
             <TeamRegistrationView
                 teamName={teamData.teamName}
                 registrations={registrations}
