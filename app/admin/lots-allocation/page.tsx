@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import * as XLSX from "xlsx";
 
 export default function TeamsLotPage() {
   const [lots, setLots] = useState<any[]>([]);
@@ -11,7 +12,7 @@ export default function TeamsLotPage() {
   const [lotToDelete, setlotToDelete] = useState("");
   const [filterEvent, setFilterEvent] = useState("");
   const [filterDepartment, setFilterDepartment] = useState("");
-  const [searchQuery, setSearchQuery] = useState(""); // 🔍 NEW SEARCH
+  const [searchQuery, setSearchQuery] = useState("");
   const [events, setEvents] = useState<string[]>([]);
   const [departments, setDepartments] = useState<string[]>([]);
 
@@ -24,10 +25,7 @@ export default function TeamsLotPage() {
       if (data.success) {
         setLots(data.lots);
 
-        const uniqueEvents = Array.from(
-          new Set(data.lots.map((lot: any) => lot.event))
-        ) as string[];
-
+        const uniqueEvents = Array.from(new Set(data.lots.map((lot: any) => lot.event))) as string[];
         const uniqueDepartments = Array.from(
           new Set(data.lots.map((lot: any) => lot.department || "General"))
         ) as string[];
@@ -81,11 +79,8 @@ export default function TeamsLotPage() {
   // Filter + Search
   const filteredLots = lots.filter((lot) => {
     const matchesEvent = !filterEvent || lot.event === filterEvent;
-    const matchesDept =
-      !filterDepartment || (lot.department || "General") === filterDepartment;
-    const matchesSearch = lot.teamName
-      ?.toLowerCase()
-      .includes(searchQuery.toLowerCase());
+    const matchesDept = !filterDepartment || (lot.department || "General") === filterDepartment;
+    const matchesSearch = lot.teamName?.toLowerCase().includes(searchQuery.toLowerCase());
 
     return matchesEvent && matchesDept && matchesSearch;
   });
@@ -98,8 +93,8 @@ export default function TeamsLotPage() {
     try {
       const logoUrl = "/sjc_logo.png";
       const res = await fetch(logoUrl);
-
       if (!res.ok) throw new Error("Logo not found");
+
       const blob = await res.blob();
       const reader = new FileReader();
 
@@ -117,26 +112,16 @@ export default function TeamsLotPage() {
     // Centered Header
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
-    doc.text(
-      "St. JOSEPH’S COLLEGE (AUTONOMOUS)",
-      pageWidth / 2,
-      20,
-      { align: "center" }
-    );
+    doc.text("St. JOSEPH’S COLLEGE (AUTONOMOUS)", pageWidth / 2, 20, { align: "center" });
 
     doc.setFontSize(11);
     doc.setFont("helvetica", "normal");
-    doc.text(
-      "TIRUCHIRAPPALLI – 620 002",
-      pageWidth / 2,
-      28,
-      { align: "center" }
-    );
+    doc.text("TIRUCHIRAPPALLI – 620 002", pageWidth / 2, 28, { align: "center" });
     doc.text("INDEP ‘25", pageWidth / 2, 35, { align: "center" });
 
     // Table
     const tableColumn = ["Event", "Department", "Lot Number", "Team Name", "Team ID"];
-    const tableRows: any[] = lotsToExport.map((lot) => [
+    const tableRows = lotsToExport.map((lot) => [
       lot.event,
       lot.department || "General",
       lot.lot_number,
@@ -149,18 +134,32 @@ export default function TeamsLotPage() {
       body: tableRows,
       startY: 45,
       theme: "grid",
-      headStyles: { fillColor: [63, 81, 181] },
-      bodyStyles: { fillColor: [245, 245, 245] },
     });
 
     doc.save("Registered_Lots.pdf");
   };
 
+  // Export Excel (XLSX)
+  const exportExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      filteredLots.map((lot) => ({
+        Event: lot.event,
+        Department: lot.department || "General",
+        Lot_Number: lot.lot_number,
+        Team_Name: lot.teamName,
+        Team_ID: lot.team_id,
+      }))
+    );
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Registered Lots");
+
+    XLSX.writeFile(workbook, "Registered_Lots.xlsx");
+  };
+
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-5 text-gray-800">
-        Registered Teams & Lots
-      </h1>
+      <h1 className="text-2xl font-bold mb-5 text-gray-800">Registered Teams & Lots</h1>
 
       {/* Filters & Search */}
       <div className="flex gap-4 mb-4 flex-wrap">
@@ -190,7 +189,7 @@ export default function TeamsLotPage() {
           ))}
         </select>
 
-        {/* 🔍 Search Box */}
+        {/* Search Box */}
         <input
           type="text"
           placeholder="Search by Team Name"
@@ -199,11 +198,20 @@ export default function TeamsLotPage() {
           className="border border-gray-300 rounded-lg px-3 py-2 w-64"
         />
 
+        {/* Export PDF */}
         <button
           onClick={() => exportPDF(filteredLots)}
           className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition shadow-sm"
         >
           Export PDF
+        </button>
+
+        {/* Export EXCEL */}
+        <button
+          onClick={exportExcel}
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition shadow-sm"
+        >
+          Export Excel
         </button>
       </div>
 
@@ -222,7 +230,9 @@ export default function TeamsLotPage() {
                   <th className="p-4 border-b font-semibold text-gray-700">Lot Number</th>
                   <th className="p-4 border-b font-semibold text-gray-700">Team Name</th>
                   <th className="p-4 border-b font-semibold text-gray-700">Team ID</th>
-                  <th className="p-4 border-b font-semibold text-gray-700 text-center">Actions</th>
+                  <th className="p-4 border-b font-semibold text-gray-700 text-center">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -234,13 +244,16 @@ export default function TeamsLotPage() {
                     } hover:bg-indigo-50 transition duration-150`}
                   >
                     <td className="p-4 border-b text-gray-700">{lot.event}</td>
+
                     <td className="p-4 border-b">
                       <span className="px-3 py-1 rounded-lg bg-indigo-100 text-indigo-700 font-medium">
                         {lot.lot_number}
                       </span>
                     </td>
+
                     <td className="p-4 border-b text-gray-700">{lot.teamName}</td>
                     <td className="p-4 border-b text-gray-700">{lot.team_id}</td>
+
                     <td className="p-4 border-b text-center">
                       <div className="flex items-center justify-center gap-3">
                         <button
@@ -251,6 +264,7 @@ export default function TeamsLotPage() {
                         >
                           Edit
                         </button>
+
                         <button
                           onClick={() => setlotToDelete(lot._id)}
                           className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm transition shadow-sm"
