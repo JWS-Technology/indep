@@ -1,10 +1,12 @@
 "use client";
 
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 export default function TeamsLotPage() {
   const [lots, setLots] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [lotToDelete, setlotToDelete] = useState("")
 
   const fetchLots = async () => {
     try {
@@ -25,28 +27,55 @@ export default function TeamsLotPage() {
     fetchLots();
   }, []);
 
-  const handleDelete = async (id: string) => {
-  if (!confirm("Are you sure you want to delete this lot?")) return;
 
-  try {
-    const res = await fetch(`/api/lots/delete/${id}`, {
-      method: "DELETE",
-    });
 
-    const data = await res.json();
-    console.log("Delete response:", data);
+  useEffect(() => {
+    const handleDelete = async () => {
+      if (lotToDelete === "") return;
+      if (!confirm("Are you sure you want to delete this lot?")) return;
 
-    if (data.success) {
-      alert("Lot deleted successfully!");
-      setLots((prev) => prev.filter((lot: any) => lot._id !== id));
-    } else {
-      alert("Delete failed: " + data.message);
-    }
-  } catch (error) {
-    console.error("Delete error:", error);
-    alert("Something went wrong while deleting.");
-  }
-};
+      try {
+        // const res = await fetch(`/api/lots/delete/${lotToDelete}`, {
+        //   method: "DELETE",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({
+        //     deletedBy: "Admin",
+        //     reason: "Cleaning old data",
+        //     id: lotToDelete
+        //   }),
+        // });
+
+        const response = await axios.delete("/api/lots/delete", {
+          data: {
+            id: lotToDelete,
+            reason: "User requested deletion",
+            deletedBy: "Admin",
+          },
+        });
+
+
+
+        const data = await response.data;
+        console.log("Delete response:", response.data);
+
+        if (data.success) {
+          alert("Lot deleted successfully!");
+          setLots((prev) => prev.filter((lot: any) => lot._id !== lotToDelete));
+        } else {
+          alert("Delete failed: " + data.message);
+        }
+      } catch (error) {
+        console.error("Delete error:", error);
+        alert("Something went wrong while deleting.");
+      } finally {
+        setlotToDelete("");
+      }
+    };
+    handleDelete();
+  }, [lotToDelete])
+
 
 
 
@@ -83,9 +112,8 @@ export default function TeamsLotPage() {
                 {lots.map((lot: any, index: number) => (
                   <tr
                     key={lot._id}
-                    className={`${
-                      index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                    } hover:bg-indigo-50 transition duration-150`}
+                    className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                      } hover:bg-indigo-50 transition duration-150`}
                   >
                     <td className="p-4 border-b text-gray-700">{lot.event}</td>
 
@@ -114,12 +142,11 @@ export default function TeamsLotPage() {
 
                         {/* DELETE BUTTON */}
                         <button
-                          onClick={() => handleDelete(lot._id)}
+                          onClick={() => setlotToDelete(lot._id)}
                           className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm transition shadow-sm"
                         >
                           Delete
                         </button>
-
                       </div>
                     </td>
                   </tr>
