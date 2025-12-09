@@ -37,7 +37,7 @@ export default function AttendancePage() {
     takenAttendanceData?.map((a: any) => a.dNo?.trim()) ?? []
   );
 
-  const saveAttendance = async (lot, attendance, malpracticeDetails = "") => {
+  const saveAttendance = async (lot: any, attendance: string, malpracticeDetails = "") => {
     try {
       const res = await axios.post("/api/save-attendance", {
         eventName: lot.event,
