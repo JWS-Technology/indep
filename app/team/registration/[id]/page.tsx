@@ -719,7 +719,7 @@ export default function Page() {
               )}
 
               {/* Lot Number */}
-              {/* <div className="mb-6">
+              <div className="mb-6">
   <label className="block font-medium text-gray-700 mb-2">
     Lot Number
   </label>
@@ -739,7 +739,7 @@ export default function Page() {
       {loading ? "Loading..." : lotNo}
     </span>
   </div>
-</div> */}
+</div>
 
             </div>
 
