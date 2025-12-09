@@ -12,13 +12,13 @@ export default function Page() {
   const [userError, setUserError] = useState("");
   const [teamId, setteamId] = useState("");
   const [teamName, setteamName] = useState("");
-  
+
   // State for event data
   const [eventId, setEventId] = useState<string | null>(null);
   const [eventName, seteventName] = useState("");
   const [isRegistrationOpen, setisRegistrationOpen] = useState(false);
   const [offStageOrOnStage, setoffStageOrOnStage] = useState("");
-  
+
   // State for registration data
   const [registeredDataId, setregisteredDataId] = useState("");
   const [previoslyCreated, setprevioslyCreated] = useState(false);
@@ -29,12 +29,12 @@ export default function Page() {
   const [secondDno, setsecondDno] = useState("");
   const [dNo, setdNo] = useState("");
   const [lotNo, setlotNo] = useState("");
-  
+
   // State for form submission
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
-  
+
   const params = useParams();
 
   // ----------------------------------------------------------
@@ -60,11 +60,11 @@ export default function Page() {
       try {
         console.log("Fetching user data...");
         setUserLoading(true);
-        const res = await fetch("/api/me", { 
+        const res = await fetch("/api/me", {
           method: "GET",
           cache: "no-cache"
         });
-        
+
         if (!res.ok) {
           const errorData = await res.json();
           throw new Error(errorData.message || `HTTP ${res.status}: Failed to load user data`);
@@ -72,10 +72,10 @@ export default function Page() {
 
         const data = await res.json();
         console.log("User data received:", data);
-        
+
         const teamName = data.team?.teamName || "";
         const teamId = data.team?.teamId || "";
-        
+
         setteamName(teamName);
         setteamId(teamId);
         setUserError("");
@@ -99,14 +99,14 @@ export default function Page() {
         console.log("No eventId available, skipping event fetch");
         return;
       }
-      
+
       try {
         console.log(`Fetching event details for ID: ${eventId}`);
-        const res = await fetch(`/api/events/${eventId}`, { 
+        const res = await fetch(`/api/events/${eventId}`, {
           method: "GET",
           cache: "no-cache"
         });
-        
+
         if (!res.ok) {
           const errorData = await res.json();
           throw new Error(errorData.message || `HTTP ${res.status}: Failed to load event data`);
@@ -114,7 +114,7 @@ export default function Page() {
 
         const data = await res.json();
         console.log("Event data received:", data.event);
-        
+
         const event = data.event || {};
         setisRegistrationOpen(event.openRegistration || false);
         setoffStageOrOnStage(event.stageType || "");
@@ -144,10 +144,10 @@ export default function Page() {
         setLoading(true);
         setprevioslyCreated(false);
 
-        const payload = { 
-          eventName, 
-          teamId, 
-          offStageOrOnStage 
+        const payload = {
+          eventName,
+          teamId,
+          offStageOrOnStage
         };
 
         const res = await fetch("/api/event-registration/get-registered-data", {
@@ -217,13 +217,13 @@ export default function Page() {
 
       try {
         console.log("Fetching lot number for:", { teamId, eventName });
-        const res = await axios.post("/api/get-lot", { 
-          eventName, 
-          teamId 
+        const res = await axios.post("/api/get-lot", {
+          eventName,
+          teamId
         }, {
           headers: { "Content-Type": "application/json" }
         });
-        
+
         console.log("Lot number received:", res.data);
         setlotNo(res.data.lot?.lot_number || "");
       } catch (error: any) {
@@ -240,7 +240,7 @@ export default function Page() {
   // ----------------------------------------------------------
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate required fields
     if (!eventId || !eventName || !teamId || !teamName) {
       setError("Missing required information. Please refresh the page.");
@@ -253,7 +253,7 @@ export default function Page() {
         setError("Please fill in contestant name and D.No");
         return;
       }
-      
+
       // If this is Quiz - Prelims, validate second contestant
       if (eventName === "Quiz - Prelims" && (!secondContestant.trim() || !secondDno.trim())) {
         setError("Please fill in both contestant details for Quiz Prelims");
@@ -325,7 +325,7 @@ export default function Page() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(refreshPayload),
         });
-        
+
         if (refreshRes.ok) {
           const refreshData = await refreshRes.json();
           if (refreshData.registeredData) {
@@ -458,7 +458,7 @@ export default function Page() {
         {/* Form Card */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
           <div className="p-2 bg-gradient-to-r from-indigo-50 to-purple-50"></div>
-          
+
           <form onSubmit={handleSubmit} className="p-6 md:p-8">
             {/* Success/Error Messages */}
             {success && (
@@ -600,8 +600,8 @@ export default function Page() {
               {offStageOrOnStage === "OFF_STAGE" && (
                 <div className="space-y-2">
                   <label className="block text-sm font-semibold text-gray-700">
-                    {eventName === "Quiz - Prelims" 
-                      ? "First Contestant Name" 
+                    {eventName === "Quiz - Prelims"
+                      ? "First Contestant Name"
                       : "Contestant Name"}
                     <span className="text-red-500">*</span>
                   </label>
@@ -633,8 +633,8 @@ export default function Page() {
               {offStageOrOnStage === "OFF_STAGE" && (
                 <div className="space-y-2">
                   <label className="block text-sm font-semibold text-gray-700">
-                    {eventName === "Quiz - Prelims" 
-                      ? "First Contestant D.No" 
+                    {eventName === "Quiz - Prelims"
+                      ? "First Contestant D.No"
                       : "Contestant D.No"}
                     <span className="text-red-500">*</span>
                   </label>
@@ -752,8 +752,8 @@ export default function Page() {
                   w-full py-4 px-6 rounded-xl font-bold text-white
                   transition-all duration-300 transform hover:scale-[1.02]
                   focus:outline-none focus:ring-4 focus:ring-opacity-50
-                  ${!isRegistrationOpen 
-                    ? 'bg-gray-400 cursor-not-allowed' 
+                  ${!isRegistrationOpen
+                    ? 'bg-gray-400 cursor-not-allowed'
                     : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:ring-indigo-500'
                   }
                   disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
@@ -789,7 +789,7 @@ export default function Page() {
                   )}
                 </div>
               </button>
-              
+
               {!isRegistrationOpen && (
                 <p className="mt-4 text-center text-red-600 font-medium">
                   <svg className="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -804,4 +804,4 @@ export default function Page() {
       </div>
     </div>
   );
-}
+} 

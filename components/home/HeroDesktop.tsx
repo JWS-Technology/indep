@@ -19,11 +19,30 @@ export default function HeroDesktop({ timeLeft, isEventStarted }: { timeLeft: an
     return (
         <section className="relative min-h-screen flex flex-col items-center justify-center text-white bg-gray-900 overflow-hidden px-4">
             {/* --- Background Elements --- */}
-            <div
-                className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-60"
-                style={{ backgroundImage: "url(/background.jpg)" }}
-            />
-            <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80"></div>
+            {/* --- VIDEO BACKGROUND --- */}
+            <div className="absolute inset-0 z-0 overflow-hidden blur-xs">
+                {/* Desktop Video */}
+                <video
+                    className="hidden md:block absolute inset-0 w-full h-[115%] object-cover opacity-70"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    poster="/background.jpg"
+                >
+                    <source src="/hero-video.mp4" type="video/mp4" />
+                </video>
+
+                {/* Mobile fallback image */}
+                <div
+                    className="block md:hidden absolute inset-0 bg-cover bg-center opacity-70"
+                    style={{ backgroundImage: "url(/background.jpg)" }}
+                />
+            </div>
+
+            {/* Dark overlay to improve text visibility */}
+            <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/90 via-black/50 to-black/80"></div>
 
             {/* Ambient Glows */}
             <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-600/30 rounded-full blur-[120px] animate-pulse"></div>
