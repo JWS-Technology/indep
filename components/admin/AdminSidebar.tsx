@@ -53,10 +53,11 @@ export default function AdminSidebar() {
             href: "#", // Parent item
             subItems: [
                 { name: "Add Lot", href: "/admin/lot/select-event", icon: ChevronRight },
-                { name: "All Lots", href: "/admin/lots-allocation", icon: ChevronRight },
+                { name: "All Lots", href: "/admin/lot/lots-allocation", icon: ChevronRight },
             ],
         },
         // { name: "Add Lot", href: "/admin/lot/select-event", icon: Ticket },
+        { name: "Attentance", href: "/admin/attendance", icon: BookOpen },
         {
             name: "Gallery",
             icon: ImageIcon,
