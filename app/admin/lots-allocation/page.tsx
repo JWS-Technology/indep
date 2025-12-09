@@ -78,11 +78,13 @@ export default function TeamsLotPage() {
   // Export PDF
   const exportPDF = async (lotsToExport: any[]) => {
     const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth(); 
 
     try {
       // Load logo from public folder
       const logoUrl = "/sjc_logo.png"; // public folder path
       const res = await fetch(logoUrl);
+      
       if (!res.ok) throw new Error("Logo not found");
       const blob = await res.blob();
       const reader = new FileReader();
@@ -103,14 +105,14 @@ export default function TeamsLotPage() {
 
     // Header
     doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text("St. JOSEPH’S COLLEGE (AUTONOMOUS)", 60, 15);
-    doc.setFontSize(11);
-    doc.setFont("helvetica", "normal");
-    doc.text("TIRUCHIRAPPALLI – 620 002", 60, 22);
-    doc.text("INDEP ‘25", 60, 28);
-    doc.setFont("helvetica", "bold");
-    doc.text("Department User – Shift 1", 60, 34);
+  doc.setFont("helvetica", "bold");
+  doc.text("St. JOSEPH’S COLLEGE (AUTONOMOUS)", pageWidth / 2, 20, { align: "center" });
+
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "normal");
+  doc.text("TIRUCHIRAPPALLI – 620 002", pageWidth / 2, 28, { align: "center" });
+  doc.text("INDEP ‘25", pageWidth / 2, 35, { align: "center" });
+  
 
     // Table
     const tableColumn = ["Event", "Department", "Lot Number", "Team Name", "Team ID"];
