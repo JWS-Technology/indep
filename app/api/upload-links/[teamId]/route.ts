@@ -3,7 +3,7 @@ import dbConnect from "@/utils/dbConnect";
 
 export async function GET(
   req: Request,
-  context: { params: { teamId: string } }
+  context: { params: Promise<{ teamId: string }> }
 ) {
   try {
     await dbConnect();
