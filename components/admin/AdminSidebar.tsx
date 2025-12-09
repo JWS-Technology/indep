@@ -66,6 +66,7 @@ export default function AdminSidebar() {
                 { name: "Upload Image", href: "/admin/upload-gallery", icon: Upload },
             ],
         },
+            { name: "Upload All Files", href: "/admin/upload-all-files", icon: Upload  },
         // { name: "Files", href: "/admin/files", icon: Files },
 
         // { name: "Lot", href: "/admin/lot/select-event", icon: Ticket },
@@ -91,7 +92,7 @@ export default function AdminSidebar() {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
+            <nav className="flex-1 p-4 space-y-2 overflow-y-auto scale-90 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {navItems.map((item) => {
                     const Icon = item.icon;
                     // Check if this item (or its sub-items) is currently active
