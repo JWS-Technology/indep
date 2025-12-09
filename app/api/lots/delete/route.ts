@@ -4,12 +4,15 @@ import dbConnect from "@/utils/dbConnect";
 import Lot from "@/models/Lot";
 import { NextResponse } from "next/server";
 
-export async function DELETE(req: Request, { params }: any) {
+export async function DELETE(req: Request) {
   try {
+    const { id } = await req.json();
+    // console.log(id);
+    // return NextResponse.json(
+    //   { success: true, message: "Lot deleted successfully" },
+    //   { status: 200 }
+    // );
     await dbConnect();
-
-    const id = params.id;
-    console.log("Deleting lot:", id);
 
     const deleted = await Lot.findByIdAndDelete(id);
 
