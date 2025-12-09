@@ -8,6 +8,7 @@ import * as XLSX from "xlsx";
 
 export default function TeamsLotPage() {
   const [lots, setLots] = useState<any[]>([]);
+  // console.log(lots)
   const [loading, setLoading] = useState(true);
   const [lotToDelete, setlotToDelete] = useState("");
   const [filterEvent, setFilterEvent] = useState("");
@@ -21,6 +22,7 @@ export default function TeamsLotPage() {
     try {
       const res = await fetch("/api/lots/get-all");
       const data = await res.json();
+      console.log(data)
 
       if (data.success) {
         setLots(data.lots);
@@ -84,6 +86,7 @@ export default function TeamsLotPage() {
 
     return matchesEvent && matchesDept && matchesSearch;
   });
+  console.log(filteredLots)
 
   // Export PDF
   const exportPDF = async (lotsToExport: any[]) => {
@@ -145,6 +148,8 @@ export default function TeamsLotPage() {
       filteredLots.map((lot) => ({
         Event: lot.event,
         Department: lot.department || "General",
+        Name: lot.registration.contestantName,
+        DNo: lot.registration.dNo,
         Lot_Number: lot.lot_number,
         Team_Name: lot.teamName,
         Team_ID: lot.team_id,
@@ -239,9 +244,8 @@ export default function TeamsLotPage() {
                 {filteredLots.map((lot, index) => (
                   <tr
                     key={lot._id}
-                    className={`${
-                      index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                    } hover:bg-indigo-50 transition duration-150`}
+                    className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                      } hover:bg-indigo-50 transition duration-150`}
                   >
                     <td className="p-4 border-b text-gray-700">{lot.event}</td>
 
