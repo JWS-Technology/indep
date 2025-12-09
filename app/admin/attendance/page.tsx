@@ -1,12 +1,14 @@
 "use client";
 
 import axios from "axios";
+import { ClockFading } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function AttendancePage() {
   const [lots, setLots] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filterEvent, setFilterEvent] = useState("");
+  const [filterEvent, setFilterEvent] = useState("Cartooning");
+  // console.log(filterEvent)
   const [filterDepartment, setFilterDepartment] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [events, setEvents] = useState<string[]>([]);
@@ -14,7 +16,66 @@ export default function AttendancePage() {
   const [malpracticeLot, setMalpracticeLot] = useState<any>(null);
   const [malpracticeText, setMalpracticeText] = useState("");
 
-  // Fetch lots (same as before)
+  const [eventName, seteventName] = useState("");
+  const [teamName, setteamName] = useState("");
+  const [teamId, setteamId] = useState("");
+  const [contestantName, setcontestantName] = useState("");
+  const [dNo, setdNo] = useState("");
+  const [lotNo, setlotNo] = useState("");
+  const [attendance, setattendance] = useState("");
+  const [malpracticeDetails, setmalpracticeDetails] = useState("");
+
+  const [getAttendanceData, setgetAttendanceData] = useState(true);
+  const [takenAttendanceData, settakenAttendanceData] = useState<any[]>([]);
+
+  // NEW: Map dNo -> attendance
+  const attendanceMap = new Map(
+    takenAttendanceData?.map((a: any) => [a.dNo?.trim(), a.attendance]) ?? []
+  );
+
+  const dNosTaken = new Set(
+    takenAttendanceData?.map((a: any) => a.dNo?.trim()) ?? []
+  );
+
+  const saveAttendance = async (lot: any, attendance: string, malpracticeDetails = "") => {
+    try {
+      const res = await axios.post("/api/save-attendance", {
+        eventName: lot.event,
+        teamName: lot.teamName,
+        teamId: lot.team_id,
+        contestantName: lot.registration.contestantName,
+        dNo: lot.registration.dNo,
+        lotNo: lot.lot_number,
+        attendance,
+        malpracticeDetails,
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      seteventName("");
+      setteamName("");
+      setteamId("");
+      setcontestantName("");
+      setdNo("");
+      setlotNo("");
+      setattendance("");
+      setmalpracticeDetails("");
+      setMalpracticeLot(null);
+      setgetAttendanceData(true);
+    }
+  };
+
+  const emptyAllFileds = () => {
+    seteventName("");
+    setteamName("");
+    setteamId("");
+    setcontestantName("");
+    setdNo("");
+    setlotNo("");
+    setattendance("");
+    setmalpracticeDetails("");
+  };
+
   const fetchLots = async () => {
     try {
       const res = await fetch("/api/lots/get-all");
@@ -23,7 +84,9 @@ export default function AttendancePage() {
       if (data.success) {
         setLots(data.lots);
 
-        setEvents([...new Set(data.lots.map((lot: any) => lot.event))] as string[]);
+        setEvents([
+          ...new Set(data.lots.map((lot: any) => lot.event)),
+        ] as string[]);
         setDepartments([
           ...new Set(data.lots.map((lot: any) => lot.department || "General")),
         ] as string[]);
@@ -39,20 +102,40 @@ export default function AttendancePage() {
     fetchLots();
   }, []);
 
-  // Filter & Search
+  useEffect(() => {
+    const getAttendance = async () => {
+      if (!getAttendanceData) return;
+      if (filterEvent === "") return;
+      try {
+        const res = await axios.post("/api/get-attendance", { filterEvent });
+        console.log("ram")
+        settakenAttendanceData(res.data.attendance);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setgetAttendanceData(false);
+      }
+    };
+    getAttendance();
+  }, [getAttendanceData, filterEvent]);
+
   const filteredLots = lots.filter((lot) => {
     const matchesEvent = !filterEvent || lot.event === filterEvent;
-    const matchesDept = !filterDepartment ||
-      (lot.department || "General") === filterDepartment;
+    const matchesDept =
+      !filterDepartment || (lot.department || "General") === filterDepartment;
 
-    const matchesSearch =
-      lot.teamName?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = lot.teamName
+      ?.toLowerCase()
+      .includes(searchQuery.toLowerCase());
 
     return matchesEvent && matchesDept && matchesSearch;
   });
 
-  // Mark Attendance API call
-  const markAttendance = async (lotId: string, status: "Present" | "Absent", malpractice = "") => {
+  const markAttendance = async (
+    lotId: string,
+    status: "Present" | "Absent",
+    malpractice = ""
+  ) => {
     try {
       const res = await axios.post("/api/attendance/mark", {
         lotId,
@@ -71,7 +154,6 @@ export default function AttendancePage() {
     }
   };
 
-  // Save malpractice
   const saveMalpractice = async () => {
     if (!malpracticeLot) return;
 
@@ -89,19 +171,22 @@ export default function AttendancePage() {
 
       {/* Filters */}
       <div className="flex gap-4 mb-4 flex-wrap">
-        {/* Event Filter */}
         <select
           value={filterEvent}
-          onChange={(e) => setFilterEvent(e.target.value)}
+          onChange={(e) => {
+            setFilterEvent(e.target.value);
+            setgetAttendanceData(true);
+          }}
           className="border border-gray-300 rounded-lg px-3 py-2"
         >
-          <option value="">All Events</option>
+          {/* <option value="">All Events</option> */}
           {events.map((ev) => (
-            <option key={ev} value={ev}>{ev}</option>
+            <option key={ev} value={ev}>
+              {ev}
+            </option>
           ))}
         </select>
 
-        {/* Department Filter */}
         <select
           value={filterDepartment}
           onChange={(e) => setFilterDepartment(e.target.value)}
@@ -109,11 +194,12 @@ export default function AttendancePage() {
         >
           <option value="">All Departments</option>
           {departments.map((dep) => (
-            <option key={dep} value={dep}>{dep}</option>
+            <option key={dep} value={dep}>
+              {dep}
+            </option>
           ))}
         </select>
 
-        {/* Search */}
         <input
           type="text"
           placeholder="Search by Team Name"
@@ -124,24 +210,34 @@ export default function AttendancePage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white shadow-md rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-white w-[60rem] shadow-md rounded-xl border border-gray-200 overflow-hidden">
         {loading ? (
           <div className="p-6 text-center text-gray-500">Loading...</div>
         ) : filteredLots.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">
-            No teams found.
-          </div>
+          <div className="p-6 text-center text-gray-500">No teams found.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="p-4 border-b font-semibold text-gray-700">Event</th>
-                  <th className="p-4 border-b font-semibold text-gray-700">Lot No</th>
-                  <th className="p-4 border-b font-semibold text-gray-700">Team Name</th>
-                  <th className="p-4 border-b font-semibold text-gray-700">Team ID</th>
-                  <th className="p-4 border-b font-semibold text-gray-700">Contestant</th>
-                  <th className="p-4 border-b font-semibold text-gray-700">D.No</th>
+                  <th className="p-4 border-b font-semibold text-gray-700">
+                    Event
+                  </th>
+                  <th className="p-4 border-b font-semibold text-gray-700">
+                    Lot No
+                  </th>
+                  <th className="p-4 border-b font-semibold text-gray-700">
+                    Team Name
+                  </th>
+                  <th className="p-4 border-b font-semibold text-gray-700">
+                    Team ID
+                  </th>
+                  <th className="p-4 border-b font-semibold text-gray-700">
+                    Contestant
+                  </th>
+                  <th className="p-4 border-b font-semibold text-gray-700">
+                    D.No
+                  </th>
                   <th className="p-4 border-b font-semibold text-gray-700 text-center">
                     Attendance
                   </th>
@@ -149,60 +245,71 @@ export default function AttendancePage() {
               </thead>
 
               <tbody>
-                {filteredLots.map((lot, index) => (
-                  <tr
-                    key={lot._id}
-                    className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-indigo-50`}
-                  >
-                    <td className="p-4 border-b">{lot.event}</td>
+                {filteredLots.map((lot, index) => {
+                  const dno = lot.registration?.dNo?.trim();
+                  const status = attendanceMap.get(dno);
 
-                    <td className="p-4 border-b">
-                      <span className="px-3 py-1 rounded-lg bg-indigo-100 text-indigo-700 font-medium">
-                        {lot.lot_number}
-                      </span>
-                    </td>
+                  let rowColor = "";
+                  if (status === "PRESENT") rowColor = "bg-green-200 hover:bg-green-300";
+                  else if (status === "ABSENT") rowColor = "bg-red-200 hover:bg-red-300";
+                  else if (status === "MALPRACTICE")
+                    rowColor = "bg-yellow-200 hover:bg-yellow-300";
+                  else
+                    rowColor =
+                      index % 2 === 0
+                        ? "bg-white hover:bg-indigo-50"
+                        : "bg-gray-50 hover:bg-indigo-50";
 
-                    <td className="p-4 border-b">{lot.teamName}</td>
-                    <td className="p-4 border-b">{lot.team_id}</td>
-                    <td className="p-4 border-b">
-                      {lot.registration?.contestantName || "N/A"}
-                    </td>
-                    <td className="p-4 border-b">
-                      {lot.registration?.dNo || "N/A"}
-                    </td>
+                  return (
+                    <tr key={lot._id} className={rowColor}>
+                      <td className="p-4 border-b">{lot.event}</td>
 
-                    <td className="p-4 border-b text-center">
-                      <div className="flex justify-center gap-3">
+                      <td className="p-4 border-b">
+                        <span className="px-3 py-1 rounded-lg bg-indigo-100 text-indigo-700 font-medium">
+                          {lot.lot_number}
+                        </span>
+                      </td>
 
-                        {/* Present */}
-                        <button
-                          onClick={() => markAttendance(lot._id, "Present")}
-                          className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg"
-                        >
-                          P
-                        </button>
+                      <td className="p-4 border-b">{lot.teamName}</td>
+                      <td className="p-4 border-b">{lot.team_id}</td>
 
-                        {/* Absent */}
-                        <button
-                          onClick={() => markAttendance(lot._id, "Absent")}
-                          className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg"
-                        >
-                          A
-                        </button>
+                      <td className="p-4 border-b">
+                        {lot.registration?.contestantName || "N/A"}
+                        <br />
+                        {lot.registration?.secondContestantName}
+                      </td>
 
-                        {/* Malpractice */}
-                        <button
-                          onClick={() => setMalpracticeLot(lot)}
-                          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
-                        >
-                          Malpractice
-                        </button>
+                      <td className="p-4 border-b">
+                        {lot.registration?.dNo || "N/A"}
+                      </td>
 
-                      </div>
-                    </td>
+                      <td className="p-4 border-b text-center">
+                        <div className="flex justify-center gap-3">
+                          <button
+                            onClick={() => saveAttendance(lot, "PRESENT")}
+                            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg"
+                          >
+                            P
+                          </button>
 
-                  </tr>
-                ))}
+                          <button
+                            onClick={() => saveAttendance(lot, "ABSENT")}
+                            className="px-4 py-2 bg-red-600 hover:bg-red-700  text-white rounded-lg"
+                          >
+                            A
+                          </button>
+
+                          <button
+                            onClick={() => setMalpracticeLot(lot)}
+                            className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700  text-white rounded-lg"
+                          >
+                            M
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -218,22 +325,31 @@ export default function AttendancePage() {
             </h2>
 
             <textarea
-              value={malpracticeText}
-              onChange={(e) => setMalpracticeText(e.target.value)}
+              value={malpracticeDetails}
+              onChange={(e) => setmalpracticeDetails(e.target.value)}
               placeholder="Enter malpractice details…"
               className="w-full border p-3 rounded-lg h-28"
             />
 
             <div className="flex justify-end gap-3 mt-4">
               <button
-                onClick={() => setMalpracticeLot(null)}
+                onClick={() => {
+                  emptyAllFileds();
+                  setMalpracticeLot(null);
+                }}
                 className="px-4 py-2 bg-gray-300 rounded-lg"
               >
                 Cancel
               </button>
 
               <button
-                onClick={saveMalpractice}
+                onClick={() =>
+                  saveAttendance(
+                    malpracticeLot,
+                    "MALPRACTICE",
+                    malpracticeDetails
+                  )
+                }
                 className="px-4 py-2 bg-red-600 text-white rounded-lg"
               >
                 Save
@@ -242,7 +358,6 @@ export default function AttendancePage() {
           </div>
         </div>
       )}
-
     </div>
   );
 }
