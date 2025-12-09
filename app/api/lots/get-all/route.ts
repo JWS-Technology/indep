@@ -42,29 +42,3 @@ export async function GET() {
   }
 }
 
-// import Lot from "@/models/Lot";
-// import OffStageEventReg from "@/models/OffStageEventReg";
-// import dbConnect from "@/utils/dbConnect";
-// import { NextResponse } from "next/server";
-
-// export async function GET() {
-//   try {
-//     await dbConnect();
-
-//     // Fetch ONLY teams that have registered lots
-//     const lots = await Lot.find({});
-
-//     console.log(lots)
-
-//     return NextResponse.json(
-//       { success: true, lots },
-//       { status: 200 }
-//     );
-//   } catch (error) {
-//     console.log(error);
-//     return NextResponse.json(
-//       { success: false, message: "Error fetching lots" },
-//       { status: 500 }
-//     );
-//   }
-// }
