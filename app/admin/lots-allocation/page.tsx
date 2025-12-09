@@ -2,12 +2,19 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function TeamsLotPage() {
-  const [lots, setLots] = useState([]);
+  const [lots, setLots] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [lotToDelete, setlotToDelete] = useState("")
+  const [lotToDelete, setlotToDelete] = useState("");
+  const [filterEvent, setFilterEvent] = useState("");
+  const [filterDepartment, setFilterDepartment] = useState("");
+  const [events, setEvents] = useState<string[]>([]);
+  const [departments, setDepartments] = useState<string[]>([]);
 
+  // Fetch lots
   const fetchLots = async () => {
     try {
       const res = await fetch("/api/lots/get-all");
@@ -15,9 +22,15 @@ export default function TeamsLotPage() {
 
       if (data.success) {
         setLots(data.lots);
+
+        const uniqueEvents = Array.from(new Set(data.lots.map((lot: any) => lot.event))) as string[];
+        const uniqueDepartments = Array.from(new Set(data.lots.map((lot: any) => lot.department || "General"))) as string[];
+
+        setEvents(uniqueEvents);
+        setDepartments(uniqueDepartments);
       }
     } catch (error) {
-      console.log("Error fetching lots:", error);
+      console.error("Error fetching lots:", error);
     } finally {
       setLoading(false);
     }
@@ -27,44 +40,22 @@ export default function TeamsLotPage() {
     fetchLots();
   }, []);
 
-
-
+  // Delete lot
   useEffect(() => {
     const handleDelete = async () => {
-      if (lotToDelete === "") return;
+      if (!lotToDelete) return;
       if (!confirm("Are you sure you want to delete this lot?")) return;
 
       try {
-        // const res = await fetch(`/api/lots/delete/${lotToDelete}`, {
-        //   method: "DELETE",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify({
-        //     deletedBy: "Admin",
-        //     reason: "Cleaning old data",
-        //     id: lotToDelete
-        //   }),
-        // });
-
         const response = await axios.delete("/api/lots/delete", {
-          data: {
-            id: lotToDelete,
-            reason: "User requested deletion",
-            deletedBy: "Admin",
-          },
+          data: { id: lotToDelete, reason: "User requested deletion", deletedBy: "Admin" },
         });
 
-
-
-        const data = await response.data;
-        console.log("Delete response:", response.data);
-
-        if (data.success) {
+        if (response.data.success) {
           alert("Lot deleted successfully!");
-          setLots((prev) => prev.filter((lot: any) => lot._id !== lotToDelete));
+          setLots((prev) => prev.filter((lot) => lot._id !== lotToDelete));
         } else {
-          alert("Delete failed: " + data.message);
+          alert("Delete failed: " + response.data.message);
         }
       } catch (error) {
         console.error("Delete error:", error);
@@ -73,74 +64,156 @@ export default function TeamsLotPage() {
         setlotToDelete("");
       }
     };
+
     handleDelete();
-  }, [lotToDelete])
+  }, [lotToDelete]);
 
+  // Filter lots
+  const filteredLots = lots.filter(
+    (lot) =>
+      (!filterEvent || lot.event === filterEvent) &&
+      (!filterDepartment || (lot.department || "General") === filterDepartment)
+  );
 
+  // Export PDF
+  const exportPDF = async (lotsToExport: any[]) => {
+    const doc = new jsPDF();
 
+    try {
+      // Load logo from public folder
+      const logoUrl = "/sjc_logo.png"; // public folder path
+      const res = await fetch(logoUrl);
+      if (!res.ok) throw new Error("Logo not found");
+      const blob = await res.blob();
+      const reader = new FileReader();
+
+      const logoBase64: string = await new Promise((resolve, reject) => {
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+
+      const cleanBase64 = logoBase64.replace(/^data:image\/png;base64,/, "");
+
+      // Add logo
+      doc.addImage(cleanBase64, "PNG", 14, 10, 25, 25);
+    } catch (err) {
+      console.warn("Failed to load logo:", err);
+    }
+
+    // Header
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("St. JOSEPH’S COLLEGE (AUTONOMOUS)", 60, 15);
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+    doc.text("TIRUCHIRAPPALLI – 620 002", 60, 22);
+    doc.text("INDEP ‘25", 60, 28);
+    doc.setFont("helvetica", "bold");
+    doc.text("Department User – Shift 1", 60, 34);
+
+    // Table
+    const tableColumn = ["Event", "Department", "Lot Number", "Team Name", "Team ID"];
+    const tableRows: any[] = lotsToExport.map((lot) => [
+      lot.event,
+      lot.department || "General",
+      lot.lot_number,
+      lot.teamName,
+      lot.team_id,
+    ]);
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 45,
+      theme: "grid",
+      headStyles: { fillColor: [63, 81, 181] },
+      bodyStyles: { fillColor: [245, 245, 245] },
+    });
+
+    doc.save("Registered_Lots.pdf");
+  };
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-5 text-gray-800">
-        Registered Teams & Lots
-      </h1>
+      <h1 className="text-2xl font-bold mb-5 text-gray-800">Registered Teams & Lots</h1>
 
+      {/* Filters & Export */}
+      <div className="flex gap-4 mb-4 flex-wrap">
+        <select
+          value={filterEvent}
+          onChange={(e) => setFilterEvent(e.target.value)}
+          className="border border-gray-300 rounded-lg px-3 py-2"
+        >
+          <option value="">All Events</option>
+          {events.map((event) => (
+            <option key={event} value={event}>
+              {event}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={filterDepartment}
+          onChange={(e) => setFilterDepartment(e.target.value)}
+          className="border border-gray-300 rounded-lg px-3 py-2"
+        >
+          <option value="">All Departments</option>
+          {departments.map((dep) => (
+            <option key={dep} value={dep}>
+              {dep}
+            </option>
+          ))}
+        </select>
+
+        <button
+          onClick={() => exportPDF(filteredLots)}
+          className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition shadow-sm"
+        >
+          Export PDF
+        </button>
+      </div>
+
+      {/* Table */}
       <div className="bg-white shadow-md rounded-xl border border-gray-200 overflow-hidden">
-        {/* Loading State */}
         {loading ? (
           <div className="p-6 text-center text-gray-500">Loading...</div>
-        ) : lots.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">
-            No registered teams found.
-          </div>
+        ) : filteredLots.length === 0 ? (
+          <div className="p-6 text-center text-gray-500">No registered teams found.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead className="bg-gray-50 sticky top-0 z-10">
                 <tr>
                   <th className="p-4 border-b font-semibold text-gray-700">Event</th>
+                  <th className="p-4 border-b font-semibold text-gray-700">Department</th>
                   <th className="p-4 border-b font-semibold text-gray-700">Lot Number</th>
                   <th className="p-4 border-b font-semibold text-gray-700">Team Name</th>
                   <th className="p-4 border-b font-semibold text-gray-700">Team ID</th>
-                  <th className="p-4 border-b font-semibold text-gray-700 text-center">
-                    Actions
-                  </th>
+                  <th className="p-4 border-b font-semibold text-gray-700 text-center">Actions</th>
                 </tr>
               </thead>
-
               <tbody>
-                {lots.map((lot: any, index: number) => (
+                {filteredLots.map((lot, index) => (
                   <tr
                     key={lot._id}
-                    className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                      } hover:bg-indigo-50 transition duration-150`}
+                    className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-indigo-50 transition duration-150`}
                   >
                     <td className="p-4 border-b text-gray-700">{lot.event}</td>
-
+                    <td className="p-4 border-b text-gray-700">{lot.department || "General"}</td>
                     <td className="p-4 border-b">
-                      <span className="px-3 py-1 rounded-lg bg-indigo-100 text-indigo-700 font-medium">
-                        {lot.lot_number}
-                      </span>
+                      <span className="px-3 py-1 rounded-lg bg-indigo-100 text-indigo-700 font-medium">{lot.lot_number}</span>
                     </td>
-
                     <td className="p-4 border-b text-gray-700">{lot.teamName}</td>
                     <td className="p-4 border-b text-gray-700">{lot.team_id}</td>
-
-                    {/* ACTION BUTTONS */}
                     <td className="p-4 border-b text-center">
                       <div className="flex items-center justify-center gap-3">
-
-                        {/* EDIT BUTTON */}
                         <button
-                          onClick={() =>
-                            (window.location.href = `/admin/lots/edit/${lot._id}`)
-                          }
+                          onClick={() => (window.location.href = `/admin/lots/edit/${lot._id}`)}
                           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition shadow-sm"
                         >
                           Edit
                         </button>
-
-                        {/* DELETE BUTTON */}
                         <button
                           onClick={() => setlotToDelete(lot._id)}
                           className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm transition shadow-sm"
