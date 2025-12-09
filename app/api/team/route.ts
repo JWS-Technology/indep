@@ -7,12 +7,9 @@ export async function GET() {
 
     const teams = await Team.find().sort({ name: 1 }); // optional sorting
 
-    return Response.json({ teams }, { status: 200 });
+    return Response.json({ success: true, teams }, { status: 200 });
   } catch (error) {
     console.error("Error fetching teams:", error);
-    return Response.json(
-      { error: "Failed to fetch teams" },
-      { status: 500 }
-    );
+    return Response.json({ error: "Failed to fetch teams" }, { status: 500 });
   }
 }
