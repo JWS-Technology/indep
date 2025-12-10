@@ -4,10 +4,23 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    console.log("req for onstage registration came");
+    // console.log("req for ASDASDAKSHDKJASD registration came");
     const { teamId, eventName } = await req.json();
 
-    console.log(teamId, eventName);
+    // console.log("THIS IS DATA CAME " + teamId, eventName);
+
+    // if (!teamId) {
+    //   return NextResponse.json({
+    //     success: false,
+    //     message: "error in get regitered data",
+    //   });
+    // }
+    // if (!eventName) {
+    //   return NextResponse.json({
+    //     success: false,
+    //     message: "error in get regitered data",
+    //   });
+    // }
     await dbConnect();
 
     const registeredData = await OnStageEventReg.findOne({
@@ -15,7 +28,7 @@ export async function POST(req: NextRequest) {
       eventName: eventName,
     });
 
-    console.log("THIS is reg daat " + registeredData);
+    // console.log("THIS is reg daat " + registeredData);
 
     return NextResponse.json({
       success: true,
