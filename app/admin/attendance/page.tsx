@@ -6,8 +6,6 @@ import { useEffect, useState } from "react";
 
 export default function AttendancePage() {
   const [lots, setLots] = useState<any[]>([]);
-  console.log(lots)
-  console.log("asds")
   const [loading, setLoading] = useState(true);
   const [filterEvent, setFilterEvent] = useState("Cartooning");
   // console.log(filterEvent)
