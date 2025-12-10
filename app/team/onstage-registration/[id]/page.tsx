@@ -70,14 +70,35 @@ export default function page() {
           eventName: eventName,
         });
 
-        // console.log(res.data.registeredData.contestants)
-        setContestants(res.data.registeredData.contestants);
-        setregisteredData(res.data.registeredData);
+        // defensive: handle missing registeredData or contestants
+        const registeredDataResp = res?.data?.registeredData ?? null;
+
+        if (!registeredDataResp) {
+          // no registration found — keep the default single empty contestant row
+          setregisteredData(null);
+          setContestants([{ contestantName: "", dNo: "" }]);
+          return;
+        }
+
+        // normalize server contestant objects to expected shape
+        const serverContestants = Array.isArray(registeredDataResp.contestants)
+          ? registeredDataResp.contestants
+          : [];
+
+        const normalized = serverContestants.map((c: any) => ({
+          contestantName: (c?.contestantName ?? c?.name ?? "") as string,
+          dNo: (c?.dNo ?? c?.dno ?? c?.DNo ?? "") as string,
+        }));
+
+        // if normalized is empty, ensure at least one empty row
+        setContestants(normalized.length ? normalized : [{ contestantName: "", dNo: "" }]);
+        setregisteredData(registeredDataResp);
       } catch (err) {
         console.error("Error fetching event data:", err);
         setMessage("Failed to load event data.");
       }
     };
+
     fetchregData();
   }, [eventName, teamId]);
 
