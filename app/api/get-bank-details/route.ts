@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     });
 
     console.log("this is saved bank deails");
-    console.log(savedDetails);
+    // console.log(savedDetails);
 
     return NextResponse.json(
       {
