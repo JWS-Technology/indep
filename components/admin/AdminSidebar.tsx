@@ -25,7 +25,8 @@ import {
     UserCircle,
     GraduationCap,
     FolderOpen,
-    CheckSquare
+    CheckSquare,
+    FileText
 } from "lucide-react";
 
 export default function AdminSidebar() {
@@ -103,7 +104,15 @@ export default function AdminSidebar() {
                 { name: "All Lots", href: "/admin/lot/lots-allocation", icon: List },
             ],
         },
-        { name: "Attendance", href: "/admin/attendance", icon: CheckSquare },
+        {
+            name: "Attendance",
+            icon: CheckSquare,
+            href: "#",
+            subItems: [
+                { name: "Attendance", href: "/admin/attendance", icon: CheckSquare },
+                { name: "Attendance Record", href: "/admin/attendance-record", icon: FileText },
+            ],
+        },
         {
             name: "Gallery",
             icon: ImageIcon,
@@ -182,8 +191,8 @@ export default function AdminSidebar() {
                     </div>
                 </div>
 
-                {/* Navigation */}
-                <div className="p-4 h-[calc(100vh-120px)] lg:h-[calc(100vh-200px)] overflow-y-auto">
+                {/* Navigation - No scrollbar */}
+                <div className="p-4 h-[calc(100vh-120px)] lg:h-[calc(100vh-200px)] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
                     <nav className="space-y-1">
                         {navItems.map((item) => {
                             const Icon = item.icon;
@@ -298,7 +307,7 @@ export default function AdminSidebar() {
             {/* Mobile Backdrop */}
             {sidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[98] lg:hidden"
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[98] lg:hidden mt-5"
                     onClick={closeSidebar}
                 />
             )}
