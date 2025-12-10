@@ -3,7 +3,7 @@ import OnStageEventReg from "@/models/OnStageEventReg";
 import dbConnect from "@/utils/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     // console.log("req for ASDASDAKSHDKJASD registration came");
     const { teamId, eventName } = await req.json();
@@ -34,7 +34,7 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       message: "All registered events fetched successfully",
-      registeredData: allRegistrations,
+      registeredData: registeredData,
     });
   } catch (error) {
     console.error(error);
