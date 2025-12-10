@@ -9,6 +9,7 @@ export type Contestant = {
 
 type Props = {
   // optional prefill values (useful when embedding)
+  eventId?: string | null;
   initialTeamId?: string;
   initialTeamName?: string;
   initialEventName?: string;
@@ -16,14 +17,26 @@ type Props = {
 };
 
 export default function OnStageEventRegistration({
+  eventId: eventIdProp = null,
   initialTeamId = "",
   initialTeamName = "",
   initialEventName = "",
   onSuccess,
 }: Props) {
+  // store incoming eventId in state and keep in sync if prop changes
+  const [eventId, setEventId] = useState<string | null>(eventIdProp ?? null);
+  useEffect(() => {
+    setEventId(eventIdProp ?? null);
+  }, [eventIdProp]);
+
+  // sync other initial props into local state (keeps editable)
   const [teamId, setTeamId] = useState(initialTeamId);
   const [teamName, setTeamName] = useState(initialTeamName);
   const [eventName, setEventName] = useState(initialEventName);
+
+  useEffect(() => setTeamId(initialTeamId ?? ""), [initialTeamId]);
+  useEffect(() => setTeamName(initialTeamName ?? ""), [initialTeamName]);
+  useEffect(() => setEventName(initialEventName ?? ""), [initialEventName]);
 
   const [memberCount, setMemberCount] = useState<number>(1);
   const [contestants, setContestants] = useState<Contestant[]>(
@@ -81,12 +94,15 @@ export default function OnStageEventRegistration({
 
     setLoading(true);
     try {
-      const payload = {
+      const payload: any = {
         teamId: teamId.trim(),
         teamName: teamName.trim(),
         eventName: eventName.trim(),
         contestants: contestants.map((c) => ({ contestantName: c.contestantName.trim(), dNo: c.dNo.trim() })),
       };
+
+      // include eventId if provided
+      if (eventId) payload.eventId = eventId;
 
       const res = await fetch("/api/onstage/register", {
         method: "POST",
@@ -115,6 +131,12 @@ export default function OnStageEventRegistration({
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow">
       <h2 className="text-xl font-semibold mb-4">On-Stage Event Registration</h2>
+
+      {eventId && (
+        <div className="mb-3 text-sm text-gray-600">
+          <strong>Event ID:</strong> <span className="ml-2">{eventId}</span>
+        </div>
+      )}
 
       {message && (
         <div

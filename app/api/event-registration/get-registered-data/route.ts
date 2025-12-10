@@ -1,13 +1,16 @@
 import Registration from "@/models/EventRegistration";
 import OffStageEventReg from "@/models/OffStageEventReg";
+import OnStageEventReg from "@/models/OnStageEventReg";
 import dbConnect from "@/utils/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+     console.log("data came ")
     const { teamId, eventName, offStageOrOnStage } = await req.json();
-    // console.log(teamId);
-    // console.log(eventName);
+    console.log(teamId);
+    console.log(offStageOrOnStage)
+    console.log(eventName);
     await dbConnect();
 
     if (offStageOrOnStage === "OFF_STAGE") {
@@ -23,10 +26,15 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const registeredData = await Registration.findOne({
+    const registeredData = await OnStageEventReg.findOne({
       teamId: teamId,
       eventName: eventName,
     });
+
+    // const registeredData = await Registration.findOne({
+    //   teamId: teamId,
+    //   eventName: eventName,
+    // });
 
     console.log(registeredData);
 

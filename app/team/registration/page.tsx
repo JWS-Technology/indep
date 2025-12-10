@@ -98,7 +98,8 @@ export default function Page() {
                         return (
                             <a
                                 key={id}
-                                href={`./registration/${id}`}
+                                // href={`./registration/${id}`}
+                                href={`/team/onstage-registration/${id}`}
                                 className={`group flex flex-col bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-200 p-6 transition-all duration-300 ease-in-out transform hover:-translate-y-1 cursor-pointer`}
                             >
                                 {/* Top Section: Icon & Title */}

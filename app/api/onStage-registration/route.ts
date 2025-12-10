@@ -5,20 +5,12 @@ import OnStageEventReg from "@/models/OnStageEventReg";
 export async function POST(req: Request) {
   try {
     await dbConnect();
+    console.log("Request received for on-stage registration");
 
-    const body = await req.json();
-    const { teamId, teamName, eventName, contestants } = body;
-    console.log(teamId, teamName, eventName, contestants);
+    const body = await req.json().catch(() => ({}));
+    let { teamId, teamName, eventName, contestants } = body;
 
-    // return NextResponse.json(
-    //   {
-    //     success: true,
-    //     message: "On-stage event registered successfully",
-    //     // data: savedData,
-    //   },
-    //   { status: 201 }
-    // );
-    // Validate fields
+    // Basic validation
     if (!teamId || !teamName || !eventName || !Array.isArray(contestants)) {
       return NextResponse.json(
         { success: false, message: "Missing required fields" },
@@ -26,8 +18,16 @@ export async function POST(req: Request) {
       );
     }
 
-    // Optional: Validate contestants format
-    for (const c of contestants) {
+    // Normalize contestants: accept either { name, dno } or { contestantName, dNo }
+    const normalized = contestants.map((c: any) => {
+      return {
+        contestantName: (c.contestantName || c.name || "").toString().trim(),
+        dNo: (c.dNo || c.dno || "").toString().trim(),
+      };
+    });
+
+    // Validate normalized entries
+    for (const c of normalized) {
       if (!c.contestantName || !c.dNo) {
         return NextResponse.json(
           { success: false, message: "Invalid contestant entry" },
@@ -41,16 +41,16 @@ export async function POST(req: Request) {
       teamId,
       teamName,
       eventName,
-      contestants,
+      contestants: normalized,
     });
 
-    console.log(savedData);
+    console.log("Saved registration:", savedData._id);
 
     return NextResponse.json(
       {
         success: true,
         message: "On-stage event registered successfully",
-        // data: savedData,
+        data: savedData,
       },
       { status: 201 }
     );

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -725,14 +726,14 @@ export default function Page() {
   </label>
 
   <div className="
-    flex 
-    items-center 
-    justify-between 
-    bg-indigo-50 
-    border 
-    border-indigo-200 
-    rounded-xl 
-    p-3 
+    flex
+    items-center
+    justify-between
+    bg-indigo-50
+    border
+    border-indigo-200
+    rounded-xl
+    p-3
     shadow-sm
   ">
     <span className="text-indigo-700 font-semibold text-lg text-center w-full">
