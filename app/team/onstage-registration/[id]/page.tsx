@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 
 type ContestantForm = { name: string; dno: string };
 
-export default function SimpleOnStageForm(): JSX.Element {
+export default function page() {
   const { id } = useParams();
 
   const [teamName, setTeamName] = useState<string>("");
@@ -16,7 +16,7 @@ export default function SimpleOnStageForm(): JSX.Element {
   const [offStageOrOnStage, setoffStageOrOnStage] = useState("")
 
 
-  const [registeredData, setregisteredData] = useState();
+  const [registeredData, setregisteredData] = useState("");
 
   const [contestants, setContestants] = useState<ContestantForm[]>([
     { name: "", dno: "" },
