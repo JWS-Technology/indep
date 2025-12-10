@@ -6,6 +6,7 @@ const AttendanceSchema = new mongoose.Schema({
   teamName: String,
   dNo: String,
   contestantName: String,
+  secondContestantName: String,
   lotNumber: String,
   attendance: {
     type: String,

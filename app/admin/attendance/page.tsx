@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 
 export default function AttendancePage() {
   const [lots, setLots] = useState<any[]>([]);
+  console.log(lots)
+  console.log("asds")
   const [loading, setLoading] = useState(true);
   const [filterEvent, setFilterEvent] = useState("Cartooning");
   // console.log(filterEvent)
@@ -37,8 +39,9 @@ export default function AttendancePage() {
     takenAttendanceData?.map((a: any) => a.dNo?.trim()) ?? []
   );
 
-  const saveAttendance = async (lot: any, attendance: string, malpracticeDetails = "") => {
-    try {
+
+ const saveAttendance = async (lot: any, attendance: string, malpracticeDetails = "") => {
+  try {
       const res = await axios.post("/api/save-attendance", {
         eventName: lot.event,
         teamName: lot.teamName,
@@ -104,6 +107,7 @@ export default function AttendancePage() {
     fetchLots();
   }, []);
 
+console.log(lots)
   useEffect(() => {
     const getAttendance = async () => {
       if (!getAttendanceData) return;
@@ -284,6 +288,8 @@ export default function AttendancePage() {
 
                       <td className="p-4 border-b">
                         {lot.registration?.dNo || "N/A"}
+                        <br />
+                         {lot.registration?.secondDno}
                       </td>
 
                       <td className="p-4 border-b text-center">
