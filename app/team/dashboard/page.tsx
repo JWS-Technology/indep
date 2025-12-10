@@ -8,7 +8,8 @@ import {
     ExternalLink,
     FolderOpen,
     AlertCircle,
-    LayoutDashboard
+    LayoutDashboard,
+    Building2
 } from "lucide-react";
 import ForcePasswordChange from "@/components/TeamsDashboard/ForcePasswordChange";
 import OffstageTeamDashboard from "@/components/TeamsDashboard/OffstageTeamDashboard";
@@ -113,7 +114,7 @@ export default function TeamDashboard() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                         {/* Action Card 1: Director Entry */}
-                        <div
+                        {/* <div
                             onClick={() => router.push("registration/director/692bdcc333d496ae7261cc25")}
                             className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group"
                         >
@@ -125,6 +126,25 @@ export default function TeamDashboard() {
                                     <div>
                                         <h3 className="font-semibold text-gray-900">Submit Director Entry</h3>
                                         <p className="text-sm text-gray-500 mt-1">Register for the INDEP Director event</p>
+                                    </div>
+                                </div>
+                                <ExternalLink className="w-5 h-5 text-gray-300 group-hover:text-indigo-600 transition-colors" />
+                            </div>
+                        </div> */}
+
+                        {/* Bank Details  */}
+                        <div
+                            onClick={() => router.push("bank-details")}
+                            className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group"
+                        >
+                            <div className="flex items-start justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                        <Building2 className="w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-gray-900">Submit Bank Details</h3>
+                                        <p className="text-sm text-gray-500 mt-1">Fill your bank details</p>
                                     </div>
                                 </div>
                                 <ExternalLink className="w-5 h-5 text-gray-300 group-hover:text-indigo-600 transition-colors" />
