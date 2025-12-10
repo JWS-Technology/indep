@@ -22,7 +22,8 @@ export default function page() {
   const [contestants, setContestants] = useState<ContestantForm[]>([
     { contestantName: "", dNo: "" },
   ]);
-  console.log(contestants);
+
+  const [fetchData, setfetchData] = useState(true)
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
@@ -60,15 +61,18 @@ export default function page() {
   useEffect(() => {
     if (teamId === "") return;
     if (eventName === "") return;
+    // if (!fetchData) return;
 
     console.log("this req sent");
     const fetchregData = async () => {
       try {
-        console.log(teamId, eventName);
+        console.log("fetch data")
+        // console.log(teamId, eventName);
         const res = await axios.post("/api/get-onstage-registration", {
           teamId: teamId,
           eventName: eventName,
         });
+        // console.log(res.data)
 
         // defensive: handle missing registeredData or contestants
         const registeredDataResp = res?.data?.registeredData ?? null;
@@ -100,7 +104,7 @@ export default function page() {
     };
 
     fetchregData();
-  }, [eventName, teamId]);
+  }, [eventName, teamId, fetchData]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -202,6 +206,7 @@ export default function page() {
       );
     } finally {
       setLoading(false);
+      setfetchData((prev) => !prev)
     }
   };
 
@@ -262,7 +267,7 @@ export default function page() {
                   value={c.dNo}
                   onChange={(e) => updateContestant(i, "dNo", e.target.value)}
                   placeholder="DNo"
-                  className="w-24 px-2 py-2 border rounded"
+                  className="w-28 px-2 py-2 border rounded"
                 />
                 <button
                   type="button"
