@@ -15,7 +15,7 @@ export default function page() {
   const [contestantCount, setcontestantCount] = useState("")
   const [offStageOrOnStage, setoffStageOrOnStage] = useState("")
 
-
+  const [successMessage, setsuccessMessage] = useState("")
   const [registeredData, setregisteredData] = useState("");
 
   const [contestants, setContestants] = useState<ContestantForm[]>([
@@ -56,15 +56,16 @@ export default function page() {
   }, [id]);
 
   useEffect(() => {
-    if (!teamId) return;
-    if (!teamName) return;
+    if (teamId === "") return;
+    if (eventName === "") return;
 
     console.log("this req sent")
-    const fetchEvent = async () => {
+    const fetchregData = async () => {
       try {
+        console.log(teamId, eventName)
         const res = await axios.post("/api/get-onstage-registration", {
-          teamId,
-          eventName,
+          teamId: teamId,
+          eventName: eventName,
         });
 
         console.log(res.data)
@@ -75,9 +76,8 @@ export default function page() {
         setMessage("Failed to load event data.");
       }
     };
-
-    fetchEvent();
-  }, [teamName, teamId]);
+    fetchregData();
+  }, [eventName, teamId]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -241,7 +241,7 @@ export default function page() {
             </button>
           </div>
         </div>
-
+        <p className="text-green-400">{message}</p>
         <button
           type="submit"
           disabled={loading}
