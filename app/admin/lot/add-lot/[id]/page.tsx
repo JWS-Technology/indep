@@ -350,10 +350,10 @@ const handleSaveAllocations = async () => {
                 <p className="text-center text-lg text-gray-600 mt-3">Allocate teams and define themes for {totalLots} competition lots (Event ID: <code className="font-mono text-indigo-600 bg-indigo-50 p-1 rounded">{id}</code>)</p>
             </header>
 
-            <div className="w-full max-w-6xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200">
+                <div className="w-[30rem] mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200">
                 <div className="hidden sm:grid grid-cols-12 gap-4 py-4 px-6 bg-indigo-700 text-white font-semibold text-sm uppercase tracking-wider sticky top-0 z-10 shadow-lg">
                     <span className="col-span-1">Lot</span>
-                    <span className="col-span-4">Theme Description</span>
+                    {/* <span className="col-span-4">Themasdasde Description</span> */}
                     <span className="col-span-7">Team Assignment</span>
                 </div>
 
@@ -376,7 +376,7 @@ const handleSaveAllocations = async () => {
                                 <div className="sm:col-span-1 text-xl font-extrabold text-indigo-600">{lotIndex + 1}</div>
 
                                 {/* Theme input (editable) */}
-                                <div className="sm:col-span-4 flex gap-2">
+                                {/* <div className="sm:col-span-4 flex gap-2">
                                     <input
                                         value={themeValue}
                                         onChange={(e) => handleThemeChange(lotIndex, e.target.value)}
@@ -391,7 +391,7 @@ const handleSaveAllocations = async () => {
                                     >
                                         {isThemeSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                                     </button>
-                                </div>
+                                </div> */}
 
                                 <div className="sm:col-span-7 flex flex-col sm:flex-row sm:items-center justify-start gap-3">
                                     <select
@@ -415,7 +415,8 @@ const handleSaveAllocations = async () => {
                                     {/* Assigned badge (shows custom teamId only) */}
                                     {isAllocated ? (
                                         <span className="mt-2 sm:mt-0 sm:ml-4 text-sm font-semibold text-indigo-700 bg-indigo-200 py-1 px-3 rounded-full shadow-inner flex items-center gap-1">
-                                            <Zap className="w-4 h-4" /> Assigned: {displayedTeamId}
+                                            <Zap className="w-4 h-4" /> Assigned
+                                            {/* <Zap className="w-4 h-4" /> Assigned: {displayedTeamId} */}
                                         </span>
                                     ) : (
                                         <span className="mt-2 sm:mt-0 sm:ml-4 text-sm font-medium text-gray-500">Unassigned</span>
