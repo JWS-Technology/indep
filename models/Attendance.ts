@@ -13,6 +13,8 @@ const AttendanceSchema = new mongoose.Schema({
     default: "ABSENT",
   },
   malpracticeDetails: String,
+  secondContestantName: String,
+  secondDno: String,
 });
 
 const Attendance =
