@@ -1,5 +1,3 @@
-
-
 export const shiftOne = [
   "Botany",
   "Chemistry",
@@ -16,6 +14,37 @@ export const shiftOne = [
 ];
 
 export const shiftTwo = [
+  "Bio-Chemistry & Bio-Technology",
+  "Business Administration (BBA)",
+  "B.Com Honours",
+  "B.Voc SD & SA",
+  "B.Com SF & BA, Physical Education",
+  "B.Voc Viscom Tech & B.Sc Viscom",
+  "Commerce",
+  "Commerce CA",
+  "Counselling Psychology",
+  "Computer Science",
+  "Data Sci. & AI",
+  "Electronics",
+  "English",
+  "Information Technology",
+  "Mathematics",
+  "Physics",
+];
+
+export const allTeams = [
+  "Botany",
+  "Chemistry",
+  "Commerce",
+  "Computer Science",
+  "Economics",
+  "English",
+  "HRM",
+  "History",
+  "Mathematics",
+  "Physics",
+  "Statistics",
+  "Tamil",
   "Bio-Chemistry & Bio-Technology",
   "Business Administration (BBA)",
   "B.Com Honours",
