@@ -17,7 +17,7 @@ export default function page() {
   const [offStageOrOnStage, setoffStageOrOnStage] = useState("");
 
   const [successMessage, setsuccessMessage] = useState("");
-  const [registeredData, setregisteredData] = useState();
+  const [registeredData, setregisteredData] = useState(null);
 
   const [contestants, setContestants] = useState<ContestantForm[]>([
     { contestantName: "", dNo: "" },
