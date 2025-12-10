@@ -135,9 +135,11 @@ export default function AttendanceRecordPage() {
         rows.map((r) => ({
             Event: r.eventName ?? r.event ?? "",
             Contestant: r.contestantName ?? r.name ?? "",
+            SecondContestant: r.secondContestantName ?? r.name ?? "",
             Team: r.teamName ?? "",
             TeamID: r.teamId ?? r.teamID ?? "",
             DNo: r.dNo ?? "",
+            SecondDno: r.secondDno ?? "",
             Lot: r.lotNumber ?? r.lot ?? "",
             Status: r.attendance ?? "",
             Malpractice: r.malpracticeDetails ?? "",
