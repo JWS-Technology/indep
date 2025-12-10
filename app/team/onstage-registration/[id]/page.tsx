@@ -3,8 +3,9 @@
 import axios from "axios";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
-type ContestantForm = { name: string; dno: string };
+type ContestantForm = { contestantName: string; dNo: string };
 
 export default function page() {
   const { id } = useParams();
@@ -12,15 +13,16 @@ export default function page() {
   const [teamName, setTeamName] = useState<string>("");
   const [teamId, setTeamId] = useState<string>("");
   const [eventName, setEventName] = useState<string>("");
-  const [contestantCount, setcontestantCount] = useState("")
-  const [offStageOrOnStage, setoffStageOrOnStage] = useState("")
+  // const [contestantCount, setcontestantCount] = useState("")
+  const [offStageOrOnStage, setoffStageOrOnStage] = useState("");
 
-  const [successMessage, setsuccessMessage] = useState("")
-  const [registeredData, setregisteredData] = useState("");
+  const [successMessage, setsuccessMessage] = useState("");
+  const [registeredData, setregisteredData] = useState();
 
   const [contestants, setContestants] = useState<ContestantForm[]>([
-    { name: "", dno: "" },
+    { contestantName: "", dNo: "" },
   ]);
+  console.log(contestants);
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
@@ -44,7 +46,7 @@ export default function page() {
         const data = await res.json();
         const event = data.event || {};
         setEventName(event.title || "");
-        console.log(data.event.stageType)
+        console.log(data.event.stageType);
         setoffStageOrOnStage(data.event.stageType);
       } catch (err: any) {
         console.error("Error fetching event data:", err);
@@ -59,18 +61,18 @@ export default function page() {
     if (teamId === "") return;
     if (eventName === "") return;
 
-    console.log("this req sent")
+    console.log("this req sent");
     const fetchregData = async () => {
       try {
-        console.log(teamId, eventName)
+        console.log(teamId, eventName);
         const res = await axios.post("/api/get-onstage-registration", {
           teamId: teamId,
           eventName: eventName,
         });
 
-        console.log(res.data)
-        // setContestants(res.data.registeredData.contestants)
-        setregisteredData("");
+        // console.log(res.data.registeredData.contestants)
+        setContestants(res.data.registeredData.contestants);
+        setregisteredData(res.data.registeredData);
       } catch (err) {
         console.error("Error fetching event data:", err);
         setMessage("Failed to load event data.");
@@ -109,13 +111,18 @@ export default function page() {
     fetchUser();
   }, []);
 
-  const updateContestant = (index: number, key: keyof ContestantForm, value: string) => {
+  const updateContestant = (
+    index: number,
+    key: keyof ContestantForm,
+    value: string
+  ) => {
     setContestants((prev) =>
       prev.map((c, i) => (i === index ? { ...c, [key]: value } : c))
     );
   };
 
-  const addContestant = () => setContestants((p) => [...p, { name: "", dno: "" }]);
+  const addContestant = () =>
+    setContestants((p) => [...p, { contestantName: "", dNo: "" }]);
   const removeContestant = (index: number) =>
     setContestants((p) => (p.length > 1 ? p.filter((_, i) => i !== index) : p));
 
@@ -129,7 +136,7 @@ export default function page() {
     }
 
     for (let i = 0; i < contestants.length; i++) {
-      if (!contestants[i].name.trim() || !contestants[i].dno.trim()) {
+      if (!contestants[i].contestantName.trim() || !contestants[i].dNo.trim()) {
         setMessage(`Please fill all contestant fields (row ${i + 1}).`);
         return;
       }
@@ -137,8 +144,8 @@ export default function page() {
 
     // transform contestants to backend shape { contestantName, dNo }
     const transformedContestants = contestants.map((c) => ({
-      contestantName: c.name.trim(),
-      dNo: c.dno.trim(),
+      contestantName: c.contestantName.trim(),
+      dNo: c.dNo.trim(),
     }));
 
     const payload = {
@@ -146,6 +153,7 @@ export default function page() {
       teamName: teamName.trim(),
       eventName: eventName.trim(),
       contestants: transformedContestants,
+      contestantCount: transformedContestants.length,
     };
 
     try {
@@ -158,12 +166,19 @@ export default function page() {
 
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json?.message || "Server error");
-      console.log(json.success)
+      console.log(json.success);
       setMessage(json?.message || "Registered successfully");
-      setContestants([{ name: "", dno: "" }]);
+      setContestants([{ contestantName: "", dNo: "" }]);
+      if (!json.success) {
+        toast.error(json.message);
+      }
+      toast.success(json.message);
     } catch (err: any) {
       console.error(err);
-      setMessage(typeof err === "string" ? err : err?.message || "Network error");
+      toast.error("Server error");
+      setMessage(
+        typeof err === "string" ? err : err?.message || "Server error"
+      );
     } finally {
       setLoading(false);
     }
@@ -171,8 +186,12 @@ export default function page() {
 
   return (
     <div className="max-w-md mx-auto my-10 p-6 bg-white rounded-lg shadow">
-      <h2 className="text-2xl font-semibold mb-4 text-center">On-Stage Registration</h2>
-
+      <h2 className="text-2xl font-semibold mb-4 text-center">
+        On-Stage Registration
+      </h2>
+      <h2 className="text-2xl font-semibold mb-4 text-center">
+        for {eventName}
+      </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -211,15 +230,17 @@ export default function page() {
             {contestants.map((c, i) => (
               <div key={i} className="flex gap-2">
                 <input
-                  value={c.name}
-                  onChange={(e) => updateContestant(i, "name", e.target.value)}
+                  value={c.contestantName}
+                  onChange={(e) =>
+                    updateContestant(i, "contestantName", e.target.value)
+                  }
                   placeholder={`Name ${i + 1}`}
                   className="flex-1 px-2 py-2 border rounded"
                 />
                 <input
-                  value={c.dno}
-                  onChange={(e) => updateContestant(i, "dno", e.target.value)}
-                  placeholder="D-No"
+                  value={c.dNo}
+                  onChange={(e) => updateContestant(i, "dNo", e.target.value)}
+                  placeholder="DNo"
                   className="w-24 px-2 py-2 border rounded"
                 />
                 <button
@@ -241,15 +262,19 @@ export default function page() {
             </button>
           </div>
         </div>
-        <p className="text-green-400">{message}</p>
+        <p className="text-green-500 text-center">
+          {registeredData && "Already registered"}
+        </p>
+        {/* <p className="text-green-400">{message}</p> */}
         <button
           type="submit"
           disabled={loading}
           className="w-full py-2 rounded bg-indigo-600 text-white disabled:opacity-60"
         >
-          {loading ? "Submitting..." : "Register"}
+          {registeredData ? "Update Registration" : "Register"}
         </button>
       </form>
+      <ToastContainer theme="colored" position="top-right" />
     </div>
   );
 }
