@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     await dbConnect();
     const { filterEvent } = await req.json();
-    console.log(filterEvent)
+    // console.log(filterEvent)
     const attendance = await Attendance.find({
       eventName: filterEvent,
     });
