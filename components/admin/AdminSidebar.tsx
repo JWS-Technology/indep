@@ -26,7 +26,8 @@ import {
     GraduationCap,
     FolderOpen,
     CheckSquare,
-    FileText
+    FileText,
+    Building2
 } from "lucide-react";
 
 export default function AdminSidebar() {
@@ -123,6 +124,7 @@ export default function AdminSidebar() {
             ],
         },
         { name: "Upload All Files", href: "/admin/upload-all-files", icon: Upload },
+        { name: "Bank Details", href: "/admin/bank-data", icon: Building2 },
     ];
 
     const handleLogout = async () => {
