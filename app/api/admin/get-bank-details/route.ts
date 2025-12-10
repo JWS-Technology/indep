@@ -8,8 +8,8 @@ export async function GET(req: NextRequest) {
 
     const savedDetails = await BankDetails.find();
 
-    console.log("this is saved bank deails");
-    console.log(savedDetails);
+    // console.log("this is saved bank deails");
+    // console.log(savedDetails);
 
     return NextResponse.json(
       {
