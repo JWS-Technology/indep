@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
         },
         { upsert: true } // optional: create if doesn't exist
       );
-      console.log(updatedDetails);
+      // console.log(updatedDetails);
       return NextResponse.json(
         {
           message: "Updated bank details successfully",
