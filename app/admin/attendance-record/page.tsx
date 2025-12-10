@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { 
-    Search, 
-    Filter, 
-    Loader2, 
+import {
+    Search,
+    Filter,
+    Loader2,
     Calendar,
     Users,
     FileDown,
@@ -27,6 +27,7 @@ export default function AttendanceRecordPage() {
     const [attendanceData, setAttendanceData] = useState<any[]>([]);
     const [error, setError] = useState("");
     const [events, setEvents] = useState<any[]>([]);
+    // console.log(events)
     const [eventsLoading, setEventsLoading] = useState(false);
     const [exporting, setExporting] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -48,7 +49,7 @@ export default function AttendanceRecordPage() {
             setEventsLoading(true);
             const res = await fetch("/api/get-events");
             const data = await res.json();
-
+            console.log(data)
             if (data.success) {
                 const names = data.events
                     .map((ev: any) => (typeof ev === "string" ? ev : ev?.eventName))
@@ -125,6 +126,7 @@ export default function AttendanceRecordPage() {
             item.lotNumber?.toLowerCase().includes(query)
         );
     });
+
 
     // ----------------------------------------------
     // ✅ Export helpers
@@ -351,7 +353,7 @@ export default function AttendanceRecordPage() {
                             View and manage event-wise attendance data
                         </p>
                     </div>
-                    
+
                     <div className="flex flex-col xs:flex-row gap-2">
                         <button
                             onClick={exportCurrentAsPDF}
@@ -389,7 +391,7 @@ export default function AttendanceRecordPage() {
                                 <p className="text-sm text-gray-500">Records</p>
                             </div>
                         </div>
-                        
+
                         <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
                             <div className="flex items-center justify-between">
                                 <div className="p-2 bg-emerald-50 rounded-lg">
@@ -404,7 +406,7 @@ export default function AttendanceRecordPage() {
                                 <p className="text-sm text-gray-500">Present</p>
                             </div>
                         </div>
-                        
+
                         <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
                             <div className="flex items-center justify-between">
                                 <div className="p-2 bg-red-50 rounded-lg">
@@ -419,7 +421,7 @@ export default function AttendanceRecordPage() {
                                 <p className="text-sm text-gray-500">Absent</p>
                             </div>
                         </div>
-                        
+
                         <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
                             <div className="flex items-center justify-between">
                                 <div className="p-2 bg-amber-50 rounded-lg">
@@ -446,7 +448,7 @@ export default function AttendanceRecordPage() {
                             <Filter size={20} className="text-gray-500" />
                             <span className="font-semibold text-gray-700">Event Filter</span>
                         </div>
-                        
+
                         <select
                             className="px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-sm w-full sm:w-64"
                             value={eventName}
@@ -464,7 +466,7 @@ export default function AttendanceRecordPage() {
                             ))}
                         </select>
                     </div>
-                    
+
                     <div className="relative w-full lg:w-72">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <input
@@ -558,11 +560,11 @@ export default function AttendanceRecordPage() {
                                                 <Search size={48} className="mb-4 opacity-20" />
                                                 <p className="text-lg font-medium text-gray-900">No records found</p>
                                                 <p className="text-sm">
-                                                    {searchQuery 
+                                                    {searchQuery
                                                         ? `No results for "${searchQuery}"`
-                                                        : eventName 
-                                                        ? "No attendance records for this event yet"
-                                                        : "Please select an event to view attendance"
+                                                        : eventName
+                                                            ? "No attendance records for this event yet"
+                                                            : "Please select an event to view attendance"
                                                     }
                                                 </p>
                                             </div>
@@ -640,11 +642,11 @@ export default function AttendanceRecordPage() {
                                 <Search size={48} className="mb-4 opacity-20" />
                                 <p className="text-lg font-medium text-gray-900">No records found</p>
                                 <p className="text-sm">
-                                    {searchQuery 
+                                    {searchQuery
                                         ? `No results for "${searchQuery}"`
-                                        : eventName 
-                                        ? "No attendance records for this event yet"
-                                        : "Please select an event to view attendance"
+                                        : eventName
+                                            ? "No attendance records for this event yet"
+                                            : "Please select an event to view attendance"
                                     }
                                 </p>
                             </div>
@@ -652,10 +654,11 @@ export default function AttendanceRecordPage() {
                     ) : (
                         <div className="p-4 space-y-3">
                             {filteredData.map((item: any, idx: number) => (
-                                <div 
-                                    key={idx} 
+                                <div
+                                    key={idx}
                                     className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow"
                                 >
+
                                     <div className="flex items-start justify-between">
                                         <div className="flex items-start gap-3 flex-1">
                                             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold flex-shrink-0">
@@ -664,6 +667,10 @@ export default function AttendanceRecordPage() {
                                             <div className="flex-1 min-w-0">
                                                 <h3 className="font-semibold text-gray-900 text-sm truncate">
                                                     {item.contestantName}
+                                                </h3>
+                                                <h3 className="font-semibold text-gray-900 text-sm truncate">
+                                                    {item.secondContestantName
+                                                    }
                                                 </h3>
                                                 <p className="text-xs text-gray-500 mt-1 truncate">
                                                     Event: {eventName}
@@ -676,7 +683,7 @@ export default function AttendanceRecordPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <button 
+                                        <button
                                             onClick={() => setExpandedCard(expandedCard === idx ? null : idx)}
                                             className="text-gray-400 hover:text-gray-600 p-1"
                                         >
@@ -697,6 +704,14 @@ export default function AttendanceRecordPage() {
                                             <span className="text-gray-500">D-No:</span>
                                             <span className="font-semibold text-gray-900">{item.dNo}</span>
                                         </div>
+                                        {item.secondDno && (
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-gray-500">Secord D-No:</span>
+                                                <span className="font-semibold text-gray-900">{item.secondDno}</span>
+                                            </div>
+                                        )}
+
+                                        {/* Cartooning */}
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-gray-500">Lot Number:</span>
                                             <span className="font-bold text-indigo-700">{item.lotNumber}</span>
@@ -722,6 +737,6 @@ export default function AttendanceRecordPage() {
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
