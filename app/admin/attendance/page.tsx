@@ -44,7 +44,9 @@ export default function AttendancePage() {
         teamName: lot.teamName,
         teamId: lot.team_id,
         contestantName: lot.registration.contestantName,
+        secondContestantName: lot.registration.secondContestantName,
         dNo: lot.registration.dNo,
+        secondDno: lot.registration.secondDno,
         lotNo: lot.lot_number,
         attendance,
         malpracticeDetails,
@@ -108,7 +110,7 @@ export default function AttendancePage() {
       if (filterEvent === "") return;
       try {
         const res = await axios.post("/api/get-attendance", { filterEvent });
-        console.log("ram")
+        // console.log("ram")
         settakenAttendanceData(res.data.attendance);
       } catch (error) {
         console.log(error);
@@ -130,6 +132,7 @@ export default function AttendancePage() {
 
     return matchesEvent && matchesDept && matchesSearch;
   });
+  // console.log(filteredLots)
 
   const markAttendance = async (
     lotId: string,

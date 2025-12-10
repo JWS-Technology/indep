@@ -14,7 +14,10 @@ export async function POST(req: NextRequest) {
       lotNo,
       attendance,
       malpracticeDetails,
+      secondContestantName,
+      secondDno,
     } = await req.json();
+    console.log(secondContestantName, secondDno);
 
     const attendanceExists = await Attendance.findOne({
       eventName: eventName,
@@ -33,11 +36,13 @@ export async function POST(req: NextRequest) {
             lotNumber: lotNo,
             attendance,
             malpracticeDetails,
+            secondContestantName,
+            secondDno,
           },
         },
         { new: true, upsert: false } // ❗ upsert: false → do nothing if not found
       );
-    //   console.log(updated);
+      //   console.log(updated);
       return NextResponse.json(
         {
           message: "saved attendance",
@@ -56,6 +61,8 @@ export async function POST(req: NextRequest) {
       lotNumber: lotNo,
       attendance: attendance,
       malpracticeDetails: malpracticeDetails,
+      secondContestantName: secondContestantName,
+      secondDno: secondDno,
     });
     // console.log(savedAttendance);
     return NextResponse.json(
