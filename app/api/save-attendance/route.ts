@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       secondContestantName,
       secondDno,
     } = await req.json();
-    console.log(secondContestantName, secondDno);
+    // console.log(secondContestantName, secondDno);
 
     const attendanceExists = await Attendance.findOne({
       eventName: eventName,
