@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 
 export default function AttendancePage() {
   const [lots, setLots] = useState<any[]>([]);
+  console.log(lots)
+  console.log("asds")
   const [loading, setLoading] = useState(true);
   const [filterEvent, setFilterEvent] = useState("Cartooning");
   // console.log(filterEvent)
@@ -37,14 +39,17 @@ export default function AttendancePage() {
     takenAttendanceData?.map((a: any) => a.dNo?.trim()) ?? []
   );
 
-  const saveAttendance = async (lot: any, attendance: string, malpracticeDetails = "") => {
-    try {
+
+ const saveAttendance = async (lot: any, attendance: string, malpracticeDetails = "") => {
+  try {
       const res = await axios.post("/api/save-attendance", {
         eventName: lot.event,
         teamName: lot.teamName,
         teamId: lot.team_id,
         contestantName: lot.registration.contestantName,
+        secondcontestantName: lot.registration.secondcontestantName,
         dNo: lot.registration.dNo,
+        secondDno: lot.registration.dNo,
         lotNo: lot.lot_number,
         attendance,
         malpracticeDetails,
@@ -102,13 +107,14 @@ export default function AttendancePage() {
     fetchLots();
   }, []);
 
+console.log(lots)
   useEffect(() => {
     const getAttendance = async () => {
       if (!getAttendanceData) return;
       if (filterEvent === "") return;
       try {
         const res = await axios.post("/api/get-attendance", { filterEvent });
-        console.log("ram")
+        // console.log("ram")
         settakenAttendanceData(res.data.attendance);
       } catch (error) {
         console.log(error);
@@ -281,6 +287,8 @@ export default function AttendancePage() {
 
                       <td className="p-4 border-b">
                         {lot.registration?.dNo || "N/A"}
+                        <br />
+                         {lot.registration?.secondDno}
                       </td>
 
                       <td className="p-4 border-b text-center">
