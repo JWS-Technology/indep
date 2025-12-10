@@ -14,7 +14,9 @@ import {
     Files,
     ClipboardCheck,
     UserCircle,
-    ChevronRight
+    ChevronRight,
+
+    Building2
 } from "lucide-react";
 
 import Link from "next/link";
@@ -26,7 +28,8 @@ export function Sidebar({ open, setOpen }: { open: boolean; setOpen: (v: boolean
     const navItems = [
         { icon: <Home size={20} />, label: "Dashboard", href: "/team/dashboard" },
         { icon: <ClipboardCheck size={20} />, label: "Registration", href: "/team/registration" },
-        { icon: <Files size={20} />, label: "Uploads", href: "/team/my-files" },
+        // { icon: <Files size={20} />, label: "Uploads", href: "/team/my-files" },
+        { icon: <Building2  size={20} />, label: "Bank Details", href: "/team/bank-details" },
         // { icon: <Calendar size={20} />, label: "Events", href: "/team/events" },
         // { icon: <Users size={20} />, label: "Team Members", href: "/team/members" },
         // { icon: <Trophy size={20} />, label: "Results", href: "/team/results" },
