@@ -125,6 +125,7 @@ export default function AdminSidebar() {
         },
         { name: "Upload All Files", href: "/admin/upload-all-files", icon: Upload },
         { name: "Bank Details", href: "/admin/bank-data", icon: Building2 },
+        { name: "Export", href: "/admin/data-export", icon: CheckSquare },
     ];
 
     const handleLogout = async () => {
