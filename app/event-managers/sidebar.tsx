@@ -19,13 +19,12 @@ export default function Sidebar() {
   const hoverBg = "hover:bg-cyan-100";
 
   const linkClass = (href: string) =>
-    `flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors duration-150 ${
-      pathname === href ? `${activeBg} ${activeText} shadow-md` : `${defaultText} ${hoverBg}`
+    `flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors duration-150 ${pathname === href ? `${activeBg} ${activeText} shadow-md` : `${defaultText} ${hoverBg}`
     }`;
 
   const buttonData = [
     { href: "/event-managers", icon: LayoutDashboard, label: "Dashboard" },
-    { href: "/event-managers/mark-attendance", icon: CheckSquare, label: "Mark Attendance" },
+    { href: "/event-managers/attendance/on-stage", icon: CheckSquare, label: "Mark Attendance" },
     { href: "/event-managers/attendance-record", icon: ClipboardList, label: "Attendance Record" }
   ];
 
@@ -62,9 +61,8 @@ export default function Sidebar() {
 
       {/* Mobile Drawer */}
       <div
-        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-2xl p-5 flex flex-col transition-transform duration-300 lg:hidden z-50 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-2xl p-5 flex flex-col transition-transform duration-300 lg:hidden z-50 ${open ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-teal-600">Menu</h2>
