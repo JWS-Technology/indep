@@ -80,7 +80,7 @@ export default function TeamDashboard() {
     return (
         <div className="min-h-screen bg-slate-50/50 pb-12 font-sans">
             {/* Header Section */}
-            <div className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+            <div className="bg-white border-b border-slate-200 rounded-2xl top-0 z-10 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
@@ -98,8 +98,8 @@ export default function TeamDashboard() {
                         </div>
 
                         <div className="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto">
-                            <div className="text-xs font-mono bg-slate-100 text-slate-500 px-3 py-1.5 rounded-md border border-slate-200 truncate max-w-[200px]">
-                                ID: <span className="select-all text-slate-700 font-semibold">{teamData?.teamId}</span>
+                            <div className="text-xs font-mono bg-indigo-500 text-gray-100 px-3 py-1.5 rounded-md border border-slate-200 truncate max-w-[200px]">
+                                ID: <span className="select-all text-gray-100 font-semibold">{teamData?.teamId}</span>
                             </div>
                             {/* Optional Logout placeholder if needed */}
                             {/* <button className="p-2 text-slate-400 hover:text-red-500 transition-colors md:hidden">
