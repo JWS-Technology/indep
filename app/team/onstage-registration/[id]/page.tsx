@@ -72,6 +72,7 @@ export default function page() {
           teamId: teamId,
           eventName: eventName,
         });
+          // console.log("THIS IS RES DAT")
         // console.log(res.data)
 
         // defensive: handle missing registeredData or contestants
@@ -258,14 +259,14 @@ export default function page() {
                 <input
                   value={c.contestantName}
                   onChange={(e) =>
-                    updateContestant(i, "contestantName", e.target.value)
+                    updateContestant(i, "contestantName", e.target.value.toUpperCase())
                   }
                   placeholder={`Name ${i + 1}`}
                   className="flex-1 px-2 py-2 border rounded"
                 />
                 <input
                   value={c.dNo}
-                  onChange={(e) => updateContestant(i, "dNo", e.target.value)}
+                  onChange={(e) => updateContestant(i, "dNo", e.target.value.toUpperCase())}
                   placeholder="DNo"
                   className="w-28 px-2 py-2 border rounded"
                 />
