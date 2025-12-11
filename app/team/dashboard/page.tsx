@@ -9,10 +9,11 @@ import {
     FolderOpen,
     AlertCircle,
     LayoutDashboard,
-    Building2
+    Building2,
+    LogOut
 } from "lucide-react";
 import ForcePasswordChange from "@/components/TeamsDashboard/ForcePasswordChange";
-import OffstageTeamDashboard from "@/components/TeamsDashboard/OffstageTeamDashboard";
+import OnstageTeamDashboard from "@/components/TeamsDashboard/OnstageTeamDashboard";
 import axios from "axios";
 
 export default function TeamDashboard() {
@@ -20,7 +21,6 @@ export default function TeamDashboard() {
     const [loading, setLoading] = useState(true);
     const [teamData, setTeamData] = useState<any>(null);
     const [teamId, setTeamId] = useState("");
-    // const [registrations, setRegistrations] = useState<any[]>([]); 
     const [driveLink, setDriveLink] = useState<string | null>(null);
 
     const fetchDashboardData = async () => {
@@ -36,13 +36,6 @@ export default function TeamDashboard() {
             const team = meData.team;
             setTeamData(team);
             setTeamId(team.teamId);
-
-            // Fetch registrations if needed
-            if (team.teamId) {
-                const eventsRes = await fetch(`/api/events/get-by-team?teamId=${team.teamId}`);
-                const eventsData = await eventsRes.json();
-                // if (eventsData.success) setRegistrations(eventsData.registrations);
-            }
 
         } catch (error) {
             console.error("Failed to load dashboard data", error);
@@ -74,9 +67,9 @@ export default function TeamDashboard() {
 
     if (loading)
         return (
-            <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-50">
+            <div className="h-screen w-full flex flex-col items-center justify-center bg-slate-50">
                 <Loader2 className="w-10 h-10 animate-spin text-indigo-600 mb-4" />
-                <p className="text-gray-500 text-sm font-medium animate-pulse">Loading Dashboard...</p>
+                <p className="text-slate-500 text-sm font-medium animate-pulse">Loading Dashboard...</p>
             </div>
         );
 
@@ -85,115 +78,74 @@ export default function TeamDashboard() {
         return <ForcePasswordChange onPasswordUpdated={() => router.push("/login")} />;
 
     return (
-        <div className="min-h-screen bg-gray-50/50 pb-12">
+        <div className="min-h-screen bg-slate-50/50 pb-12 font-sans">
             {/* Header Section */}
-            <div className="bg-white border-b border-gray-200">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                                <LayoutDashboard className="w-6 h-6 text-indigo-600" />
-                                Team Dashboard
-                            </h1>
-                            <p className="text-gray-500 mt-1">
-                                Welcome back, <span className="font-semibold text-indigo-600">{teamData?.teamName}</span>
-                            </p>
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600 hidden sm:block">
+                                <LayoutDashboard className="w-6 h-6" />
+                            </div>
+                            <div>
+                                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 leading-tight">
+                                    Team Dashboard
+                                </h1>
+                                <p className="text-slate-500 text-sm mt-0.5">
+                                    Welcome back, <span className="font-semibold text-indigo-600">{teamData?.teamName}</span>
+                                </p>
+                            </div>
                         </div>
-                        <div className="text-sm text-gray-400 font-mono bg-gray-100 px-3 py-1 rounded-md self-start md:self-center">
-                            ID: {teamData?.teamId}
+
+                        <div className="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto">
+                            <div className="text-xs font-mono bg-slate-100 text-slate-500 px-3 py-1.5 rounded-md border border-slate-200 truncate max-w-[200px]">
+                                ID: <span className="select-all text-slate-700 font-semibold">{teamData?.teamId}</span>
+                            </div>
+                            {/* Optional Logout placeholder if needed */}
+                            {/* <button className="p-2 text-slate-400 hover:text-red-500 transition-colors md:hidden">
+                                <LogOut size={20} />
+                            </button> */}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
 
-                {/* Quick Actions Grid */}
-                <section>
-                    <h2 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                        {/* Action Card 1: Director Entry */}
-                        {/* <div
-                            onClick={() => router.push("registration/director/692bdcc333d496ae7261cc25")}
-                            className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group"
-                        >
-                            <div className="flex items-start justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div className="p-3 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                                        <FileText className="w-6 h-6" />
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold text-gray-900">Submit Director Entry</h3>
-                                        <p className="text-sm text-gray-500 mt-1">Register for the INDEP Director event</p>
-                                    </div>
-                                </div>
-                                <ExternalLink className="w-5 h-5 text-gray-300 group-hover:text-indigo-600 transition-colors" />
-                            </div>
-                        </div> */}
-
-                        {/* Bank Details  */}
-                        <div
-                            onClick={() => router.push("bank-details")}
-                            className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group"
-                        >
-                            <div className="flex items-start justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div className="p-3 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                                        <Building2 className="w-6 h-6" />
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold text-gray-900">Submit Bank Details</h3>
-                                        <p className="text-sm text-gray-500 mt-1">Fill your bank details</p>
-                                    </div>
-                                </div>
-                                <ExternalLink className="w-5 h-5 text-gray-300 group-hover:text-indigo-600 transition-colors" />
-                            </div>
+                {/* Quick Actions Grid (Commented out but responsive structure preserved) */}
+                {/* <section>
+                    <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                        Quick Actions
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div onClick={() => router.push("registration/director/...")} ... className="cursor-pointer ...">
+                             ... content ...
                         </div>
-
-                        {/* Action Card 2: Drive Link */}
+                        
                         {driveLink ? (
-                            <a
-                                href={driveLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-green-200 transition-all cursor-pointer group block"
-                            >
-                                <div className="flex items-start justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="p-3 bg-green-50 text-green-600 rounded-lg group-hover:bg-green-600 group-hover:text-white transition-colors">
-                                            <FolderOpen className="w-6 h-6" />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-semibold text-gray-900">Team Drive Folder</h3>
-                                            <p className="text-sm text-gray-500 mt-1">Access your shared files and uploads</p>
-                                        </div>
-                                    </div>
-                                    <ExternalLink className="w-5 h-5 text-gray-300 group-hover:text-green-600 transition-colors" />
-                                </div>
-                            </a>
+                             <a href={driveLink} ... className="block ..."> ... </a>
                         ) : (
-                            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 border-dashed flex items-center gap-4 opacity-75">
-                                <div className="p-3 bg-gray-200 text-gray-400 rounded-lg">
-                                    <AlertCircle className="w-6 h-6" />
-                                </div>
-                                <div>
-                                    <h3 className="font-semibold text-gray-500">No Drive Link</h3>
-                                    <p className="text-sm text-gray-400 mt-1">A drive link has not been assigned yet.</p>
-                                </div>
-                            </div>
+                             <div className="..."> ... </div>
                         )}
                     </div>
-                </section>
+                </section> 
+                */}
 
                 {/* Dashboard Content */}
                 <section className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-lg font-semibold text-gray-800">Event Overview</h2>
+                    <div className="flex items-center justify-between px-1 sm:px-0">
+                        <h2 className="text-lg font-bold text-slate-800 tracking-tight">
+                            Event Overview
+                        </h2>
+                        {/* You could add a 'Refresh' button here if needed */}
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden px-6 py-4">
-                        <OffstageTeamDashboard
+                    {/* Responsive Wrapper:
+                        - On mobile: minimal padding (p-2) so cards go nearly full width.
+                        - On desktop: larger padding (p-6) for a boxed look.
+                    */}
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden p-2 sm:p-6 transition-all">
+                        <OnstageTeamDashboard
                             teamId={teamData.teamId}
                             teamName={teamData.teamName}
                         />
