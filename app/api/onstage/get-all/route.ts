@@ -18,16 +18,17 @@ export async function GET() {
 
   // Merge attendance into contestants
   const merged = regs.map((reg) => {
-    const contestants = reg.contestants.map((c) => {
-      const key = `${reg.eventName}-${c.dNo}`;
-      const att = attMap.get(key);
+    const contestants = reg.contestants.map(
+      (c: { contestantName: string; dNo: string; _id: string }) => {
+        const key = `${reg.eventName}-${c.dNo}`;
+        const att = attMap.get(key);
 
-      return {
-        ...c,
-        status: att?.status || "PENDING",
-        malpracticeDetails: att?.malpracticeDetails || "",
-      };
-    });
+        return {
+          ...c,
+          attendance: att ? att.status : "Not Marked",
+        };
+      }
+    );
 
     return { ...reg, contestants };
   });

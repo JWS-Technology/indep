@@ -1,7 +1,7 @@
 import OnStageEventReg from "@/models/OnStageEventReg";
 import dbConnect from "@/utils/dbConnect";
 
-export async function PATCH(req) {
+export async function PATCH(req: Request) {
   await dbConnect();
   const body = await req.json();
 
