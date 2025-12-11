@@ -328,7 +328,7 @@ function DesktopRow({
                     </button>
                 ) : (
                     <div className="text-slate-300 flex justify-end items-center h-full pt-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
                     </div>
                 )}
             </td>
