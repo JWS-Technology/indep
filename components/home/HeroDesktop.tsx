@@ -119,12 +119,12 @@ export default function HeroDesktop({ timeLeft, isEventStarted }: { timeLeft: an
                         <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/80 to-transparent z-0 opacity-50"></div>
                     </a>
 
-                 {*   <a
+                    <a
                         href="/Elocution_english.pdf"
                         className="px-8 py-4 bg-white/5 border border-white/20 text-white rounded-xl font-semibold text-lg backdrop-blur-sm hover:bg-white/10 hover:border-white/40 transition-all"
                     >
                         Elocution English
-                    </a> *}
+                    </a> 
                 </div>
 
                 {/* --- INFINITE SCROLLING ANNOUNCEMENT TICKER --- */}
