@@ -73,7 +73,7 @@ export default function HeroDesktop({ timeLeft, isEventStarted }: { timeLeft: an
                 </h1>
 
                 {/* --- The Countdown Dashboard --- */}
-                <div className="w-full max-w-4xl mx-auto mb-16">
+                {/* <div className="w-full max-w-4xl mx-auto mb-16">
                     {isEventStarted ? (
                         <div className="p-8 bg-green-500/20 backdrop-blur-lg border border-green-500/50 rounded-2xl animate-bounce">
                             <p className="text-3xl font-bold text-green-300">
@@ -104,26 +104,26 @@ export default function HeroDesktop({ timeLeft, isEventStarted }: { timeLeft: an
                             ))}
                         </div>
                     )}
-                </div>
+                </div> */}
 
                 {/* --- Action Buttons --- */}
                 <div className="flex gap-5 items-center w-full justify-center mb-12">
                     <a
-                        href="/login"
+                        href="/Elocution_tamil.pdf"
                         className="group relative px-8 py-4 bg-white text-black rounded-xl font-bold text-lg overflow-hidden shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)] hover:scale-105 transition-transform"
                     >
                         <span className="relative z-10 flex items-center gap-2">
-                            Login
+                            Elocution Tamil
                             <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </span>
                         <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/80 to-transparent z-0 opacity-50"></div>
                     </a>
 
                     <a
-                        href="/rules"
+                        href="/Elocution_english.pdf"
                         className="px-8 py-4 bg-white/5 border border-white/20 text-white rounded-xl font-semibold text-lg backdrop-blur-sm hover:bg-white/10 hover:border-white/40 transition-all"
                     >
-                        Rules & Regulations
+                        Elocution English
                     </a>
                 </div>
 

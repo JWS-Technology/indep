@@ -91,7 +91,7 @@ export default function HeroMobile({ timeLeft, isEventStarted }: { timeLeft: any
                 </motion.h1>
 
                 {/* --- Countdown Timer --- */}
-                <div className="w-full mb-12">
+                {/* <div className="w-full mb-12">
                     {isEventStarted ? (
                         <div className="p-6 bg-green-500/20 backdrop-blur-lg border border-green-500/50 rounded-2xl">
                             <p className="text-2xl font-bold text-green-300">🚀 Event Started!</p>
@@ -104,7 +104,7 @@ export default function HeroMobile({ timeLeft, isEventStarted }: { timeLeft: any
                             <AnimatedNumber value={timeLeft.seconds} label="Secs" />
                         </div>
                     )}
-                </div>
+                </div> */}
 
                 {/* --- Action Buttons --- */}
                 <motion.div
@@ -114,16 +114,16 @@ export default function HeroMobile({ timeLeft, isEventStarted }: { timeLeft: any
                     className="flex flex-col gap-4 w-full px-4 mb-8"
                 >
                     <Link
-                        href="/login"
+                        href="/Elocution_tamil.pdf"
                         className="px-8 py-3.5 bg-white text-black rounded-xl font-bold text-base shadow-lg w-full text-center hover:scale-105 transition-transform"
-                    >
-                        Login
+                    >Elocution Tamil
+
                     </Link>
                     <Link
-                        href="/rules"
+                        href="/Elocution_english.pdf"
                         className="px-8 py-3.5 bg-white/5 border border-white/20 text-white rounded-xl font-semibold text-base w-full text-center backdrop-blur-sm hover:bg-white/10 transition-colors"
                     >
-                        Rules & Regulations
+                        Elocution English
                     </Link>
                 </motion.div>
 
