@@ -119,12 +119,12 @@ export default function HeroMobile({ timeLeft, isEventStarted }: { timeLeft: any
                     >Elocution Tamil
 
                     </Link>
-                    <Link
+                   {* <Link
                         href="/Elocution_english.pdf"
                         className="px-8 py-3.5 bg-white/5 border border-white/20 text-white rounded-xl font-semibold text-base w-full text-center backdrop-blur-sm hover:bg-white/10 transition-colors"
                     >
                         Elocution English
-                    </Link>
+                    </Link>*}
                 </motion.div>
 
             </div>
