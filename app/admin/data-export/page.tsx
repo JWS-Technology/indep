@@ -1,12 +1,38 @@
-
 "use client";
 
 import Link from "next/link";
-import { FaFileExcel, FaUsers } from "react-icons/fa"; // Using react-icons for a professional touch
+import { FaFileExcel, FaUsers, FaClipboardList } from "react-icons/fa";
+
+// Reusable Card Component
+const ExportCard = ({
+  href,
+  icon: Icon,
+  title,
+  description,
+  borderColor,
+}: {
+  href: string;
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  borderColor: string; // Tailwind color e.g., 'indigo', 'green', 'pink'
+}) => (
+  <Link
+    href={href}
+    className={`bg-white border border-gray-200 rounded-xl shadow-lg p-8 flex flex-col items-center
+      transition-all duration-300 ease-in-out transform
+      hover:shadow-2xl hover:scale-[1.02] hover:border-${borderColor}-400 focus:outline-none focus:ring-4 focus:ring-${borderColor}-300`}
+  >
+    <div className={`text-6xl text-${borderColor}-600 mb-4`}>
+      <Icon />
+    </div>
+    <h2 className="text-2xl font-bold text-gray-800 mb-2">{title}</h2>
+    <p className="text-base text-gray-500 text-center">{description}</p>
+  </Link>
+);
 
 export default function DataExportHome() {
   return (
-    // Outer container with subtle background and centering
     <div className="min-h-screen bg-gray-50 p-6 md:p-10 flex flex-col items-center">
       
       {/* Title Section */}
@@ -18,50 +44,38 @@ export default function DataExportHome() {
       </p>
 
       {/* Grid for Export Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl">
-        
-        {/* LOTS EXPORT CARD */}
-        <Link
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+        <ExportCard
           href="/admin/data-export/lot"
-          // Enhanced Card Styling: background, border, shadow, and transition
-          className="bg-white border border-gray-200 rounded-xl shadow-lg p-8 flex flex-col items-center 
-                     transition-all duration-300 ease-in-out transform 
-                     hover:shadow-2xl hover:scale-[1.02] hover:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-300"
-        >
-          {/* Icon */}
-          <div className="text-6xl text-indigo-600 mb-4">
-            <FaFileExcel />
-          </div>
-          
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Lots Data Export</h2>
-          
-          <p className="text-base text-gray-500 text-center">
-            Download the comprehensive list of all existing lots data as an Excel spreadsheet (.xlsx).
-          </p>
-        </Link>
+          icon={FaFileExcel}
+          title="Lots Data Export"
+          description="Download the comprehensive list of all existing lots data as an Excel spreadsheet (.xlsx)."
+          borderColor="indigo"
+        />
 
-        {/* ATTENDANCE EXPORT CARD */}
-        <Link
+        <ExportCard
           href="/admin/data-export/attendance"
-          // Enhanced Card Styling: background, border, shadow, and transition
-          className="bg-white border border-gray-200 rounded-xl shadow-lg p-8 flex flex-col items-center 
-                     transition-all duration-300 ease-in-out transform 
-                     hover:shadow-2xl hover:scale-[1.02] hover:border-green-400 focus:outline-none focus:ring-4 focus:ring-green-300"
-        >
-          {/* Icon */}
-          <div className="text-6xl text-green-600 mb-4">
-            <FaUsers /> {/* Changed the icon to represent attendance/people */}
-          </div>
-          
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Attendance Reports</h2>
-          
-          <p className="text-base text-gray-500 text-center">
-            Export detailed attendance reports, filterable event-wise, in a structured Excel format.
-          </p>
-        </Link>
-        
-        {/* You can easily add more export cards here */}
-        
+          icon={FaUsers}
+          title="Attendance Reports"
+          description="Export detailed attendance reports, filterable event-wise, in a structured Excel format."
+          borderColor="green"
+        />
+
+        <ExportCard
+          href="/admin/data-export/onstageregrecord"
+          icon={FaClipboardList}
+          title="On-Stage Registration"
+          description="Export all registered on-stage event data, including contestants, DNos, and lot numbers, in an Excel sheet."
+          borderColor="pink"
+        />
+
+        <ExportCard
+          href="/admin/data-export/offstageregrecord"
+          icon={FaClipboardList}
+          title="Off-Stage Registration"
+          description="Export all registered off-stage event data, including contestants, DNos, and lot numbers, in an Excel sheet."
+          borderColor="purple"
+        />
       </div>
     </div>
   );
